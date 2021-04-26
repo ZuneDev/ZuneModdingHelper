@@ -9,10 +9,6 @@ namespace ZuneModCore.Mods
 {
     public class WebservicesMod : Mod
     {
-        private readonly byte[] ZUNE_4_8_VERSION_BYTES =
-        {
-            0x34, 0x2E, 0x38
-        };
         private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
         private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
 
@@ -22,6 +18,8 @@ namespace ZuneModCore.Mods
 
         public override string Description => "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
             "to use the community's recreation of Microsoft's Zune servers at zunes.tk (instead of zune.net).";
+
+        public override string Author => "Joshua \"Yoshi\" Askharoun";
 
         public override AbstractUIElementGroup? OptionsUI => null;
 
@@ -48,7 +46,7 @@ namespace ZuneModCore.Mods
 
                 // Verify that the DLL is from v4.8 (other versions not tested)
                 zsDllReader.BaseStream.Position = 0x12C824;
-                var versionBytes = zsDllReader.ReadBytes(ZUNE_4_8_VERSION_BYTES.Length * 2);
+                var versionBytes = zsDllReader.ReadBytes(6);
                 if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
                 {
                     return Task.FromResult<string?>("This mod has not been tested on versions earlier than 4.8.");

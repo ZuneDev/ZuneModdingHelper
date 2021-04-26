@@ -27,6 +27,8 @@ namespace ZuneModCore
 
         public abstract string Description { get; }
 
+        public abstract string Author { get; }
+
         public virtual Task Init() => Task.CompletedTask;
 
         public abstract Task<string?> Apply();

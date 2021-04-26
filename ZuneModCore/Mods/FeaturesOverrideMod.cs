@@ -16,6 +16,8 @@ namespace ZuneModCore.Mods
         public override string Description => "Re-enables access to some features disabled by Microsoft, such as the Social and Marketplace tabs.\r\n" +
             "Does not restore functionality of those features, but shows them in the software.";
 
+        public override string Author => "Unknown";
+
         public override AbstractUIElementGroup OptionsUI => new(nameof(FeaturesOverrideMod))
         {
             Title = "Select features:",

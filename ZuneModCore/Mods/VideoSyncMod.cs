@@ -15,6 +15,8 @@ namespace ZuneModCore.Mods
         public override string Description =>
             "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer";
 
+        public override string Author => "ส็็็Codix#4833";
+
         public override string Id => nameof(VideoSyncMod);
 
         public override AbstractUIElementGroup? OptionsUI => null;
