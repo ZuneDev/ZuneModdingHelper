@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using ControlzEx.Theming;
+using MahApps.Metro.Controls;
 using OwlCore.AbstractUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,9 @@ namespace ZuneModdingHelper
         public MainWindow()
         {
             InitializeComponent();
+
+            ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
+            ThemeManager.Current.SyncTheme();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

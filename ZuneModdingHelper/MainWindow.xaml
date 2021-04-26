@@ -8,8 +8,7 @@
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                  mc:Ignorable="d"
                  Title="Zune Modding Helper" Height="450" Width="800"
-                 Loaded="Window_Loaded"
-                 Background="#F0F0F0">
+                 Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -57,7 +56,7 @@
                     Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4"/>
         </Grid>
 
-        <Border x:Name="ProgressBorder" Padding="8" Margin="8" Background="White" Visibility="Collapsed" Grid.RowSpan="2">
+        <Border x:Name="ProgressBorder" Padding="8" Margin="8" Visibility="Collapsed" Grid.RowSpan="2">
             <Grid>
                 <StackPanel Margin="50,8,50,8" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                     <TextBlock x:Name="ProgressDesc" Text="Preparing..." FontSize="14" FontWeight="SemiBold"
