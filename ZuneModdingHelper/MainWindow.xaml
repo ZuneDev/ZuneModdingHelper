@@ -59,10 +59,10 @@
 
         <Border x:Name="ProgressBorder" Padding="8" Margin="8" Background="White" Visibility="Collapsed" Grid.RowSpan="2">
             <Grid>
-                <StackPanel Margin="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <StackPanel Margin="50,8,50,8" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                     <TextBlock x:Name="ProgressDesc" Text="Preparing..." FontSize="14" FontWeight="SemiBold"
-                               HorizontalAlignment="Center" TextAlignment="Center"/>
-                    <mah:MetroProgressBar x:Name="Progress" Value="0" MinWidth="200"/>
+                               HorizontalAlignment="Stretch" TextAlignment="Center"/>
+                    <mah:MetroProgressBar x:Name="Progress" Value="0" HorizontalAlignment="Stretch"/>
                 </StackPanel>
 
                 <Button x:Name="ProgressCloseButton" Content="Close" Visibility="Collapsed" Click="ProgressCloseButton_Click"

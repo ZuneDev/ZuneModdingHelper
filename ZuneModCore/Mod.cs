@@ -47,11 +47,5 @@ namespace ZuneModCore
         }
 
         public abstract IReadOnlyList<Type>? DependentMods { get; }
-
-        internal FileStream OpenFileInStorageDirectory(string filename)
-        {
-            FileInfo info = new(Path.Combine(StorageDirectory, filename));
-            return File.Create(info.FullName);
-        }
     }
 }

@@ -92,7 +92,21 @@ namespace ZuneModCore.Mods
 
         public override Task<string?> Reset()
         {
-            throw new NotImplementedException();
+            // Copy backup to application folder
+            File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), Path.Combine(ZuneInstallDir, "ZuneService.dll"), true);
+
+            // Disable all feature overrides affected by new servers
+            SetFeatureOverride("Apps", false);
+            SetFeatureOverride("Channels", false);
+            SetFeatureOverride("Games", false);
+            SetFeatureOverride("Marketplace", false);
+            SetFeatureOverride("Music", false);
+            SetFeatureOverride("MusicVideos", false);
+            SetFeatureOverride("Podcasts", false);
+            SetFeatureOverride("Social", false);
+            SetFeatureOverride("Videos", false);
+
+            return Task.FromResult<string?>(null);
         }
     }
 }

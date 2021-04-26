@@ -8,6 +8,8 @@ namespace ZuneModCore.Mods
 {
     public class VideoSyncMod : Mod
     {
+        private const string WMVCORE_PATH = @"C:\Windows\System32\WMVCORE.dll";
+
         public override string Title => "Fix Video Sync";
 
         public override string Description =>
@@ -19,16 +21,27 @@ namespace ZuneModCore.Mods
 
         public override Task<string?> Apply()
         {
-            var writer = new StreamWriter(OpenFileInStorageDirectory("1.log"));
-            writer.WriteLine("Hello world");
-            writer.Flush();
-            writer.Close();
+            try
+            {
+                // Make a backup of the file
+                File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
 
-            return Task.FromResult<string?>(null);
+                // Copy the pre-Anniversary Update WMVCORE.dll
+                File.Copy("Resources\\WMVCORE.dll", WMVCORE_PATH, true);
+
+                return Task.FromResult<string?>(null);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ex.Message)!;
+            }
         }
 
         public override Task<string?> Reset()
         {
+            // Copy backup to application folder
+            File.Copy(Path.Combine(StorageDirectory, "WMVCORE.original.dll"), WMVCORE_PATH, true);
+
             return Task.FromResult<string?>(null);
         }
 

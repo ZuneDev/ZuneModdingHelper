@@ -11,4 +11,10 @@
         <PackageReference Include="OwlCore" Version="0.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Resources\WMVCORE.DLL">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
