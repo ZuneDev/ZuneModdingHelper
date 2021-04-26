@@ -41,21 +41,19 @@ namespace ZuneModdingHelper
 
         private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods");
-            ModList.IsEnabled = false;
-            InstallModsButton.IsEnabled = false;
+            var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods");
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
             var selectedMods = ModList.SelectedItems.Cast<Mod>();
 
-            dialog.Maximum = selectedMods.Count() * 2;
+            progDialog.Maximum = selectedMods.Count() * 2;
             int numCompleted = 0;
 
-            dialog.SetTitle("Installing mods...");
+            progDialog.SetTitle("Installing mods...");
             foreach (Mod mod in selectedMods)
             {
-                dialog.SetMessage($"Setting up '{mod.Title}'");
+                progDialog.SetMessage($"Setting up '{mod.Title}'");
                 await mod.Init();
-                dialog.SetProgress(++numCompleted);
+                progDialog.SetProgress(++numCompleted);
 
                 // TODO: Implement AbstractUI display for options
                 //if (mod.OptionsUI != null)
@@ -65,23 +63,20 @@ namespace ZuneModdingHelper
                 //    optionsDialog.ShowDialog();
                 //}
 
-                dialog.SetMessage($"Applying '{mod.Title}'");
+                progDialog.SetMessage($"Applying '{mod.Title}'");
                 string applyResult = await mod.Apply();
                 if (applyResult != null)
                 {
-                    dialog.SetMessage($"Failed to apply '{mod.Title}':\r\n{applyResult}");
+                    progDialog.SetMessage($"Failed to apply '{mod.Title}':\r\n{applyResult}");
                     await Task.Delay(15000);
                     continue;
                 }
-                dialog.SetProgress(++numCompleted);
+                progDialog.SetProgress(++numCompleted);
             }
 
-            dialog.SetTitle("Completed");
-            dialog.SetMessage("Finished installing selected mods");
-            await Task.Delay(5000);
-            dialog.CloseAsync();
-            ModList.IsEnabled = true;
-            InstallModsButton.IsEnabled = true;
+            await progDialog.CloseAsync();
+            await this.ShowMessageAsync("Completed", "Finished installing selected mods",
+                settings: new MetroDialogSettings() { AffirmativeButtonText = "Close" });
         }
     }
 }
