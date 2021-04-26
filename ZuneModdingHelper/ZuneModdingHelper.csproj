@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="OwlCore" Version="0.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="AbstractUI\Themes\AbstractBooleanUIElementStyle - Copy.xaml.cs">
+      <DependentUpon>AbstractBooleanUIElementStyle.xaml.cs</DependentUpon>
+    </Compile>
+    <Compile Update="AbstractUI\Themes\AbstractButtonStyle - Copy.xaml.cs">
+      <DependentUpon>AbstractButtonStyle.xaml.cs</DependentUpon>
+    </Compile>
+    <Compile Update="AbstractUI\Themes\AbstractDataListStyle - Copy.xaml.cs">
+      <DependentUpon>AbstractDataListStyle.xaml.cs</DependentUpon>
+    </Compile>
+    <Compile Update="AbstractUI\Themes\AbstractMultiChoiceUIElementStyle - Copy.xaml.cs">
+      <DependentUpon>AbstractMultiChoiceUIElementStyle.xaml.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

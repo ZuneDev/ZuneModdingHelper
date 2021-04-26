@@ -1,0 +1,12 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+
+    <system:Double x:Key="DefaultAbstractUITitleFontSize">24</system:Double>
+
+    <system:Double x:Key="DefaultAbstractUISubtitleFontSize">16</system:Double>
+    <FontWeight x:Key="DefaultAbstractUISubtitleFontWeight">Light</FontWeight>
+    <system:Double x:Key="DefaultAbstractUISubtitleOpacity">0.5</system:Double>
+
+</ResourceDictionary>

@@ -1,0 +1,22 @@
+﻿<Application x:Class="ZuneModdingHelper.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ZuneModdingHelper"
+             xmlns:themes="clr-namespace:ZuneModdingHelper.AbstractUI.Themes"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="Controls/MarqueeTextBlock/MarqueeTextBlock.xaml"/>
+                <ResourceDictionary Source="Controls/ToggleContentButton/ToggleContentButton.xaml"/>-->
+                <themes:AbstractBooleanUIElementStyle />
+                <themes:AbstractButtonStyle />
+                <themes:AbstractDataListStyle />
+                <themes:AbstractMultiChoiceUIElementStyle />
+                <themes:AbstractMutableDataListStyle />
+                <themes:AbstractRichTextBlockStyle />
+                <themes:AbstractTextBoxStyle />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
