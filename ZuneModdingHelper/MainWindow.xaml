@@ -55,22 +55,5 @@
             <Button x:Name="InstallModsButton" Content="Install" ToolTip="Install selected mods" Click="InstallModsButton_Click"
                     Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4"/>
         </Grid>
-
-        <Border x:Name="ProgressBorder" Padding="8" Margin="8" Visibility="Collapsed" Grid.RowSpan="2">
-            <Grid>
-                <StackPanel Margin="50,8,50,8" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                    <TextBlock x:Name="ProgressDesc" Text="Preparing..." FontSize="14" FontWeight="SemiBold"
-                               HorizontalAlignment="Stretch" TextAlignment="Center"/>
-                    <mah:MetroProgressBar x:Name="Progress" Value="0" HorizontalAlignment="Stretch"/>
-                </StackPanel>
-
-                <Button x:Name="ProgressCloseButton" Content="Close" Visibility="Collapsed" Click="ProgressCloseButton_Click"
-                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-            </Grid>
-
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="-90" Opacity="0.25"/>
-            </Border.Effect>
-        </Border>
     </Grid>
 </mah:MetroWindow>

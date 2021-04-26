@@ -37,7 +37,7 @@ namespace ZuneModCore.Mods
             }
 
             // Make a backup of the file
-            File.Copy(zsDllInfo.FullName, Path.Combine(StorageDirectory, "ZuneService.original.dll"));
+            File.Copy(zsDllInfo.FullName, Path.Combine(StorageDirectory, "ZuneService.original.dll"), true);
 
             try
             {

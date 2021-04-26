@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using OwlCore.AbstractUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -40,21 +41,21 @@ namespace ZuneModdingHelper
 
         private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
         {
-            ProgressCloseButton.Visibility = Visibility.Collapsed;
-            ProgressBorder.Visibility = Visibility.Visible;
+            var dialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods");
             ModList.IsEnabled = false;
             InstallModsButton.IsEnabled = false;
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
             var selectedMods = ModList.SelectedItems.Cast<Mod>();
 
-            double progTotal = selectedMods.Count() * 2;
-            double progCompleted = 0;
+            dialog.Maximum = selectedMods.Count() * 2;
+            int numCompleted = 0;
 
+            dialog.SetTitle("Installing mods...");
             foreach (Mod mod in selectedMods)
             {
-                ProgressDesc.Text = $"Setting up '{mod.Title}'...";
+                dialog.SetMessage($"Setting up '{mod.Title}'");
                 await mod.Init();
-                Progress.Value = ++progCompleted / progTotal * 100;
+                dialog.SetProgress(++numCompleted);
 
                 // TODO: Implement AbstractUI display for options
                 //if (mod.OptionsUI != null)
@@ -64,29 +65,23 @@ namespace ZuneModdingHelper
                 //    optionsDialog.ShowDialog();
                 //}
 
-                ProgressDesc.Text = $"Applying '{mod.Title}'...";
+                dialog.SetMessage($"Applying '{mod.Title}'");
                 string applyResult = await mod.Apply();
                 if (applyResult != null)
                 {
-                    ProgressDesc.Text = $"Failed to apply '{mod.Title}':\r\n{applyResult}";
+                    dialog.SetMessage($"Failed to apply '{mod.Title}':\r\n{applyResult}");
                     await Task.Delay(15000);
                     continue;
                 }
-                Progress.Value = ++progCompleted / progTotal * 100;
+                dialog.SetProgress(++numCompleted);
             }
 
-            ProgressDesc.Text = "Completed";
-            ProgressCloseButton.Visibility = Visibility.Visible;
+            dialog.SetTitle("Completed");
+            dialog.SetMessage("Finished installing selected mods");
+            await Task.Delay(5000);
+            dialog.CloseAsync();
             ModList.IsEnabled = true;
             InstallModsButton.IsEnabled = true;
-        }
-
-        private void ProgressCloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProgressCloseButton.Visibility = Visibility.Collapsed;
-            ProgressBorder.Visibility = Visibility.Collapsed;
-            ProgressDesc.Text = "Preparing...";
-            Progress.Value = 0;
         }
     }
 }
