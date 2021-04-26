@@ -61,23 +61,23 @@ namespace ZuneModCore.Mods
             return Task.CompletedTask;
         }
 
-        public override Task<bool> Apply()
+        public override Task<string?> Apply()
         {
             // TODO: Use user choices from AbstractUI
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
                 if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
                     SetFeatureOverride(boolElem.Id, true);
 
-            return Task.FromResult(true);
+            return Task.FromResult<string?>(null);
         }
 
-        public override Task<bool> Reset()
+        public override Task<string?> Reset()
         {
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
                 if (uiElem is AbstractBooleanUIElement boolElem)
                     ResetFeatureOverride(boolElem.Id);
 
-            return Task.FromResult(true);
+            return Task.FromResult<string?>(null);
         }
 
         public static void SetFeatureOverride(string feature, bool value) =>

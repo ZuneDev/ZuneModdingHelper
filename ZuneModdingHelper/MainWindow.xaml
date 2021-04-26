@@ -1,15 +1,15 @@
 ﻿<mah:MetroWindow x:Class="ZuneModdingHelper.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ZuneModdingHelper"
-        xmlns:core="clr-namespace:ZuneModCore;assembly=ZuneModCore"
-        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        mc:Ignorable="d"
-        Title="Zune Modding Helper" Height="450" Width="800"
-        Loaded="Window_Loaded"
-        Background="LightGray">
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:ZuneModdingHelper"
+                 xmlns:core="clr-namespace:ZuneModCore;assembly=ZuneModCore"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 mc:Ignorable="d"
+                 Title="Zune Modding Helper" Height="450" Width="800"
+                 Loaded="Window_Loaded"
+                 Background="#F0F0F0">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -53,8 +53,25 @@
             <TextBlock Text="Zune Software install directory:" Margin="4,4,0,0"/>
             <TextBox x:Name="ZuneInstallDirBox" Grid.Row="1" Margin="4,0,0,4"/>
 
-            <Button Content="Install" ToolTip="Install selected mods" Click="InstallModsButton_Click" Grid.RowSpan="2" Grid.Column="1"
-                    VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4" Margin="4"/>
+            <Button x:Name="InstallModsButton" Content="Install" ToolTip="Install selected mods" Click="InstallModsButton_Click"
+                    Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4"/>
         </Grid>
+
+        <Border x:Name="ProgressBorder" Padding="8" Margin="8" Background="White" Visibility="Collapsed" Grid.RowSpan="2">
+            <Grid>
+                <StackPanel Margin="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="ProgressDesc" Text="Preparing..." FontSize="14" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" TextAlignment="Center"/>
+                    <mah:MetroProgressBar x:Name="Progress" Value="0" MinWidth="200"/>
+                </StackPanel>
+
+                <Button x:Name="ProgressCloseButton" Content="Close" Visibility="Collapsed" Click="ProgressCloseButton_Click"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            </Grid>
+
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="-90" Opacity="0.25"/>
+            </Border.Effect>
+        </Border>
     </Grid>
 </mah:MetroWindow>

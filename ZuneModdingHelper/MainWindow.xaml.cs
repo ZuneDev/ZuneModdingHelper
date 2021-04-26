@@ -36,17 +36,21 @@ namespace ZuneModdingHelper
 
         private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
         {
+            ProgressCloseButton.Visibility = Visibility.Collapsed;
+            ProgressBorder.Visibility = Visibility.Visible;
+            ModList.IsEnabled = false;
+            InstallModsButton.IsEnabled = false;
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
             var selectedMods = ModList.SelectedItems.Cast<Mod>();
 
             double progTotal = selectedMods.Count() * 2;
             double progCompleted = 0;
-            double progPercent = 0;
 
             foreach (Mod mod in selectedMods)
             {
+                ProgressDesc.Text = $"Setting up '{mod.Title}'...";
                 await mod.Init();
-                progPercent = ++progCompleted / progTotal;
+                Progress.Value = ++progCompleted / progTotal * 100;
 
                 // TODO: Implement AbstractUI display for options
                 //if (mod.OptionsUI != null)
@@ -56,9 +60,29 @@ namespace ZuneModdingHelper
                 //    optionsDialog.ShowDialog();
                 //}
 
-                await mod.Apply();
-                progPercent = ++progCompleted / progTotal;
+                ProgressDesc.Text = $"Applying '{mod.Title}'...";
+                string applyResult = await mod.Apply();
+                if (applyResult != null)
+                {
+                    ProgressDesc.Text = $"Failed to apply '{mod.Title}':\r\n{applyResult}";
+                    await Task.Delay(15000);
+                    continue;
+                }
+                Progress.Value = ++progCompleted / progTotal * 100;
             }
+
+            ProgressDesc.Text = "Completed";
+            ProgressCloseButton.Visibility = Visibility.Visible;
+            ModList.IsEnabled = true;
+            InstallModsButton.IsEnabled = true;
+        }
+
+        private void ProgressCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProgressCloseButton.Visibility = Visibility.Collapsed;
+            ProgressBorder.Visibility = Visibility.Collapsed;
+            ProgressDesc.Text = "Preparing...";
+            Progress.Value = 0;
         }
     }
 }

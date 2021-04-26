@@ -5,10 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
 
-#if DEBUG
-using System.Diagnostics;
-#endif
-
 namespace ZuneModCore.Mods
 {
     public class WebservicesMod : Mod
@@ -31,48 +27,70 @@ namespace ZuneModCore.Mods
 
         public override IReadOnlyList<Type>? DependentMods => null;
 
-        public override Task<bool> Apply()
+        public override Task<string?> Apply()
         {
-            // Open ZuneServices.dll
+            // Verify that ZuneServices.dll exists
             FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
             if (!zsDllInfo.Exists)
-                return Task.FromResult(true);
-            using FileStream zsDll = zsDllInfo.Open(FileMode.Open);
-            using BinaryWriter zsDllWriter = new(zsDll);
-            using BinaryReader zsDllReader = new(zsDll);
+            {
+                return Task.FromResult<string?>($"The file '{zsDllInfo.FullName}' does not exist.");
+            }
 
-            // Verify that the DLL is from v4.8 (other versions not tested)
-            zsDllReader.BaseStream.Position = 0x12C824;
-            var versionBytes = zsDllReader.ReadBytes(ZUNE_4_8_VERSION_BYTES.Length * 2);
-            if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
-                return Task.FromResult(true);
+            // Make a backup of the file
+            File.Copy(zsDllInfo.FullName, Path.Combine(StorageDirectory, "ZuneService.original.dll"));
 
-            // Patch ZuneServices.dll to use zunes.tk instead of zune.net
-            zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
-            string endpointBlock = System.Text.Encoding.Unicode.GetString(zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH));
-            endpointBlock = endpointBlock.Replace("zune.net", "zunes.tk");
-            byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
-            if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
-                return Task.FromResult(false);
-            zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
-            zsDllWriter.Write(endpointBytes);
+            try
+            {
+                // Open the file
+                using FileStream zsDll = zsDllInfo.Open(FileMode.Open);
+                using BinaryWriter zsDllWriter = new(zsDll);
+                using BinaryReader zsDllReader = new(zsDll);
+
+                // Verify that the DLL is from v4.8 (other versions not tested)
+                zsDllReader.BaseStream.Position = 0x12C824;
+                var versionBytes = zsDllReader.ReadBytes(ZUNE_4_8_VERSION_BYTES.Length * 2);
+                if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
+                {
+                    return Task.FromResult<string?>("This mod has not been tested on versions earlier than 4.8.");
+                }
+
+                // Patch ZuneServices.dll to use zunes.tk instead of zune.net
+                zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
+                string endpointBlock = System.Text.Encoding.Unicode.GetString(zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH));
+                endpointBlock = endpointBlock.Replace("zune.net", "zunes.tk");
+                byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
+                if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
+                {
+                    return Task.FromResult<string?>("Failed to safely overwrite strings in DLL.");
+                }
+                zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
+                zsDllWriter.Write(endpointBytes);
 
 
-            // Enable all feature overrides affected by new servers
-            SetFeatureOverride("Apps", true);
-            SetFeatureOverride("Channels", true);
-            SetFeatureOverride("Games", true);
-            SetFeatureOverride("Marketplace", true);
-            SetFeatureOverride("Music", true);
-            SetFeatureOverride("MusicVideos", true);
-            SetFeatureOverride("Podcasts", true);
-            SetFeatureOverride("Social", true);
-            SetFeatureOverride("Videos", true);
+                // Enable all feature overrides affected by new servers
+                SetFeatureOverride("Apps", true);
+                SetFeatureOverride("Channels", true);
+                SetFeatureOverride("Games", true);
+                SetFeatureOverride("Marketplace", true);
+                SetFeatureOverride("Music", true);
+                SetFeatureOverride("MusicVideos", true);
+                SetFeatureOverride("Podcasts", true);
+                SetFeatureOverride("Social", true);
+                SetFeatureOverride("Videos", true);
 
-            return Task.FromResult(true);
+                return Task.FromResult<string?>(null);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Task.FromResult<string?>($"Failed to open '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.");
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult<string?>(ex.Message);
+            }
         }
 
-        public override Task<bool> Reset()
+        public override Task<string?> Reset()
         {
             throw new NotImplementedException();
         }

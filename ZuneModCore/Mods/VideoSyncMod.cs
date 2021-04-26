@@ -8,16 +8,6 @@ namespace ZuneModCore.Mods
 {
     public class VideoSyncMod : Mod
     {
-        public VideoSyncMod()
-        {
-            testButton.Clicked += TestButton_Clicked;
-        }
-
-        private void TestButton_Clicked(object? sender, EventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("Howdy, Zune! How are ya?");
-        }
-
         public override string Title => "Fix Video Sync";
 
         public override string Description =>
@@ -25,30 +15,21 @@ namespace ZuneModCore.Mods
 
         public override string Id => nameof(VideoSyncMod);
 
-        public override AbstractUIElementGroup OptionsUI => new(nameof(VideoSyncMod))
-        {
-            Title = Title,
-            Items =
-            {
-                new AbstractBooleanUIElement("test", "Is this is test?"),
-                testButton
-            }
-        };
+        public override AbstractUIElementGroup? OptionsUI => null;
 
-        private readonly AbstractButton testButton = new(nameof(testButton), "Howdy Zune!", type: AbstractButtonType.Generic);
-
-        public override Task<bool> Apply()
+        public override Task<string?> Apply()
         {
-            var writer = File.CreateText(Path.Combine(StorageDirectory, "1.log"));
+            var writer = new StreamWriter(OpenFileInStorageDirectory("1.log"));
             writer.WriteLine("Hello world");
             writer.Flush();
             writer.Close();
-            return Task.FromResult(true);
+
+            return Task.FromResult<string?>(null);
         }
 
-        public override Task<bool> Reset()
+        public override Task<string?> Reset()
         {
-            return Task.FromResult(true);
+            return Task.FromResult<string?>(null);
         }
 
         public override IReadOnlyList<Type>? DependentMods => null;
