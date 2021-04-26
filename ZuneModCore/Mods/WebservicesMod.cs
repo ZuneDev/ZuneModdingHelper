@@ -80,9 +80,9 @@ namespace ZuneModCore.Mods
 
                 return Task.FromResult<string?>(null);
             }
-            catch (UnauthorizedAccessException)
+            catch (IOException)
             {
-                return Task.FromResult<string?>($"Failed to open '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.");
+                return Task.FromResult<string?>($"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.");
             }
             catch (Exception ex)
             {
@@ -92,21 +92,33 @@ namespace ZuneModCore.Mods
 
         public override Task<string?> Reset()
         {
-            // Copy backup to application folder
-            File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), Path.Combine(ZuneInstallDir, "ZuneService.dll"), true);
+            string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
+            try
+            {
+                // Copy backup to application folder
+                File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), zsDllPath, true);
 
-            // Disable all feature overrides affected by new servers
-            SetFeatureOverride("Apps", false);
-            SetFeatureOverride("Channels", false);
-            SetFeatureOverride("Games", false);
-            SetFeatureOverride("Marketplace", false);
-            SetFeatureOverride("Music", false);
-            SetFeatureOverride("MusicVideos", false);
-            SetFeatureOverride("Podcasts", false);
-            SetFeatureOverride("Social", false);
-            SetFeatureOverride("Videos", false);
+                // Disable all feature overrides affected by new servers
+                SetFeatureOverride("Apps", false);
+                SetFeatureOverride("Channels", false);
+                SetFeatureOverride("Games", false);
+                SetFeatureOverride("Marketplace", false);
+                SetFeatureOverride("Music", false);
+                SetFeatureOverride("MusicVideos", false);
+                SetFeatureOverride("Podcasts", false);
+                SetFeatureOverride("Social", false);
+                SetFeatureOverride("Videos", false);
 
-            return Task.FromResult<string?>(null);
+                return Task.FromResult<string?>(null);
+            }
+            catch (IOException)
+            {
+                return Task.FromResult<string?>($"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.");
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult<string?>(ex.Message);
+            }
         }
     }
 }

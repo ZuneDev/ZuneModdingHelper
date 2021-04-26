@@ -46,10 +46,17 @@ namespace ZuneModCore.Mods
 
         public override Task<string?> Reset()
         {
-            // Copy backup to application folder
-            File.Copy(Path.Combine(StorageDirectory, "WMVCORE.original.dll"), WMVCORE_PATH, true);
+            try
+            {
+                // Copy backup to application folder
+                File.Copy(Path.Combine(StorageDirectory, "WMVCORE.original.dll"), WMVCORE_PATH, true);
 
-            return Task.FromResult<string?>(null);
+                return Task.FromResult<string?>(null);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(ex.Message)!;
+            }
         }
 
         public override IReadOnlyList<Type>? DependentMods => null;

@@ -25,6 +25,14 @@ namespace ZuneModdingHelper
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private readonly MetroDialogSettings defaultMetroDialogSettings = new()
+        {
+            ColorScheme = MetroDialogColorScheme.Accented,
+            AnimateShow = true,
+            AnimateHide = true,
+            AffirmativeButtonText = "Close"
+        };
+
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +49,7 @@ namespace ZuneModdingHelper
 
         private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
         {
-            var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods");
+            var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods", settings: defaultMetroDialogSettings);
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
             var selectedMods = ModList.SelectedItems.Cast<Mod>();
 
@@ -75,8 +83,45 @@ namespace ZuneModdingHelper
             }
 
             await progDialog.CloseAsync();
-            await this.ShowMessageAsync("Completed", "Finished installing selected mods",
-                settings: new MetroDialogSettings() { AffirmativeButtonText = "Close" });
+            await this.ShowMessageAsync("Completed", "Finished installing selected mods", settings: defaultMetroDialogSettings);
+        }
+
+        private async void ModResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement elem && elem.DataContext is Mod mod)
+            {
+                var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to reset mod", settings: defaultMetroDialogSettings);
+                Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
+
+                progDialog.Maximum = 2;
+                int numCompleted = 0;
+
+                progDialog.SetTitle("Resetting mod...");
+                progDialog.SetMessage($"Setting up '{mod.Title}'");
+                await mod.Init();
+                progDialog.SetProgress(++numCompleted);
+
+                // TODO: Implement AbstractUI display for options
+                //if (mod.OptionsUI != null)
+                //{
+                //    var optionsDialog = new AbstractUIGroupDialog();
+                //    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUIElementGroupViewModel(mod.OptionsUI);
+                //    optionsDialog.ShowDialog();
+                //}
+
+                progDialog.SetMessage($"Resetting '{mod.Title}'");
+                string applyResult = await mod.Reset();
+                if (applyResult != null)
+                {
+                    await progDialog.CloseAsync();
+                    await this.ShowMessageAsync("Completed", $"Failed to reset '{mod.Title}':\r\n{applyResult}", settings: defaultMetroDialogSettings);
+                    return;
+                }
+
+                progDialog.SetProgress(++numCompleted);
+                await progDialog.CloseAsync();
+                await this.ShowMessageAsync("Completed", $"Successfully reset '{mod.Title}'", settings: defaultMetroDialogSettings);
+            }
         }
     }
 }

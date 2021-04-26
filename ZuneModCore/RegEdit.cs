@@ -55,7 +55,7 @@ namespace ZuneModCore
             if (regKey == null)
                 return;
 
-            regKey.DeleteValue(name);
+            regKey.DeleteValue(name, false);
         }
     }
 
