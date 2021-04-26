@@ -63,9 +63,9 @@ namespace ZuneModCore.Mods
 
         public override Task<bool> Apply()
         {
-            return Task.FromResult(true);
+            // TODO: Use user choices from AbstractUI
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
-                if (uiElem is AbstractBooleanUIElement boolElem && boolElem.State)
+                if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
                     SetFeatureOverride(boolElem.Id, true);
 
             return Task.FromResult(true);

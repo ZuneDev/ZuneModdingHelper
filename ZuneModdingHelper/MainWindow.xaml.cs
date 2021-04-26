@@ -1,4 +1,5 @@
-﻿using OwlCore.AbstractUI.ViewModels;
+﻿using MahApps.Metro.Controls;
+using OwlCore.AbstractUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace ZuneModdingHelper
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {
@@ -36,18 +37,27 @@ namespace ZuneModdingHelper
         private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
         {
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
-            foreach (Mod mod in ModList.SelectedItems.Cast<Mod>())
+            var selectedMods = ModList.SelectedItems.Cast<Mod>();
+
+            double progTotal = selectedMods.Count() * 2;
+            double progCompleted = 0;
+            double progPercent = 0;
+
+            foreach (Mod mod in selectedMods)
             {
                 await mod.Init();
+                progPercent = ++progCompleted / progTotal;
 
-                if (mod.OptionsUI != null)
-                {
-                    var optionsDialog = new AbstractUIGroupDialog();
-                    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUIElementGroupViewModel(mod.OptionsUI);
-                    optionsDialog.ShowDialog();
-                }
+                // TODO: Implement AbstractUI display for options
+                //if (mod.OptionsUI != null)
+                //{
+                //    var optionsDialog = new AbstractUIGroupDialog();
+                //    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUIElementGroupViewModel(mod.OptionsUI);
+                //    optionsDialog.ShowDialog();
+                //}
 
                 await mod.Apply();
+                progPercent = ++progCompleted / progTotal;
             }
         }
     }

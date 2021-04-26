@@ -1,11 +1,11 @@
-﻿<Window x:Class="ZuneModdingHelper.MainWindow"
+﻿<mah:MetroWindow x:Class="ZuneModdingHelper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZuneModdingHelper"
         xmlns:core="clr-namespace:ZuneModCore;assembly=ZuneModCore"
-        xmlns:absui="clr-namespace:ZuneModdingHelper.AbstractUI.Controls"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
         Title="Zune Modding Helper" Height="450" Width="800"
         Loaded="Window_Loaded"
@@ -20,21 +20,22 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:Mod}">
-                    <Border Padding="8" Margin="8" Background="White">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
+                    <Grid Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="16" TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="{Binding Description}" Grid.Row="1" FontSize="12" TextWrapping="Wrap"/>
-                        </Grid>
+                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="16" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding Description}" Grid.Row="1" FontSize="12" TextWrapping="Wrap"/>
+                    </Grid>
+                    <!--<Border Padding="8" Margin="8" Background="White">
+                        
 
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="-90" Opacity="0.25"/>
                         </Border.Effect>
-                    </Border>
+                    </Border>-->
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -56,4 +57,4 @@
                     VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4" Margin="4"/>
         </Grid>
     </Grid>
-</Window>
+</mah:MetroWindow>

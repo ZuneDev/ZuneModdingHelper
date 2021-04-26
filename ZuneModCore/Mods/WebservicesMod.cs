@@ -31,12 +31,12 @@ namespace ZuneModCore.Mods
 
         public override IReadOnlyList<Type>? DependentMods => null;
 
-        public override async Task<bool> Apply()
+        public override Task<bool> Apply()
         {
             // Open ZuneServices.dll
             FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
             if (!zsDllInfo.Exists)
-                return false;
+                return Task.FromResult(true);
             using FileStream zsDll = zsDllInfo.Open(FileMode.Open);
             using BinaryWriter zsDllWriter = new(zsDll);
             using BinaryReader zsDllReader = new(zsDll);
@@ -45,7 +45,7 @@ namespace ZuneModCore.Mods
             zsDllReader.BaseStream.Position = 0x12C824;
             var versionBytes = zsDllReader.ReadBytes(ZUNE_4_8_VERSION_BYTES.Length * 2);
             if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
-                return false;
+                return Task.FromResult(true);
 
             // Patch ZuneServices.dll to use zunes.tk instead of zune.net
             zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
@@ -53,7 +53,7 @@ namespace ZuneModCore.Mods
             endpointBlock = endpointBlock.Replace("zune.net", "zunes.tk");
             byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
             if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
-                return false;
+                return Task.FromResult(false);
             zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
             zsDllWriter.Write(endpointBytes);
 
@@ -69,7 +69,7 @@ namespace ZuneModCore.Mods
             SetFeatureOverride("Social", true);
             SetFeatureOverride("Videos", true);
 
-            return true;
+            return Task.FromResult(true);
         }
 
         public override Task<bool> Reset()
