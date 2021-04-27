@@ -12,10 +12,10 @@
     
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
-            <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" Click="UpdatesButton_Click">
+            <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" ToolTip="Check for updates" Click="UpdatesButton_Click">
                 <mah:FontIcon Glyph="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="18"/>
             </Button>
-            <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" Click="AboutButton_Click">
+            <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" ToolTip="About" Click="AboutButton_Click">
                 <mah:FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
             </Button>
         </mah:WindowCommands>

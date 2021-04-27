@@ -18,11 +18,10 @@ namespace ZuneModdingHelper
         {
             int idxSplit = otherStr.IndexOf('-');
             Version otherNum = new(otherStr[..idxSplit]);
-            //string otherStatus = otherStr[(idxSplit + 1)..];
+            string otherStatus = otherStr[(idxSplit + 1)..];
 
             // TODO: This assumes that the VersionStatus is "alpha"
-            //bool isNotAlpha = otherStatus != VersionStatus;
-            bool isNotAlpha = !otherStr.EndsWith(VersionStatus);
+            bool isNotAlpha = otherStatus != VersionStatus;
             bool isNewer = otherNum > VersionNum;
             return isNotAlpha || isNewer;
         }
