@@ -4,6 +4,7 @@ using MahApps.Metro.Controls.Dialogs;
 using OwlCore.AbstractUI.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -122,6 +123,21 @@ namespace ZuneModdingHelper
                 await progDialog.CloseAsync();
                 await this.ShowMessageAsync("Completed", $"Successfully reset '{mod.Title}'", settings: defaultMetroDialogSettings);
             }
+        }
+
+        private void AboutButton_Click(object sender, RoutedEventArgs e)
+        {
+            AboutFlyout.Width = Math.Max(Math.Min(500, ActualWidth), ActualWidth / 3);
+            AboutFlyout.IsOpen = true;
+        }
+
+        private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri)
+            {
+                UseShellExecute = true
+            });
+            e.Handled = true;
         }
     }
 }

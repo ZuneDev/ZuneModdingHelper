@@ -9,6 +9,35 @@
                  mc:Ignorable="d"
                  Title="Zune Modding Helper" Height="450" Width="800"
                  Loaded="Window_Loaded">
+    
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands>
+            <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" Click="AboutButton_Click">
+                <mah:FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+
+    <mah:MetroWindow.Flyouts>
+        <mah:FlyoutsControl>
+            <mah:Flyout x:Name="AboutFlyout" Header="About" Position="Right">
+                <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
+                    <Run Text="Zune Modding Helper" FontWeight="Bold" FontSize="16"/><LineBreak/>
+                    <Run Text="2021.4.26-alpha"/><LineBreak/>
+                    <Hyperlink NavigateUri="https://github.com/yoshiask/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
+                        <Run Text="View source"/>
+                    </Hyperlink><LineBreak/>
+                    <Hyperlink NavigateUri="https://github.com/yoshiask/ZuneModdingHelper/releases" RequestNavigate="Link_RequestNavigate">
+                        <Run Text="View releases"/>
+                    </Hyperlink><LineBreak/><LineBreak/>
+                    <Run Text="Developed by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
+                    <Run Text="Mods included with authors' permission."/><LineBreak/><LineBreak/>
+                    <Run Text="I am not liable for any damages caused directly or indirectly by this tool or any of the mods it contains."/>
+                </TextBlock>
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+    </mah:MetroWindow.Flyouts>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
