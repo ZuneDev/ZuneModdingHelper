@@ -1,22 +1,17 @@
 ﻿using ControlzEx.Theming;
+using Flurl.Http;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json.Linq;
 using OwlCore.AbstractUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ZuneModCore;
 
 namespace ZuneModdingHelper
@@ -138,6 +133,66 @@ namespace ZuneModdingHelper
                 UseShellExecute = true
             });
             e.Handled = true;
+        }
+
+        private async void UpdatesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var checkDialog = await this.ShowProgressAsync("Checking for updates...", "Please wait.", settings: defaultMetroDialogSettings);
+            checkDialog.SetIndeterminate();
+
+            // Get releases list from GitHub
+            List<JObject> releases = await "https://api.github.com/repos/yoshiask/ZuneModdingHelper/releases"
+                .WithHeader("User-Agent", App.Title).GetJsonAsync<List<JObject>>();
+            JObject latest = releases[0];
+            if (!App.CheckIfNewerVersion(latest["tag_name"].Value<string>()))
+            {
+                // Already up-to-date
+                await checkDialog.CloseAsync();
+                await this.ShowMessageAsync("No updates available", "You're already using the latest version.", settings: defaultMetroDialogSettings);
+                return;
+            }
+
+            // Newer version available, prompt user to download
+            MetroDialogSettings promptSettings = new()
+            {
+                ColorScheme = MetroDialogColorScheme.Accented,
+                AnimateShow = true,
+                AnimateHide = true,
+                AffirmativeButtonText = "Download",
+                NegativeButtonText = "Later"
+            };
+            await checkDialog.CloseAsync();
+            var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
+                MessageDialogStyle.AffirmativeAndNegative, promptSettings);
+
+            if (promptResult == MessageDialogResult.Affirmative)
+            {
+                var progDialog = await this.ShowProgressAsync("Downloading update...", "This may take a few minutes.", settings: defaultMetroDialogSettings);
+                progDialog.SetIndeterminate();
+
+                // Download new version to AppData
+                JObject asset = latest["assets"].ToObject<List<JObject>>()[0];
+                string assetName = asset["name"].Value<string>();
+                string downloadedFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), assetName);
+                if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
+                using (var client = new System.Net.WebClient())
+                {
+                    await client.DownloadFileTaskAsync(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
+                }
+
+                // Ask user to save file
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new()
+                {
+                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
+                };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    File.Copy(downloadedFile, saveFileDialog.FileName, true);
+
+                    await progDialog.CloseAsync();
+                    await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
+                }
+            }
         }
     }
 }

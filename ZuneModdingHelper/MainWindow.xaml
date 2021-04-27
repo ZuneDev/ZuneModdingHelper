@@ -7,11 +7,14 @@
                  xmlns:core="clr-namespace:ZuneModCore;assembly=ZuneModCore"
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                  mc:Ignorable="d"
-                 Title="Zune Modding Helper" Height="450" Width="800"
+                 Title="{x:Static local:App.Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen"
                  Loaded="Window_Loaded">
     
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
+            <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" Click="UpdatesButton_Click">
+                <mah:FontIcon Glyph="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="18"/>
+            </Button>
             <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" Click="AboutButton_Click">
                 <mah:FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
             </Button>
@@ -20,10 +23,10 @@
 
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
-            <mah:Flyout x:Name="AboutFlyout" Header="About" Position="Right">
+            <mah:Flyout x:Name="AboutFlyout" Header="About" Position="Right" IsModal="True" Theme="Adapt">
                 <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
-                    <Run Text="Zune Modding Helper" FontWeight="Bold" FontSize="16"/><LineBreak/>
-                    <Run Text="2021.4.26-alpha"/><LineBreak/>
+                    <Run Text="{x:Static local:App.Title}" FontWeight="Bold" FontSize="16"/><LineBreak/>
+                    <Run Text="{x:Static local:App.Version}"/><LineBreak/>
                     <Hyperlink NavigateUri="https://github.com/yoshiask/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
                         <Run Text="View source"/>
                     </Hyperlink><LineBreak/>
