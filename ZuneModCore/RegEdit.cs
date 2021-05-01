@@ -2,9 +2,6 @@
 
 namespace ZuneModCore
 {
-
-#pragma warning disable CA1416 // Validate platform compatibility
-
     public class RegEdit
     {
         public const string ZUNE_REG_PATH = @"SOFTWARE\Microsoft\Zune\";
@@ -13,7 +10,7 @@ namespace ZuneModCore
         {
             RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(key, true);
             if (regKey == null)
-                regKey = Registry.CurrentUser.CreateSubKey(key, true);
+                regKey = Registry.CurrentUser.CreateSubKey(key);
 
             regKey.SetValue(name, value, RegistryValueKind.DWord);
             regKey.Close();
@@ -32,21 +29,21 @@ namespace ZuneModCore
 
         public static void CurrentUserDeleteKey(string key)
         {
-            string[] targetKeySplit = key.Split('\\', System.StringSplitOptions.RemoveEmptyEntries);
+            string[] targetKeySplit = key.Split(new char[] { '\\' }, System.StringSplitOptions.RemoveEmptyEntries);
             using RegistryKey? targetKey = Registry.CurrentUser.OpenSubKey(key, true);
             if (targetKey == null)
                 // Key is already deleted
                 return;
 
             // Delete all subkeys
-            RegistryKey? hdr = targetKey.OpenSubKey(targetKeySplit[^1], true);
+            RegistryKey? hdr = targetKey.OpenSubKey(targetKeySplit[targetKeySplit.Length - 1], true);
             if (hdr != null)
                 foreach (string subKey in hdr.GetSubKeyNames())
                     hdr.DeleteSubKey(subKey);
             hdr?.Close();
 
             // Delete target key
-            targetKey.DeleteSubKeyTree(targetKeySplit[^1]);
+            targetKey.DeleteSubKeyTree(targetKeySplit[targetKeySplit.Length - 1]);
         }
 
         public static void CurrentUserDeleteValue(string key, string name)
@@ -58,7 +55,4 @@ namespace ZuneModCore
             regKey.DeleteValue(name, false);
         }
     }
-
-#pragma warning restore CA1416 // Validate platform compatibility
-
 }

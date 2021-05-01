@@ -1,8 +1,7 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 using ZuneModCore.Mods;
 
 namespace ZuneModCore
@@ -12,7 +11,7 @@ namespace ZuneModCore
         /// <summary>
         /// A list of all available mods
         /// </summary>
-        public static readonly IReadOnlyList<Mod> AvailableMods = new List<Mod>
+        public static readonly ReadOnlyCollection<Mod> AvailableMods = new List<Mod>
         {
             new FeaturesOverrideMod(),
             new VideoSyncMod(),
@@ -29,13 +28,11 @@ namespace ZuneModCore
 
         public abstract string Author { get; }
 
-        public virtual Task Init() => Task.CompletedTask;
+        public virtual void Init() { }
 
-        public abstract Task<string?> Apply();
+        public abstract string? Apply();
 
-        public abstract Task<string?> Reset();
-
-        public abstract AbstractUIElementGroup? OptionsUI { get; }
+        public abstract string? Reset();
 
         public string StorageDirectory
         {
@@ -48,6 +45,6 @@ namespace ZuneModCore
             }
         }
 
-        public abstract IReadOnlyList<Type>? DependentMods { get; }
+        public abstract ReadOnlyCollection<Type>? DependentMods { get; }
     }
 }

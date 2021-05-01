@@ -17,8 +17,8 @@ namespace ZuneModdingHelper
         public static bool CheckIfNewerVersion(string otherStr)
         {
             int idxSplit = otherStr.IndexOf('-');
-            Version otherNum = new(otherStr[..idxSplit]);
-            string otherStatus = otherStr[(idxSplit + 1)..];
+            Version otherNum = new(otherStr.Substring(0, idxSplit));
+            string otherStatus = otherStr.Substring(idxSplit + 1);
 
             // TODO: This assumes that the VersionStatus is "alpha"
             bool isNotAlpha = otherStatus != VersionStatus;

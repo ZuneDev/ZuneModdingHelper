@@ -1,8 +1,6 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace ZuneModCore.Mods
 {
@@ -19,9 +17,7 @@ namespace ZuneModCore.Mods
 
         public override string Id => nameof(VideoSyncMod);
 
-        public override AbstractUIElementGroup? OptionsUI => null;
-
-        public override Task<string?> Apply()
+        public override string? Apply()
         {
             try
             {
@@ -38,29 +34,29 @@ namespace ZuneModCore.Mods
                 // Copy the pre-Anniversary Update WMVCORE.dll
                 File.Copy("Resources\\WMVCORE.dll", WMVCORE_PATH, true);
 
-                return Task.FromResult<string?>(null);
+                return null;
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ex.Message)!;
+                return ex.Message!;
             }
         }
 
-        public override Task<string?> Reset()
+        public override string? Reset()
         {
             try
             {
                 // Copy backup to application folder
                 File.Copy(Path.Combine(StorageDirectory, "WMVCORE.original.dll"), WMVCORE_PATH, true);
 
-                return Task.FromResult<string?>(null);
+                return null;
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ex.Message)!;
+                return ex.Message!;
             }
         }
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override ReadOnlyCollection<Type>? DependentMods => null;
     }
 }

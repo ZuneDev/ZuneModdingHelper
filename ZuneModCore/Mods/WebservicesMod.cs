@@ -1,6 +1,5 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
@@ -21,17 +20,15 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup? OptionsUI => null;
+        public override ReadOnlyCollection<Type>? DependentMods => null;
 
-        public override IReadOnlyList<Type>? DependentMods => null;
-
-        public override Task<string?> Apply()
+        public override string? Apply()
         {
             // Verify that ZuneServices.dll exists
             FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
             if (!zsDllInfo.Exists)
             {
-                return Task.FromResult<string?>($"The file '{zsDllInfo.FullName}' does not exist.");
+                return $"The file '{zsDllInfo.FullName}' does not exist.";
             }
 
             // Make a backup of the file
@@ -49,7 +46,7 @@ namespace ZuneModCore.Mods
                 var versionBytes = zsDllReader.ReadBytes(6);
                 if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
                 {
-                    return Task.FromResult<string?>("This mod has not been tested on versions earlier than 4.8.");
+                    return "This mod has not been tested on versions earlier than 4.8.";
                 }
 
                 // Patch ZuneServices.dll to use zunes.tk instead of zune.net
@@ -59,7 +56,7 @@ namespace ZuneModCore.Mods
                 byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
                 if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
                 {
-                    return Task.FromResult<string?>("Failed to safely overwrite strings in DLL.");
+                    return "Failed to safely overwrite strings in DLL.";
                 }
                 zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
                 zsDllWriter.Write(endpointBytes);
@@ -76,19 +73,19 @@ namespace ZuneModCore.Mods
                 SetFeatureOverride("Social", true);
                 SetFeatureOverride("Videos", true);
 
-                return Task.FromResult<string?>(null);
+                return null;
             }
             catch (IOException)
             {
-                return Task.FromResult<string?>($"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.");
+                return $"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.";
             }
             catch (Exception ex)
             {
-                return Task.FromResult<string?>(ex.Message);
+                return ex.Message;
             }
         }
 
-        public override Task<string?> Reset()
+        public override string? Reset()
         {
             string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
             try
@@ -107,15 +104,15 @@ namespace ZuneModCore.Mods
                 SetFeatureOverride("Social", false);
                 SetFeatureOverride("Videos", false);
 
-                return Task.FromResult<string?>(null);
+                return null;
             }
             catch (IOException)
             {
-                return Task.FromResult<string?>($"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.");
+                return $"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.";
             }
             catch (Exception ex)
             {
-                return Task.FromResult<string?>(ex.Message);
+                return ex.Message;
             }
         }
     }

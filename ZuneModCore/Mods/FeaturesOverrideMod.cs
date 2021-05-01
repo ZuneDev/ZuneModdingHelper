@@ -1,7 +1,7 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ZuneModCore.Mods
 {
@@ -18,68 +18,65 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Rafael Rivera";
 
-        public override AbstractUIElementGroup OptionsUI => new(nameof(FeaturesOverrideMod))
+        public Dictionary<string, bool> AvailableOverrides => new()
         {
-            Title = "Select features:",
-            Items =
-            {
-                // We don't know what some of these overrides do exactly, so hide them from the user.
-                // The ID is the name of the registry key, the label is the display name
+            // We don't know what some of these overrides do exactly, so hide them from the user.
 
-                new AbstractBooleanUIElement("Apps", "Apps"),
-                //new AbstractBooleanUIElement("Art", "Art"),
-                new AbstractBooleanUIElement("Channels", "Channels"),
-                //new AbstractBooleanUIElement("FirstLaunchIntroVideo", "First Launch Intro Video"),
-                new AbstractBooleanUIElement("Games", "Games"),
-                new AbstractBooleanUIElement("Marketplace", "Marketplace"),
-                //new AbstractBooleanUIElement("MBRPreview", "MBRPreview"),
-                //new AbstractBooleanUIElement("MBRPurchase", "MBRPurchase"),
-                //new AbstractBooleanUIElement("MBRRental", "MBRRental"),
-                new AbstractBooleanUIElement("Music", "Music"),
-                new AbstractBooleanUIElement("MusicVideos", "MusicVideos"),
-                new AbstractBooleanUIElement("Nowplaying", "Now Playing"),
-                //new AbstractBooleanUIElement("NowplayingArt", "Now Playing Art"),
-                new AbstractBooleanUIElement("Picks", "Picks"),
-                new AbstractBooleanUIElement("Podcasts", "Podcasts"),
-                new AbstractBooleanUIElement("QuickMixLocal", "Quick Mix (Local)"),
-                //new AbstractBooleanUIElement("QuickMixZMP", "Quick Mix (ZMP)"),
-                new AbstractBooleanUIElement("Quickplay", "Quickplay"),
-                //new AbstractBooleanUIElement("Sign In Available", "Sign In"),
-                new AbstractBooleanUIElement("Social", "Social"),
-                //new AbstractBooleanUIElement("SocialMarketplace", "Social Marketplace"),
-                //new AbstractBooleanUIElement("SubscriptionFreeTracks", "Subscription Free Tracks"),
-                new AbstractBooleanUIElement("Videos", "Videos"),
-            }
+            { "Apps", false },
+            //{ "Art", false },
+            { "Channels", false },
+            //{ "FirstLaunchIntroVideo", false },
+            { "Games", false },
+            { "Marketplace", false },
+            //{ "MBRPreview", false },
+            //{ "MBRPurchase", false },
+            //{ "MBRRental", false },
+            { "Music", false },
+            { "MusicVideos", false },
+            { "Nowplaying", false },
+            //{ "NowplayingArt", false },
+            { "Picks", false },
+            { "Podcasts", false },
+            { "QuickMixLocal", false },
+            //{ "QuickMixZMP", false },
+            { "Quickplay", false },
+            //{ "Sign In Available", false },
+            { "Social", false },
+            //{ "SocialMarketplace", false },
+            //{ "SubscriptionFreeTracks", false },
+            { "Videos", false },
         };
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override ReadOnlyCollection<Type>? DependentMods => null;
 
-        public override Task Init()
+        public override void Init()
         {
-            foreach (AbstractUIElement uiElem in OptionsUI.Items)
-                if (uiElem is AbstractBooleanUIElement boolElem)
-                    boolElem.ChangeState(GetFeatureOverride(boolElem.Id));
-
-            return Task.CompletedTask;
+            for (int i = 0; i < AvailableOverrides.Count; i++)
+            {
+                string key = AvailableOverrides.Keys.ElementAt(i);
+                AvailableOverrides[key] = GetFeatureOverride(key);
+            }
         }
 
-        public override Task<string?> Apply()
+        public override string? Apply()
         {
-            // TODO: Use user choices from AbstractUI
-            foreach (AbstractUIElement uiElem in OptionsUI.Items)
-                if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
-                    SetFeatureOverride(boolElem.Id, true);
+            for (int i = 0; i < AvailableOverrides.Count; i++)
+            {
+                string key = AvailableOverrides.Keys.ElementAt(i);
+                SetFeatureOverride(key, true);
+            }
 
-            return Task.FromResult<string?>(null);
+            return null;
         }
 
-        public override Task<string?> Reset()
+        public override string? Reset()
         {
-            foreach (AbstractUIElement uiElem in OptionsUI.Items)
-                if (uiElem is AbstractBooleanUIElement boolElem)
-                    ResetFeatureOverride(boolElem.Id);
-
-            return Task.FromResult<string?>(null);
+            for (int i = 0; i < AvailableOverrides.Count; i++)
+            {
+                string key = AvailableOverrides.Keys.ElementAt(i);
+                ResetFeatureOverride(key);
+            }
+            return null;
         }
 
         public static void SetFeatureOverride(string feature, bool value) =>
