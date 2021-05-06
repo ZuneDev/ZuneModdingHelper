@@ -36,6 +36,11 @@ namespace ZuneModdingHelper
             // Set up App Center analytics
             AppCenter.SetCountryCode(System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName);
             AppCenter.Start("24903c19-b3d9-4ab5-b445-b981ca647125", typeof(Analytics), typeof(Crashes));
+
+#if DEBUG
+            // Disable crash and event analytics when in debug
+            AppCenter.SetEnabledAsync(false);
+#endif
         }
     }
 }
