@@ -9,7 +9,7 @@ namespace ZuneModCore
     {
         public const string ZUNE_REG_PATH = @"SOFTWARE\Microsoft\Zune\";
 
-        public static void CurrentUserSetBoolValue(string key, string name, bool value)
+        public static bool CurrentUserSetBoolValue(string key, string name, bool value)
         {
             RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(key, true);
             if (regKey == null)
@@ -18,16 +18,24 @@ namespace ZuneModCore
             regKey.SetValue(name, value, RegistryValueKind.DWord);
             regKey.Close();
             regKey.Dispose();
+
+            // Read the key to make sure it was set properly
+            if (CurrentUserGetBoolValue(key, name) == null)
+                return false;
+            return true;
         }
 
-        public static bool CurrentUserGetBoolValue(string key, string name)
+        public static bool? CurrentUserGetBoolValue(string key, string name)
         {
             using RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(key, true);
             if (regKey == null)
                 return false;
 
+            // Return null if a boolean value couldn't be read from the key
             int? value = regKey.GetValue(name, false) as int?;
-            return value.HasValue && value != 0;
+            if (!value.HasValue)
+                return null;
+            return value != 0;
         }
 
         public static void CurrentUserDeleteKey(string key)

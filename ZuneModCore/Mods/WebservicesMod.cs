@@ -66,15 +66,20 @@ namespace ZuneModCore.Mods
 
 
                 // Enable all feature overrides affected by new servers
-                SetFeatureOverride("Apps", true);
-                SetFeatureOverride("Channels", true);
-                SetFeatureOverride("Games", true);
-                SetFeatureOverride("Marketplace", true);
-                SetFeatureOverride("Music", true);
-                SetFeatureOverride("MusicVideos", true);
-                SetFeatureOverride("Podcasts", true);
-                SetFeatureOverride("Social", true);
-                SetFeatureOverride("Videos", true);
+                bool setOverrideSuccess = true;
+                setOverrideSuccess &= SetFeatureOverride("Apps", true);
+                setOverrideSuccess &= SetFeatureOverride("Channels", true);
+                setOverrideSuccess &= SetFeatureOverride("Games", true);
+                setOverrideSuccess &= SetFeatureOverride("Marketplace", true);
+                setOverrideSuccess &= SetFeatureOverride("Music", true);
+                setOverrideSuccess &= SetFeatureOverride("MusicVideos", true);
+                setOverrideSuccess &= SetFeatureOverride("Podcasts", true);
+                setOverrideSuccess &= SetFeatureOverride("Social", true);
+                setOverrideSuccess &= SetFeatureOverride("Videos", true);
+                if (setOverrideSuccess != true)
+                {
+                    return Task.FromResult<string?>("Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune Software.");
+                }
 
                 return Task.FromResult<string?>(null);
             }
@@ -97,15 +102,20 @@ namespace ZuneModCore.Mods
                 File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), zsDllPath, true);
 
                 // Disable all feature overrides affected by new servers
-                SetFeatureOverride("Apps", false);
-                SetFeatureOverride("Channels", false);
-                SetFeatureOverride("Games", false);
-                SetFeatureOverride("Marketplace", false);
-                SetFeatureOverride("Music", false);
-                SetFeatureOverride("MusicVideos", false);
-                SetFeatureOverride("Podcasts", false);
-                SetFeatureOverride("Social", false);
-                SetFeatureOverride("Videos", false);
+                bool setOverrideSuccess = true;
+                setOverrideSuccess &= SetFeatureOverride("Apps", false);
+                setOverrideSuccess &= SetFeatureOverride("Channels", false);
+                setOverrideSuccess &= SetFeatureOverride("Games", false);
+                setOverrideSuccess &= SetFeatureOverride("Marketplace", false);
+                setOverrideSuccess &= SetFeatureOverride("Music", false);
+                setOverrideSuccess &= SetFeatureOverride("MusicVideos", false);
+                setOverrideSuccess &= SetFeatureOverride("Podcasts", false);
+                setOverrideSuccess &= SetFeatureOverride("Social", false);
+                setOverrideSuccess &= SetFeatureOverride("Videos", false);
+                if (setOverrideSuccess != true)
+                {
+                    return Task.FromResult<string?>("Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune Software.");
+                }
 
                 return Task.FromResult<string?>(null);
             }

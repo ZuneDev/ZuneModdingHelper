@@ -57,20 +57,42 @@ namespace ZuneModCore.Mods
         public override Task Init()
         {
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
+            {
                 if (uiElem is AbstractBooleanUIElement boolElem)
-                    boolElem.ChangeState(GetFeatureOverride(boolElem.Id));
+                {
+                    bool? featureOverride = GetFeatureOverride(boolElem.Id);
+                    boolElem.ChangeState(featureOverride ?? false);
+                }
+            }
 
             return Task.CompletedTask;
         }
 
-        public override Task<string?> Apply()
+        public override async Task<string?> Apply()
         {
             // TODO: Use user choices from AbstractUI
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
+            {
                 if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
-                    SetFeatureOverride(boolElem.Id, true);
+                {
+                    bool isSuccess = SetFeatureOverride(boolElem.Id, true);
+                    if (!isSuccess)
+                    {
+                        string? resetStatus = await Reset();
+                        if (resetStatus != null)
+                        {
+                            // The reset failed as well, return both errors
+                            return "Failed to set registry keys. Unable to clean up partial overrides:\r\n" + resetStatus;
+                        }
+                        else
+                        {
+                            return "Failed to set registry keys. Automatically cleaned up partial changes.";
+                        }
+                    }
+                }
+            }
 
-            return Task.FromResult<string?>(null);
+            return null;
         }
 
         public override Task<string?> Reset()
@@ -82,10 +104,10 @@ namespace ZuneModCore.Mods
             return Task.FromResult<string?>(null);
         }
 
-        public static void SetFeatureOverride(string feature, bool value) =>
+        public static bool SetFeatureOverride(string feature, bool value) =>
             RegEdit.CurrentUserSetBoolValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature, value);
 
-        public static bool GetFeatureOverride(string feature) =>
+        public static bool? GetFeatureOverride(string feature) =>
             RegEdit.CurrentUserGetBoolValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature);
 
         public static void ResetFeatureOverride(string feature) =>
