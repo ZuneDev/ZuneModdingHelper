@@ -28,15 +28,19 @@ namespace ZuneModCore.Mods
                 // Make a backup of the file
                 File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
 
-                // NOTE: This is quite dangerous to do blindly, so let's not
+                // NOTE: This is quite dangerous to do blindly, so let's not do this
                 // Kill processes that are using WMVCORE.dll
                 //foreach (System.Diagnostics.Process proc in FileUtil.WhoIsLocking(WMVCORE_PATH))
                 //{
                 //    proc.Kill();
                 //}
 
+                // Get the working WMVCORE.dll
+                string sourcePath = Path.Combine(
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!, "Resources\\WMVCORE.dll");
+
                 // Copy the pre-Anniversary Update WMVCORE.dll
-                File.Copy("Resources\\WMVCORE.dll", WMVCORE_PATH, true);
+                File.Copy(sourcePath, WMVCORE_PATH, true);
 
                 return Task.FromResult<string?>(null);
             }
