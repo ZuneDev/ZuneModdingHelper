@@ -149,10 +149,7 @@ namespace ZuneModdingHelper
 
         private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri)
-            {
-                UseShellExecute = true
-            });
+            App.OpenInBrowser(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
 
@@ -233,5 +230,7 @@ namespace ZuneModdingHelper
                 { "Accepted", acceptedUpdate.ToString() },
             });
         }
+
+        private void DonateButton_Click(object sender, RoutedEventArgs e) => App.OpenInBrowser(App.DonateLink);
     }
 }

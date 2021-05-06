@@ -11,23 +11,13 @@ namespace ZuneModdingHelper
     /// </summary>
     public partial class App : Application
     {
-        public static string Title => "Zune Modding Helper";
+        public static readonly  string Title = "Zune Modding Helper";
 
-        public static Version VersionNum => new(2021, 5, 6, 0);
-        public static string VersionStatus => "alpha";
-        public static string Version => VersionNum.ToString() + (VersionStatus != string.Empty ? "-" + VersionStatus : string.Empty);
+        public static readonly Version VersionNum = new(2021, 5, 6, 0);
+        public static readonly string VersionStatus = "alpha";
+        public static readonly string Version = VersionNum.ToString() + (VersionStatus != string.Empty ? "-" + VersionStatus : string.Empty);
 
-        public static bool CheckIfNewerVersion(string otherStr)
-        {
-            int idxSplit = otherStr.IndexOf('-');
-            Version otherNum = new(otherStr[..idxSplit]);
-            string otherStatus = otherStr[(idxSplit + 1)..];
-
-            // TODO: This assumes that the VersionStatus is "alpha"
-            bool isNotAlpha = otherStatus != VersionStatus;
-            bool isNewer = otherNum > VersionNum;
-            return isNotAlpha || isNewer;
-        }
+        public static readonly string DonateLink = "https://www.paypal.com/donate?business=38QWBDS9PJUAQ&currency_code=USD";
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -41,6 +31,26 @@ namespace ZuneModdingHelper
             // Disable crash and event analytics when in debug
             AppCenter.SetEnabledAsync(false);
 #endif
+        }
+
+        public static void OpenInBrowser(string url)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url)
+            {
+                UseShellExecute = true
+            });
+        }
+
+        public static bool CheckIfNewerVersion(string otherStr)
+        {
+            int idxSplit = otherStr.IndexOf('-');
+            Version otherNum = new(otherStr[..idxSplit]);
+            string otherStatus = otherStr[(idxSplit + 1)..];
+
+            // TODO: This assumes that the VersionStatus is "alpha"
+            bool isNotAlpha = otherStatus != VersionStatus;
+            bool isNewer = otherNum > VersionNum;
+            return isNotAlpha || isNewer;
         }
     }
 }

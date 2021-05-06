@@ -23,7 +23,15 @@
 
     <mah:MetroWindow.Flyouts>
         <mah:FlyoutsControl>
-            <mah:Flyout x:Name="AboutFlyout" Header="About" Position="Right" IsModal="True" Theme="Adapt">
+            <mah:Flyout x:Name="AboutFlyout" Position="Right" IsModal="True" Theme="Adapt">
+                <mah:Flyout.Header>
+                    <Grid>
+                        <TextBlock Text="About" FontSize="26" FontWeight="Bold"/>
+                        <Button Content="Donate" Click="DonateButton_Click" ToolTip="Support development of this and other projects"
+                                Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="4"
+                                Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"/>
+                    </Grid>
+                </mah:Flyout.Header>
                 <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
                     <Run Text="{x:Static local:App.Title}" FontWeight="Bold" FontSize="16"/><LineBreak/>
                     <Run Text="{x:Static local:App.Version}"/><LineBreak/>
