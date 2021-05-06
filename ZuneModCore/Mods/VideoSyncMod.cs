@@ -8,7 +8,7 @@ namespace ZuneModCore.Mods
 {
     public class VideoSyncMod : Mod
     {
-        private const string WMVCORE_PATH = @"C:\Windows\System32\WMVCORE.dll";
+        private readonly string WMVCORE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "WMVCORE.dll");
 
         public override string Title => "Fix Video Sync";
 
