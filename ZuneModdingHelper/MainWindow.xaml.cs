@@ -2,6 +2,7 @@
 using Flurl.Http;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.AppCenter.Analytics;
 using Newtonsoft.Json.Linq;
 using OwlCore.AbstractUI.ViewModels;
 using System;
@@ -72,10 +73,20 @@ namespace ZuneModdingHelper
                 if (applyResult != null)
                 {
                     progDialog.SetMessage($"Failed to apply '{mod.Title}':\r\n{applyResult}");
+
+                    Analytics.TrackEvent("Failed to apply mod", new Dictionary<string, string> {
+                        { "ModID", mod.Id },
+                        { "ErrorMessage", applyResult }
+                    });
+
                     await Task.Delay(15000);
                     continue;
                 }
                 progDialog.SetProgress(++numCompleted);
+
+                Analytics.TrackEvent("Applied mod", new Dictionary<string, string> {
+                    { "ModID", mod.Id },
+                });
             }
 
             await progDialog.CloseAsync();
@@ -106,15 +117,25 @@ namespace ZuneModdingHelper
                 //}
 
                 progDialog.SetMessage($"Resetting '{mod.Title}'");
-                string applyResult = await mod.Reset();
-                if (applyResult != null)
+                string resetResult = await mod.Reset();
+                if (resetResult != null)
                 {
+                    Analytics.TrackEvent("Failed to reset mod", new Dictionary<string, string> {
+                        { "ModID", mod.Id },
+                        { "ErrorMessage", resetResult }
+                    });
+
                     await progDialog.CloseAsync();
-                    await this.ShowMessageAsync("Completed", $"Failed to reset '{mod.Title}':\r\n{applyResult}", settings: defaultMetroDialogSettings);
+                    await this.ShowMessageAsync("Completed", $"Failed to reset '{mod.Title}':\r\n{resetResult}", settings: defaultMetroDialogSettings);
                     return;
                 }
 
                 progDialog.SetProgress(++numCompleted);
+
+                Analytics.TrackEvent("Reset mod", new Dictionary<string, string> {
+                    { "ModID", mod.Id },
+                });
+
                 await progDialog.CloseAsync();
                 await this.ShowMessageAsync("Completed", $"Successfully reset '{mod.Title}'", settings: defaultMetroDialogSettings);
             }
@@ -147,6 +168,11 @@ namespace ZuneModdingHelper
             if (!App.CheckIfNewerVersion(latest["tag_name"].Value<string>()))
             {
                 // Already up-to-date
+
+                Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
+                    { "UpdatesFound", bool.FalseString },
+                });
+
                 await checkDialog.CloseAsync();
                 await this.ShowMessageAsync("No updates available", "You're already using the latest version.", settings: defaultMetroDialogSettings);
                 return;
@@ -164,10 +190,12 @@ namespace ZuneModdingHelper
             await checkDialog.CloseAsync();
             var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
                 MessageDialogStyle.AffirmativeAndNegative, promptSettings);
+            bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
 
-            if (promptResult == MessageDialogResult.Affirmative)
+            if (acceptedUpdate)
             {
                 var progDialog = await this.ShowProgressAsync("Downloading update...", "This may take a few minutes.", settings: defaultMetroDialogSettings);
+                progDialog.Maximum = 100;
                 progDialog.SetIndeterminate();
 
                 // Download new version to AppData
@@ -177,6 +205,12 @@ namespace ZuneModdingHelper
                 if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
                 using (var client = new System.Net.WebClient())
                 {
+                    client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) => {
+                        // Update UI with download progress
+                        progDialog.SetProgress(e.ProgressPercentage);
+                    };
+
+                    progDialog.SetProgress(0);
                     await client.DownloadFileTaskAsync(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
                 }
 
@@ -185,14 +219,19 @@ namespace ZuneModdingHelper
                 {
                     FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
                 };
-                if (saveFileDialog.ShowDialog() == true)
+                bool dialogResult = saveFileDialog.ShowDialog() ?? false;
+                await progDialog.CloseAsync();
+                if (dialogResult)
                 {
                     File.Copy(downloadedFile, saveFileDialog.FileName, true);
-
-                    await progDialog.CloseAsync();
                     await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
                 }
             }
+
+            Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
+                { "UpdatesFound", bool.TrueString },
+                { "Accepted", acceptedUpdate.ToString() },
+            });
         }
     }
 }
