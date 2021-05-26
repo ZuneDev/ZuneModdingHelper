@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace ZuneModCore
+namespace ZuneModCore.Win32
 {
 
 #pragma warning disable CA1416 // Validate platform compatibility

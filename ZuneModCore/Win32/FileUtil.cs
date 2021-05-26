@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ZuneModCore
+namespace ZuneModCore.Win32
 {
     using System.Runtime.InteropServices;
     using System.Diagnostics;
