@@ -10,6 +10,7 @@
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="OwlCore" Version="0.0.2" />
         <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+        <PackageReference Include="TagLibSharp" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>

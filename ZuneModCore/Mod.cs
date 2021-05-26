@@ -17,6 +17,7 @@ namespace ZuneModCore
             new FeaturesOverrideMod(),
             new VideoSyncMod(),
             new WebservicesMod(),
+            new MbidLocatorMod(),
         }.AsReadOnly();
 
         public static string ZuneInstallDir { get; set; } = @"C:\Program Files\Zune\";
