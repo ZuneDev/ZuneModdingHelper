@@ -13,7 +13,7 @@ namespace ZuneModdingHelper
     {
         public static readonly string Title = "Zune Modding Helper";
 
-        public static readonly Version VersionNum = new(2021, 5, 6, 0);
+        public static readonly Version VersionNum = new(2021, 5, 26, 0);
         public static readonly string VersionStatus = "alpha";
         public static readonly string Version = VersionNum.ToString() + (VersionStatus != string.Empty ? "-" + VersionStatus : string.Empty);
 
