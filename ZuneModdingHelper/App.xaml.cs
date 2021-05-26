@@ -11,13 +11,13 @@ namespace ZuneModdingHelper
     /// </summary>
     public partial class App : Application
     {
-        public static readonly  string Title = "Zune Modding Helper";
+        public static readonly string Title = "Zune Modding Helper";
 
         public static readonly Version VersionNum = new(2021, 5, 6, 0);
         public static readonly string VersionStatus = "alpha";
         public static readonly string Version = VersionNum.ToString() + (VersionStatus != string.Empty ? "-" + VersionStatus : string.Empty);
 
-        public static readonly string DonateLink = "https://www.paypal.com/donate?business=38QWBDS9PJUAQ&currency_code=USD";
+        public static readonly string DonateLink = "https://www.paypal.me/YoshiAsk";
 
         protected override void OnStartup(StartupEventArgs e)
         {

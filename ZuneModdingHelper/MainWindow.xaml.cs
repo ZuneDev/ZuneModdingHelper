@@ -159,8 +159,9 @@ namespace ZuneModdingHelper
             checkDialog.SetIndeterminate();
 
             // Get releases list from GitHub
-            List<JObject> releases = await "https://api.github.com/repos/yoshiask/ZuneModdingHelper/releases"
-                .WithHeader("User-Agent", App.Title).GetJsonAsync<List<JObject>>();
+            List<JObject> releases = await "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
+                .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.Version)
+                .GetJsonAsync<List<JObject>>();
             JObject latest = releases[0];
             if (!App.CheckIfNewerVersion(latest["tag_name"].Value<string>()))
             {

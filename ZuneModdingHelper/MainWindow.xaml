@@ -35,10 +35,10 @@
                 <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
                     <Run Text="{x:Static local:App.Title}" FontWeight="Bold" FontSize="16"/><LineBreak/>
                     <Run Text="{x:Static local:App.Version}"/><LineBreak/>
-                    <Hyperlink NavigateUri="https://github.com/yoshiask/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
+                    <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
                         <Run Text="View source"/>
                     </Hyperlink><LineBreak/>
-                    <Hyperlink NavigateUri="https://github.com/yoshiask/ZuneModdingHelper/releases" RequestNavigate="Link_RequestNavigate">
+                    <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper/releases" RequestNavigate="Link_RequestNavigate">
                         <Run Text="View releases"/>
                     </Hyperlink><LineBreak/><LineBreak/>
                     <Run Text="Developed by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
