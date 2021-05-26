@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods
 {
@@ -21,34 +24,54 @@ namespace ZuneModCore.Mods
 
         public override AbstractUIElementGroup? OptionsUI => null;
 
+#pragma warning disable CA1416 // Validate platform compatibility
         public override Task<string?> Apply()
         {
+            // Make a backup of the file
+            File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
+
+            // Get the working WMVCORE.dll
+            string sourcePath = Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!, "Resources\\WMVCORE.dll");
+
+            // Get the original WMVCORE.dll
+            FileInfo wmvDllInfo = new(WMVCORE_PATH);
+
             try
             {
-                // Make a backup of the file
-                File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
+                // Activate necessary admin privileges to make changes without NTFS perms
+                TokenManipulator.AddPrivilege("SeRestorePrivilege"); // Necessary to set Owner Permissions
+                TokenManipulator.AddPrivilege("SeBackupPrivilege"); // Necessary to bypass Traverse Checking
+                TokenManipulator.AddPrivilege("SeTakeOwnershipPrivilege"); // Necessary to override FilePermissions
 
-                // NOTE: This is quite dangerous to do blindly, so let's not do this
-                // Kill processes that are using WMVCORE.dll
-                //foreach (System.Diagnostics.Process proc in FileUtil.WhoIsLocking(WMVCORE_PATH))
-                //{
-                //    proc.Kill();
-                //}
+                // Get access control
+                FileSecurity security = wmvDllInfo.GetAccessControl();
+                SecurityIdentifier? cu = WindowsIdentity.GetCurrent().User;
+                if (cu == null)
+                    return Task.FromResult<string?>("Failed to set permissions on WMVCORE.dll, current user was null");
 
-                // Get the working WMVCORE.dll
-                string sourcePath = Path.Combine(
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!, "Resources\\WMVCORE.dll");
+                // Set owner to current user
+                security.SetOwner(cu);
+                security.SetAccessRule(new FileSystemAccessRule(cu, FileSystemRights.Modify, AccessControlType.Allow));
+
+                // Update the Access Control on the original WMVCORE.dll
+                wmvDllInfo.SetAccessControl(security);
 
                 // Copy the pre-Anniversary Update WMVCORE.dll
                 File.Copy(sourcePath, WMVCORE_PATH, true);
 
                 return Task.FromResult<string?>(null);
             }
+            catch (IOException)
+            {
+                return Task.FromResult<string?>($"Unable to replace '{wmvDllInfo.FullName}'. Verify that Zune and Windows Media Player are not running and try again.");
+            }
             catch (Exception ex)
             {
                 return Task.FromResult(ex.Message)!;
             }
         }
+#pragma warning restore CA1416 // Validate platform compatibility
 
         public override Task<string?> Reset()
         {
