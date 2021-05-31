@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ZuneModCore.Mods
@@ -20,7 +19,8 @@ namespace ZuneModCore.Mods
         public override string Title => "MusicBrainz ID Locator";
 
         public override string Description => "Puts MusicBrainz IDs added by MusicBrainz Picard where the Zune " +
-            "software can use it to show additional information provided by Community Webservices.";
+            "software can use it to show additional information provided by Community Webservices.\r\n" +
+            "Note that this will only have an effect if you have used MusicBrainz Picard on your music library.";
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
