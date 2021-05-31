@@ -34,8 +34,12 @@ namespace ZuneModCore.Mods
                 return Task.FromResult<string?>($"The file '{zsDllInfo.FullName}' does not exist.");
             }
 
-            // Make a backup of the file
-            File.Copy(zsDllInfo.FullName, Path.Combine(StorageDirectory, "ZuneService.original.dll"), true);
+            // Make a backup if it doesn't already exist
+            FileInfo zsDllBackupInfo = new(Path.Combine(StorageDirectory, "ZuneService.original.dll"));
+            if (zsDllBackupInfo.Exists)
+            {
+                File.Copy(zsDllInfo.FullName, zsDllBackupInfo.FullName, true);
+            }
 
             try
             {

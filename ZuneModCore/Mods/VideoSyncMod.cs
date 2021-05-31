@@ -1,6 +1,7 @@
 ﻿using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
@@ -27,8 +28,10 @@ namespace ZuneModCore.Mods
 #pragma warning disable CA1416 // Validate platform compatibility
         public override Task<string?> Apply()
         {
-            // Make a backup of the file
-            File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
+            // Make a backup of the original file
+            FileVersionInfo wmvDllVersionInfo = FileVersionInfo.GetVersionInfo(WMVCORE_PATH);
+            if (Version.Parse(wmvDllVersionInfo.ProductVersion!) <= new Version(12, 0, 10586, 0))
+                File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
 
             // Get the working WMVCORE.dll
             string sourcePath = Path.Combine(

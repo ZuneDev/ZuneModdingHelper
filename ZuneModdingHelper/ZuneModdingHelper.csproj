@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="OwlCore" Version="0.0.2" />
+    <PackageReference Include="OwlCore" Version="0.0.6" />
   </ItemGroup>
 
 </Project>
