@@ -158,78 +158,87 @@ namespace ZuneModdingHelper
             var checkDialog = await this.ShowProgressAsync("Checking for updates...", "Please wait.", settings: defaultMetroDialogSettings);
             checkDialog.SetIndeterminate();
 
-            // Get releases list from GitHub
-            List<JObject> releases = await "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
-                .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.Version)
-                .GetJsonAsync<List<JObject>>();
-            JObject latest = releases[0];
-            if (!App.CheckIfNewerVersion(latest["tag_name"].Value<string>()))
+            try
             {
-                // Already up-to-date
+                // Get releases list from GitHub
+                List<JObject> releases = await "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
+                    .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.Version)
+                    .GetJsonAsync<List<JObject>>();
+                JObject latest = releases[0];
+                if (!App.CheckIfNewerVersion(latest["tag_name"].Value<string>()))
+                {
+                    // Already up-to-date
+
+                    Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
+                        { "UpdatesFound", bool.FalseString },
+                    });
+
+                    await checkDialog.CloseAsync();
+                    await this.ShowMessageAsync("No updates available", "You're already using the latest version.", settings: defaultMetroDialogSettings);
+                    return;
+                }
+
+                // Newer version available, prompt user to download
+                MetroDialogSettings promptSettings = new()
+                {
+                    ColorScheme = MetroDialogColorScheme.Accented,
+                    AnimateShow = true,
+                    AnimateHide = true,
+                    AffirmativeButtonText = "Download",
+                    NegativeButtonText = "Later"
+                };
+                await checkDialog.CloseAsync();
+                var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
+                    MessageDialogStyle.AffirmativeAndNegative, promptSettings);
+                bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
+
+                if (acceptedUpdate)
+                {
+                    var progDialog = await this.ShowProgressAsync("Downloading update...", "This may take a few minutes.", settings: defaultMetroDialogSettings);
+                    progDialog.Maximum = 100;
+                    progDialog.SetIndeterminate();
+
+                    // Download new version to AppData
+                    JObject asset = latest["assets"].ToObject<List<JObject>>()[0];
+                    string assetName = asset["name"].Value<string>();
+                    string downloadedFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), assetName);
+                    if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
+                    using (var client = new System.Net.WebClient())
+                    {
+                        client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) => {
+                            // Update UI with download progress
+                            progDialog.SetProgress(e.ProgressPercentage);
+                        };
+
+                        progDialog.SetProgress(0);
+                        await client.DownloadFileTaskAsync(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
+                    }
+
+                    // Ask user to save file
+                    Microsoft.Win32.SaveFileDialog saveFileDialog = new()
+                    {
+                        FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
+                    };
+                    bool dialogResult = saveFileDialog.ShowDialog() ?? false;
+                    await progDialog.CloseAsync();
+                    if (dialogResult)
+                    {
+                        File.Copy(downloadedFile, saveFileDialog.FileName, true);
+                        await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
+                    }
+                }
 
                 Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
-                    { "UpdatesFound", bool.FalseString },
+                    { "UpdatesFound", bool.TrueString },
+                    { "Accepted", acceptedUpdate.ToString() },
                 });
-
-                await checkDialog.CloseAsync();
-                await this.ShowMessageAsync("No updates available", "You're already using the latest version.", settings: defaultMetroDialogSettings);
-                return;
             }
-
-            // Newer version available, prompt user to download
-            MetroDialogSettings promptSettings = new()
+            catch
             {
-                ColorScheme = MetroDialogColorScheme.Accented,
-                AnimateShow = true,
-                AnimateHide = true,
-                AffirmativeButtonText = "Download",
-                NegativeButtonText = "Later"
-            };
-            await checkDialog.CloseAsync();
-            var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
-                MessageDialogStyle.AffirmativeAndNegative, promptSettings);
-            bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
-
-            if (acceptedUpdate)
-            {
-                var progDialog = await this.ShowProgressAsync("Downloading update...", "This may take a few minutes.", settings: defaultMetroDialogSettings);
-                progDialog.Maximum = 100;
-                progDialog.SetIndeterminate();
-
-                // Download new version to AppData
-                JObject asset = latest["assets"].ToObject<List<JObject>>()[0];
-                string assetName = asset["name"].Value<string>();
-                string downloadedFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), assetName);
-                if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
-                using (var client = new System.Net.WebClient())
-                {
-                    client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) => {
-                        // Update UI with download progress
-                        progDialog.SetProgress(e.ProgressPercentage);
-                    };
-
-                    progDialog.SetProgress(0);
-                    await client.DownloadFileTaskAsync(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
-                }
-
-                // Ask user to save file
-                Microsoft.Win32.SaveFileDialog saveFileDialog = new()
-                {
-                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
-                };
-                bool dialogResult = saveFileDialog.ShowDialog() ?? false;
-                await progDialog.CloseAsync();
-                if (dialogResult)
-                {
-                    File.Copy(downloadedFile, saveFileDialog.FileName, true);
-                    await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
-                }
+                App.OpenInBrowser("https://github.com/ZuneDev/ZuneModdingHelper/releases");
+                if (checkDialog.IsOpen)
+                    await checkDialog.CloseAsync();
             }
-
-            Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
-                { "UpdatesFound", bool.TrueString },
-                { "Accepted", acceptedUpdate.ToString() },
-            });
         }
 
         private void DonateButton_Click(object sender, RoutedEventArgs e) => App.OpenInBrowser(App.DonateLink);
