@@ -34,8 +34,7 @@ namespace ZuneModCore.Mods
                 File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
 
             // Get the working WMVCORE.dll
-            string sourcePath = Path.Combine(
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!, "Resources\\WMVCORE.dll");
+            string sourcePath = Path.Combine(AppContext.BaseDirectory, "Resources\\WMVCORE.dll");
 
             // Get the original WMVCORE.dll
             FileInfo wmvDllInfo = new(WMVCORE_PATH);
