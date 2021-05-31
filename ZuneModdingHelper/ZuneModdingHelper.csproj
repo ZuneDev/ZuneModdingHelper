@@ -9,6 +9,7 @@
     <Authors>Joshua "Yoshi" Askharoun</Authors>
     <RepositoryUrl>https://github.com/yoshiask/ZuneModdingHelper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
