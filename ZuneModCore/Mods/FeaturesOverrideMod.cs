@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+using System.Threading.Tasks;
+using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods
 {
@@ -51,19 +51,40 @@ namespace ZuneModCore.Mods
 
         public override void Init()
         {
-            for (int i = 0; i < AvailableOverrides.Count; i++)
+            foreach (AbstractUIElement uiElem in OptionsUI.Items)
             {
-                string key = AvailableOverrides.Keys.ElementAt(i);
-                AvailableOverrides[key] = GetFeatureOverride(key);
+                if (uiElem is AbstractBooleanUIElement boolElem)
+                {
+                    bool? featureOverride = GetFeatureOverride(boolElem.Id);
+                    boolElem.ChangeState(featureOverride ?? false);
+                }
             }
+
+            return Task.CompletedTask;
         }
 
-        public override string? Apply()
+        public override async Task<string?> Apply()
         {
-            for (int i = 0; i < AvailableOverrides.Count; i++)
+            // TODO: Use user choices from AbstractUI
+            foreach (AbstractUIElement uiElem in OptionsUI.Items)
             {
-                string key = AvailableOverrides.Keys.ElementAt(i);
-                SetFeatureOverride(key, true);
+                if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
+                {
+                    bool isSuccess = SetFeatureOverride(boolElem.Id, true);
+                    if (!isSuccess)
+                    {
+                        string? resetStatus = await Reset();
+                        if (resetStatus != null)
+                        {
+                            // The reset failed as well, return both errors
+                            return "Failed to set registry keys. Unable to clean up partial overrides:\r\n" + resetStatus;
+                        }
+                        else
+                        {
+                            return "Failed to set registry keys. Automatically cleaned up partial changes.";
+                        }
+                    }
+                }
             }
 
             return null;
@@ -79,10 +100,10 @@ namespace ZuneModCore.Mods
             return null;
         }
 
-        public static void SetFeatureOverride(string feature, bool value) =>
+        public static bool SetFeatureOverride(string feature, bool value) =>
             RegEdit.CurrentUserSetBoolValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature, value);
 
-        public static bool GetFeatureOverride(string feature) =>
+        public static bool? GetFeatureOverride(string feature) =>
             RegEdit.CurrentUserGetBoolValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature);
 
         public static void ResetFeatureOverride(string feature) =>

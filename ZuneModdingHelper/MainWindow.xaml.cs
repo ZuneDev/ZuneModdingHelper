@@ -108,10 +108,7 @@ namespace ZuneModdingHelper
 
         private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri)
-            {
-                UseShellExecute = true
-            });
+            App.OpenInBrowser(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
 
@@ -152,19 +149,37 @@ namespace ZuneModdingHelper
                 if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
                 client.DownloadFile(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
 
-                // Ask user to save file
-                Microsoft.Win32.SaveFileDialog saveFileDialog = new()
+                // Newer version available, prompt user to download
+                MetroDialogSettings promptSettings = new()
                 {
-                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
+                    ColorScheme = MetroDialogColorScheme.Accented,
+                    AnimateShow = true,
+                    AnimateHide = true,
+                    AffirmativeButtonText = "Download",
+                    NegativeButtonText = "Later"
                 };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    File.Copy(downloadedFile, saveFileDialog.FileName, true);
+                await checkDialog.CloseAsync();
+                var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
+                    MessageDialogStyle.AffirmativeAndNegative, promptSettings);
+                bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
 
                     //await progDialog.CloseAsync();
                     //await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
                 }
+
+                Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
+                    { "UpdatesFound", bool.TrueString },
+                    { "Accepted", acceptedUpdate.ToString() },
+                });
+            }
+            catch
+            {
+                App.OpenInBrowser("https://github.com/ZuneDev/ZuneModdingHelper/releases");
+                if (checkDialog.IsOpen)
+                    await checkDialog.CloseAsync();
             }
         }
+
+        private void DonateButton_Click(object sender, RoutedEventArgs e) => App.OpenInBrowser(App.DonateLink);
     }
 }
