@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+<<<<<<< HEAD
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net40</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+=======
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>2021.5.30.0</Version>
+    <Authors>Joshua "Yoshi" Askharoun</Authors>
+    <RepositoryUrl>https://github.com/yoshiask/ZuneModdingHelper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+>>>>>>> master
+
+    <ItemGroup>
+        <ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
+    </ItemGroup>
+
+<<<<<<< HEAD
+    <ItemGroup>
+        <PackageReference Include="MahApps.Metro" Version="1.6.5" />
+        <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="System.Threading.Tasks" Version="3.1.1" />
+    </ItemGroup>
+=======
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="3.2.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.5" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="OwlCore" Version="0.0.6" />
+  </ItemGroup>
+>>>>>>> master
+
+</Project>

@@ -4,13 +4,20 @@
         <TargetFramework>net40</TargetFramework>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
+        <Platforms>AnyCPU;x64;x86</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
+<<<<<<< HEAD
+=======
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+        <PackageReference Include="OwlCore" Version="0.0.6" />
+        <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+        <PackageReference Include="TagLibSharp" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
+>>>>>>> master
       <None Update="Resources\WMVCORE.DLL">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>

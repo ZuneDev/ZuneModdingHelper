@@ -22,7 +22,7 @@ namespace ZuneModCore.Mods
 
         public override ReadOnlyCollection<Type>? DependentMods => null;
 
-        public override string? Apply()
+        public override async Task<string?> Apply()
         {
             // Verify that ZuneServices.dll exists
             FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
@@ -79,7 +79,7 @@ namespace ZuneModCore.Mods
                 setOverrideSuccess &= SetFeatureOverride("Videos", true);
                 if (setOverrideSuccess != true)
                 {
-                    return Task.FromResult<string?>("Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune Software.");
+                    return "Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune Software.";
                 }
 
                 return null;
@@ -94,7 +94,7 @@ namespace ZuneModCore.Mods
             }
         }
 
-        public override string? Reset()
+        public override async Task<string?> Reset()
         {
             string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
             try
@@ -115,7 +115,7 @@ namespace ZuneModCore.Mods
                 setOverrideSuccess &= SetFeatureOverride("Videos", false);
                 if (setOverrideSuccess != true)
                 {
-                    return Task.FromResult<string?>("Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune Software.");
+                    return "Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune Software.";
                 }
 
                 return null;

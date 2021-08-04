@@ -28,7 +28,7 @@ namespace ZuneModdingHelper
             ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
         }
 
-        private void InstallModsButton_Click(object sender, RoutedEventArgs e)
+        private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
         {
             //var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods", settings: defaultMetroDialogSettings);
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
@@ -54,7 +54,7 @@ namespace ZuneModdingHelper
                 //}
 
                 //progDialog.SetMessage($"Applying '{mod.Title}'");
-                string applyResult = mod.Apply();
+                string applyResult = await mod.Apply();
                 if (applyResult != null)
                 {
                     //progDialog.SetMessage($"Failed to apply '{mod.Title}':\r\n{applyResult}");
@@ -67,7 +67,7 @@ namespace ZuneModdingHelper
             //await this.ShowMessageAsync("Completed", "Finished installing selected mods", settings: defaultMetroDialogSettings);
         }
 
-        private void ModResetButton_Click(object sender, RoutedEventArgs e)
+        private async void ModResetButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement elem && elem.DataContext is Mod mod)
             {
@@ -79,7 +79,7 @@ namespace ZuneModdingHelper
 
                 //progDialog.SetTitle("Resetting mod...");
                 //progDialog.SetMessage($"Setting up '{mod.Title}'");
-                mod.Init();
+                await mod.Init();
                 ++numCompleted;
                 //progDialog.SetProgress(numCompleted);
 
@@ -92,7 +92,7 @@ namespace ZuneModdingHelper
                 //}
 
                 //progDialog.SetMessage($"Resetting '{mod.Title}'");
-                string applyResult = mod.Reset();
+                string applyResult = await mod.Reset();
                 if (applyResult != null)
                 {
                     //await progDialog.CloseAsync();
@@ -149,34 +149,18 @@ namespace ZuneModdingHelper
                 if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
                 client.DownloadFile(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
 
-                // Newer version available, prompt user to download
-                MetroDialogSettings promptSettings = new()
+                // Ask user to save file
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new()
                 {
-                    ColorScheme = MetroDialogColorScheme.Accented,
-                    AnimateShow = true,
-                    AnimateHide = true,
-                    AffirmativeButtonText = "Download",
-                    NegativeButtonText = "Later"
+                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
                 };
-                await checkDialog.CloseAsync();
-                var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
-                    MessageDialogStyle.AffirmativeAndNegative, promptSettings);
-                bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    File.Copy(downloadedFile, saveFileDialog.FileName, true);
 
                     //await progDialog.CloseAsync();
                     //await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
                 }
-
-                Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
-                    { "UpdatesFound", bool.TrueString },
-                    { "Accepted", acceptedUpdate.ToString() },
-                });
-            }
-            catch
-            {
-                App.OpenInBrowser("https://github.com/ZuneDev/ZuneModdingHelper/releases");
-                if (checkDialog.IsOpen)
-                    await checkDialog.CloseAsync();
             }
         }
 

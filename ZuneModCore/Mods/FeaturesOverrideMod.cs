@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using ZuneModCore.Win32;
 
@@ -49,48 +51,29 @@ namespace ZuneModCore.Mods
 
         public override ReadOnlyCollection<Type>? DependentMods => null;
 
-        public override void Init()
+        public override Task Init()
         {
-            foreach (AbstractUIElement uiElem in OptionsUI.Items)
+            for (int i = 0; i < AvailableOverrides.Count; i++)
             {
-                if (uiElem is AbstractBooleanUIElement boolElem)
-                {
-                    bool? featureOverride = GetFeatureOverride(boolElem.Id);
-                    boolElem.ChangeState(featureOverride ?? false);
-                }
+                string key = AvailableOverrides.Keys.ElementAt(i);
+                AvailableOverrides[key] = GetFeatureOverride(key) ?? false;
             }
 
-            return Task.CompletedTask;
+            return TaskEx.CompletedTask;
         }
 
         public override async Task<string?> Apply()
         {
-            // TODO: Use user choices from AbstractUI
-            foreach (AbstractUIElement uiElem in OptionsUI.Items)
+            for (int i = 0; i < AvailableOverrides.Count; i++)
             {
-                if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
-                {
-                    bool isSuccess = SetFeatureOverride(boolElem.Id, true);
-                    if (!isSuccess)
-                    {
-                        string? resetStatus = await Reset();
-                        if (resetStatus != null)
-                        {
-                            // The reset failed as well, return both errors
-                            return "Failed to set registry keys. Unable to clean up partial overrides:\r\n" + resetStatus;
-                        }
-                        else
-                        {
-                            return "Failed to set registry keys. Automatically cleaned up partial changes.";
-                        }
-                    }
-                }
+                string key = AvailableOverrides.Keys.ElementAt(i);
+                SetFeatureOverride(key, true);
             }
 
             return null;
         }
 
-        public override string? Reset()
+        public override async Task<string?> Reset()
         {
             for (int i = 0; i < AvailableOverrides.Count; i++)
             {

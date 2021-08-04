@@ -1,6 +1,5 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Security.AccessControl;
@@ -23,10 +22,8 @@ namespace ZuneModCore.Mods
 
         public override string Id => nameof(VideoSyncMod);
 
-        public override AbstractUIElementGroup? OptionsUI => null;
-
 #pragma warning disable CA1416 // Validate platform compatibility
-        public override Task<string?> Apply()
+        public override async Task<string?> Apply()
         {
             // Make a backup of the original file
             FileVersionInfo wmvDllVersionInfo = FileVersionInfo.GetVersionInfo(WMVCORE_PATH);
@@ -34,7 +31,7 @@ namespace ZuneModCore.Mods
                 File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
 
             // Get the working WMVCORE.dll
-            string sourcePath = Path.Combine(AppContext.BaseDirectory, "Resources\\WMVCORE.dll");
+            string sourcePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\WMVCORE.dll");
 
             // Get the original WMVCORE.dll
             FileInfo wmvDllInfo = new(WMVCORE_PATH);
@@ -50,7 +47,7 @@ namespace ZuneModCore.Mods
                 FileSecurity security = wmvDllInfo.GetAccessControl();
                 SecurityIdentifier? cu = WindowsIdentity.GetCurrent().User;
                 if (cu == null)
-                    return Task.FromResult<string?>("Failed to set permissions on WMVCORE.dll, current user was null");
+                    return "Failed to set permissions on WMVCORE.dll, current user was null";
 
                 // Set owner to current user
                 security.SetOwner(cu);
@@ -66,16 +63,16 @@ namespace ZuneModCore.Mods
             }
             catch (IOException)
             {
-                return Task.FromResult<string?>($"Unable to replace '{wmvDllInfo.FullName}'. Verify that Zune and Windows Media Player are not running and try again.");
+                return $"Unable to replace '{wmvDllInfo.FullName}'. Verify that Zune and Windows Media Player are not running and try again.";
             }
             catch (Exception ex)
             {
-                return ex.Message!;
+                return ex.Message;
             }
         }
 #pragma warning restore CA1416 // Validate platform compatibility
 
-        public override string? Reset()
+        public override async Task<string?> Reset()
         {
             try
             {

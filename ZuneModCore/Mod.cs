@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using ZuneModCore.Mods;
 
 namespace ZuneModCore
@@ -29,11 +30,11 @@ namespace ZuneModCore
 
         public abstract string Author { get; }
 
-        public virtual void Init() { }
+        public virtual Task Init() => TaskEx.CompletedTask;
 
-        public abstract string? Apply();
+        public abstract Task<string?> Apply();
 
-        public abstract string? Reset();
+        public abstract Task<string?> Reset();
 
         public string StorageDirectory
         {
