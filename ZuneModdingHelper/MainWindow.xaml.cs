@@ -3,6 +3,7 @@ using Flurl.Http;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json.Linq;
 using OwlCore.AbstractUI.ViewModels;
 using System;
@@ -27,7 +28,7 @@ namespace ZuneModdingHelper
             ColorScheme = MetroDialogColorScheme.Accented,
             AnimateShow = true,
             AnimateHide = true,
-            AffirmativeButtonText = "Close"
+            AffirmativeButtonText = "OK"
         };
 
         public MainWindow()
@@ -245,7 +246,26 @@ namespace ZuneModdingHelper
 
         private void LocateZuneButton_Click(object sender, RoutedEventArgs e)
         {
-
+            if (CommonFileDialog.IsPlatformSupported)
+            {
+                CommonOpenFileDialog dialog = new()
+                {
+                    IsFolderPicker = true,
+                    DefaultFileName = Mod.ZuneInstallDir
+                };
+                CommonFileDialogResult result = dialog.ShowDialog();
+                if (result == CommonFileDialogResult.Ok)
+                {
+                    ZuneInstallDirBox.Text = dialog.FileName;
+                }
+            }
+            else
+            {
+                // TODO: Fallback to pre-Vista dialog
+                this.ShowMessageAsync("Error",
+                    "Please use File Explorer to locate an copy the path.",
+                    settings: defaultMetroDialogSettings);
+            }
         }
     }
 }

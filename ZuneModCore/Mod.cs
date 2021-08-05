@@ -20,7 +20,7 @@ namespace ZuneModCore
             new MbidLocatorMod(),
         }.AsReadOnly();
 
-        public static string ZuneInstallDir { get; set; } = @"C:\Program Files\Zune\";
+        public static string ZuneInstallDir { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
 
         public abstract string Id { get; }
 

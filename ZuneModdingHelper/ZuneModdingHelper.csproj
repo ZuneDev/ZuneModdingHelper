@@ -1,28 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>2021.8.4.0</Version>
-    <Authors>Joshua "Yoshi" Askharoun</Authors>
-    <RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Platforms>x64;x86</Platforms>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <Version>2021.8.4.0</Version>
+        <Authors>Joshua "Yoshi" Askharoun</Authors>
+        <RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Platforms>x64;x86</Platforms>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Flurl.Http" Version="3.2.0" />
-    <PackageReference Include="MahApps.Metro" Version="2.4.5" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="OwlCore" Version="0.0.6" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Flurl.Http" Version="3.2.0" />
+        <PackageReference Include="MahApps.Metro" Version="2.4.5" />
+        <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.2.0" />
+        <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.2.0" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+        <PackageReference Include="OwlCore" Version="0.0.6" />
+        <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    </ItemGroup>
 
 </Project>
