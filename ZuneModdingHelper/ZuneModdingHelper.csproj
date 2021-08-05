@@ -5,11 +5,11 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>2021.5.30.0</Version>
+    <Version>2021.8.4.0</Version>
     <Authors>Joshua "Yoshi" Askharoun</Authors>
-    <RepositoryUrl>https://github.com/yoshiask/ZuneModdingHelper</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

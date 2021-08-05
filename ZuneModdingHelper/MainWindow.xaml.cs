@@ -44,7 +44,7 @@ namespace ZuneModdingHelper
             ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
         }
 
-        private async void InstallModsButton_Click(object sender, RoutedEventArgs e)
+        private async void ModInstallButton_Click(object sender, RoutedEventArgs e)
         {
             var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mods", settings: defaultMetroDialogSettings);
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
@@ -242,5 +242,10 @@ namespace ZuneModdingHelper
         }
 
         private void DonateButton_Click(object sender, RoutedEventArgs e) => App.OpenInBrowser(App.DonateLink);
+
+        private void LocateZuneButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
