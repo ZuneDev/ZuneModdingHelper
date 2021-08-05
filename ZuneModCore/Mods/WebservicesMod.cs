@@ -21,17 +21,28 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup? OptionsUI => null;
+        public override AbstractUIElementGroup? OptionsUI => new(nameof(FeaturesOverrideMod))
+        {
+            Title = string.Empty,
+            Items =
+            {
+                new AbstractTextBox("hostBox", "zunes.tk", "zune.net")
+                {
+                    Title = "Host",
+                    TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
+                }
+            }
+        };
 
         public override IReadOnlyList<Type>? DependentMods => null;
 
-        public override Task<string?> Apply()
+        public override async Task<string?> Apply()
         {
             // Verify that ZuneServices.dll exists
             FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
             if (!zsDllInfo.Exists)
             {
-                return Task.FromResult<string?>($"The file '{zsDllInfo.FullName}' does not exist.");
+                return $"The file '{zsDllInfo.FullName}' does not exist.";
             }
 
             // Make a backup if it doesn't already exist
@@ -53,17 +64,30 @@ namespace ZuneModCore.Mods
                 var versionBytes = zsDllReader.ReadBytes(6);
                 if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
                 {
-                    return Task.FromResult<string?>("This mod has not been tested on versions earlier than 4.8.");
+                    return "This mod has not been tested on versions earlier than 4.8.";
                 }
 
-                // Patch ZuneServices.dll to use zunes.tk instead of zune.net
+                // Get and validate replacement host
+                string oldHost = "zune.net";
+                string newHost = ((AbstractTextBox)OptionsUI!.Items[0]).Value;
+                if (newHost.Length != oldHost.Length)
+                {
+                    return $"The new host (\"{newHost}\") must have the same length as \"{oldHost}\".";
+                }
+                var ping = await new System.Net.NetworkInformation.Ping().SendPingAsync(newHost);
+                if (ping.Status != System.Net.NetworkInformation.IPStatus.Success)
+                {
+                    return $"Failed to reach \"{newHost}\". Ping status: {ping.Status}";
+                }
+
+                // Patch ZuneServices.dll to use the new host instead of zune.net
                 zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
                 string endpointBlock = System.Text.Encoding.Unicode.GetString(zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH));
-                endpointBlock = endpointBlock.Replace("zune.net", "zunes.tk");
+                endpointBlock = endpointBlock.Replace(oldHost, newHost);
                 byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
                 if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
                 {
-                    return Task.FromResult<string?>("Failed to safely overwrite strings in DLL.");
+                    return "Failed to safely overwrite strings in DLL.";
                 }
                 zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
                 zsDllWriter.Write(endpointBytes);
@@ -75,29 +99,36 @@ namespace ZuneModCore.Mods
                 setOverrideSuccess &= SetFeatureOverride("Channels", true);
                 setOverrideSuccess &= SetFeatureOverride("Games", true);
                 setOverrideSuccess &= SetFeatureOverride("Marketplace", true);
+                setOverrideSuccess &= SetFeatureOverride("MBRPreview", true);
+                setOverrideSuccess &= SetFeatureOverride("MBRPurchase", true);
+                setOverrideSuccess &= SetFeatureOverride("MBRRental", true);
                 setOverrideSuccess &= SetFeatureOverride("Music", true);
                 setOverrideSuccess &= SetFeatureOverride("MusicVideos", true);
+                setOverrideSuccess &= SetFeatureOverride("Picks", true);
                 setOverrideSuccess &= SetFeatureOverride("Podcasts", true);
+                setOverrideSuccess &= SetFeatureOverride("Sign In Available", true);
                 setOverrideSuccess &= SetFeatureOverride("Social", true);
+                setOverrideSuccess &= SetFeatureOverride("SocialMarketplace", true);
+                setOverrideSuccess &= SetFeatureOverride("SubscriptionFreeTracks", true);
                 setOverrideSuccess &= SetFeatureOverride("Videos", true);
                 if (setOverrideSuccess != true)
                 {
-                    return Task.FromResult<string?>("Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune Software.");
+                    return "Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune Software.";
                 }
 
-                return Task.FromResult<string?>(null);
+                return null;
             }
             catch (IOException)
             {
-                return Task.FromResult<string?>($"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.");
+                return $"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.";
             }
             catch (Exception ex)
             {
-                return Task.FromResult<string?>(ex.Message);
+                return ex.Message;
             }
         }
 
-        public override Task<string?> Reset()
+        public override async Task<string?> Reset()
         {
             string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
             try
@@ -111,25 +142,32 @@ namespace ZuneModCore.Mods
                 setOverrideSuccess &= SetFeatureOverride("Channels", false);
                 setOverrideSuccess &= SetFeatureOverride("Games", false);
                 setOverrideSuccess &= SetFeatureOverride("Marketplace", false);
+                setOverrideSuccess &= SetFeatureOverride("MBRPreview", false);
+                setOverrideSuccess &= SetFeatureOverride("MBRPurchase", false);
+                setOverrideSuccess &= SetFeatureOverride("MBRRental", false);
                 setOverrideSuccess &= SetFeatureOverride("Music", false);
                 setOverrideSuccess &= SetFeatureOverride("MusicVideos", false);
+                setOverrideSuccess &= SetFeatureOverride("Picks", false);
                 setOverrideSuccess &= SetFeatureOverride("Podcasts", false);
+                setOverrideSuccess &= SetFeatureOverride("Sign In Available", false);
                 setOverrideSuccess &= SetFeatureOverride("Social", false);
+                setOverrideSuccess &= SetFeatureOverride("SocialMarketplace", false);
+                setOverrideSuccess &= SetFeatureOverride("SubscriptionFreeTracks", false);
                 setOverrideSuccess &= SetFeatureOverride("Videos", false);
                 if (setOverrideSuccess != true)
                 {
-                    return Task.FromResult<string?>("Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune Software.");
+                    return "Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune Software.";
                 }
 
-                return Task.FromResult<string?>(null);
+                return null;
             }
             catch (IOException)
             {
-                return Task.FromResult<string?>($"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.");
+                return $"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.";
             }
             catch (Exception ex)
             {
-                return Task.FromResult<string?>(ex.Message);
+                return ex.Message;
             }
         }
     }

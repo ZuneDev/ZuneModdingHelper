@@ -28,27 +28,27 @@ namespace ZuneModCore.Mods
                 // The ID is the name of the registry key, the label is the display name
 
                 new AbstractBooleanUIElement("Apps", "Apps"),
-                //new AbstractBooleanUIElement("Art", "Art"),
+                new AbstractBooleanUIElement("Art", "Art"),
                 new AbstractBooleanUIElement("Channels", "Channels"),
-                //new AbstractBooleanUIElement("FirstLaunchIntroVideo", "First Launch Intro Video"),
+                new AbstractBooleanUIElement("FirstLaunchIntroVideo", "First Launch Intro Video"),
                 new AbstractBooleanUIElement("Games", "Games"),
                 new AbstractBooleanUIElement("Marketplace", "Marketplace"),
-                //new AbstractBooleanUIElement("MBRPreview", "MBRPreview"),
-                //new AbstractBooleanUIElement("MBRPurchase", "MBRPurchase"),
-                //new AbstractBooleanUIElement("MBRRental", "MBRRental"),
+                new AbstractBooleanUIElement("MBRPreview", "[Marketplace] Media Preview"),
+                new AbstractBooleanUIElement("MBRPurchase", "[Marketplace] Media Purchase"),
+                new AbstractBooleanUIElement("MBRRental", "[Marketplace] Media Rental"),
                 new AbstractBooleanUIElement("Music", "Music"),
-                new AbstractBooleanUIElement("MusicVideos", "MusicVideos"),
+                new AbstractBooleanUIElement("MusicVideos", "Music Videos"),
                 new AbstractBooleanUIElement("Nowplaying", "Now Playing"),
-                //new AbstractBooleanUIElement("NowplayingArt", "Now Playing Art"),
+                new AbstractBooleanUIElement("NowplayingArt", "Now Playing Art"),
                 new AbstractBooleanUIElement("Picks", "Picks"),
                 new AbstractBooleanUIElement("Podcasts", "Podcasts"),
                 new AbstractBooleanUIElement("QuickMixLocal", "Quick Mix (Local)"),
-                //new AbstractBooleanUIElement("QuickMixZMP", "Quick Mix (ZMP)"),
+                new AbstractBooleanUIElement("QuickMixZMP", "Quick Mix (ZMP)"),
                 new AbstractBooleanUIElement("Quickplay", "Quickplay"),
-                //new AbstractBooleanUIElement("Sign In Available", "Sign In"),
+                new AbstractBooleanUIElement("Sign In Available", "Sign In"),
                 new AbstractBooleanUIElement("Social", "Social"),
-                //new AbstractBooleanUIElement("SocialMarketplace", "Social Marketplace"),
-                //new AbstractBooleanUIElement("SubscriptionFreeTracks", "Subscription Free Tracks"),
+                new AbstractBooleanUIElement("SocialMarketplace", "Social Marketplace"),
+                new AbstractBooleanUIElement("SubscriptionFreeTracks", "Subscription Free Tracks"),
                 new AbstractBooleanUIElement("Videos", "Videos"),
             }
         };
@@ -69,12 +69,14 @@ namespace ZuneModCore.Mods
             return Task.CompletedTask;
         }
 
-        public override async Task<string?> Apply()
+        public override async Task<string?> Apply() => await Apply(false);
+
+        public async Task<string?> Apply(bool applyAll = false)
         {
-            // TODO: Use user choices from AbstractUI
+            // Use user choices from AbstractUI
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
             {
-                if (uiElem is AbstractBooleanUIElement boolElem)// && boolElem.State)
+                if (uiElem is AbstractBooleanUIElement boolElem && (boolElem.State || applyAll))
                 {
                     bool isSuccess = SetFeatureOverride(boolElem.Id, true);
                     if (!isSuccess)
@@ -96,13 +98,13 @@ namespace ZuneModCore.Mods
             return null;
         }
 
-        public override Task<string?> Reset()
+        public override async Task<string?> Reset()
         {
             foreach (AbstractUIElement uiElem in OptionsUI.Items)
                 if (uiElem is AbstractBooleanUIElement boolElem)
                     ResetFeatureOverride(boolElem.Id);
 
-            return Task.FromResult<string?>(null);
+            return null;
         }
 
         public static bool SetFeatureOverride(string feature, bool value) =>

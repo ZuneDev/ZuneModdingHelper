@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
@@ -9,15 +9,26 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-        <PackageReference Include="OwlCore" Version="0.0.6" />
+        <PackageReference Include="OwlCore" Version="0.0.21" />
         <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
         <PackageReference Include="TagLibSharp" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Resources\WMVCORE.DLL">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <EmbeddedResource Update="ModResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>ModResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="ModResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ModResources.resx</DependentUpon>
+        </Compile>
+
+
+        <None Update="Resources\WMVCORE.DLL">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
