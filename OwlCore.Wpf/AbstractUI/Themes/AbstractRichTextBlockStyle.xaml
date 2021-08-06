@@ -1,0 +1,39 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="OwlCore.Wpf.AbstractUI.Themes.AbstractRichTextBlockStyle"
+    xmlns:abstractUI="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore"
+    xmlns:controls="clr-namespace:OwlCore.Wpf.AbstractUI.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/OwlCore.Wpf;component/AbstractUI/Themes/AbstractUIResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="DefaultAbstractRichTextBlockTemplate" DataType="abstractUI:AbstractRichTextBlockViewModel">
+        <StackPanel>
+            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
+                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
+                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+
+            <!-- TODO: Marddown text block for WPF? -->
+            <!--<controls:MarkdownTextBlock Text="{Binding RichText}"/>-->
+        </StackPanel>
+    </DataTemplate>
+
+    <Style TargetType="controls:AbstractRichTextBlockPresenter">
+        <Style.Setters>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="controls:AbstractTextBoxPresenter">
+                        <ContentControl ContentTemplate="{StaticResource DefaultAbstractRichTextBlockTemplate}"
+                                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,97 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="OwlCore.Wpf.AbstractUI.Themes.AbstractUIGroupPresenterStyle"
+    xmlns:controls="clr-namespace:OwlCore.Wpf.AbstractUI.Controls"
+    xmlns:abstractUIVm="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore"
+    xmlns:themes="clr-namespace:OwlCore.Wpf.AbstractUI.Themes"
+    xmlns:convertvis="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/OwlCore.Wpf;component/AbstractUI/Themes/AbstractUIResources.xaml"/>
+        <themes:AbstractBooleanStyle />
+        <themes:AbstractButtonStyle />
+        <themes:AbstractDataListStyle />
+        <themes:AbstractMultiChoiceUIElementStyle />
+        <themes:AbstractProgressUIElementStyle />
+        <themes:AbstractRichTextBlockStyle />
+        <themes:AbstractTextBoxStyle />
+    </ResourceDictionary.MergedDictionaries>
+
+    <convertvis:NotNullOrEmptyToVisibilityConverter x:Key="NotNullOrEmptyToVisibilityConverter"/>
+
+    <controls:AbstractUIGroupItemTemplateSelector x:Key="GroupTemplateSelector">
+        <controls:AbstractUIGroupItemTemplateSelector.BooleanTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractBooleanViewModel">
+                <controls:AbstractBooleanPresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.BooleanTemplate>
+
+        <controls:AbstractUIGroupItemTemplateSelector.ButtonTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractButtonViewModel">
+                <controls:AbstractButtonPresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.ButtonTemplate>
+
+        <controls:AbstractUIGroupItemTemplateSelector.DataListTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractDataListViewModel">
+                <controls:AbstractDataListPresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.DataListTemplate>
+
+        <controls:AbstractUIGroupItemTemplateSelector.MultiChoiceTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractMultiChoiceUIElementViewModel">
+                <controls:AbstractMultiChoicePresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.MultiChoiceTemplate>
+
+        <controls:AbstractUIGroupItemTemplateSelector.ProgressTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractProgressUIElementViewModel">
+                <controls:AbstractProgessUIElementPresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.ProgressTemplate>
+
+        <controls:AbstractUIGroupItemTemplateSelector.TextBoxTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractTextBoxViewModel">
+                <controls:AbstractTextBoxPresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.TextBoxTemplate>
+
+        <controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
+            <DataTemplate DataType="abstractUIVm:AbstractUIElementGroupViewModel">
+                <controls:AbstractUIGroupPresenter />
+            </DataTemplate>
+        </controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
+    </controls:AbstractUIGroupItemTemplateSelector>
+
+    <DataTemplate x:Key="DefaultAbstractUIElementGroupTemplate" DataType="abstractUIVm:AbstractUIElementGroupViewModel">
+        <StackPanel Margin="10,20">
+
+            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="30" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" 
+                       Visibility="{Binding Path=Title, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}, Mode=OneWay}"/>
+
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="18" FontWeight="Light" Opacity="0.5"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+
+            <ItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
+                          Margin="0,20,0,0"
+                          ItemTemplateSelector="{StaticResource GroupTemplateSelector}" />
+        </StackPanel>
+    </DataTemplate>
+
+    <Style TargetType="controls:AbstractUIGroupPresenter">
+        <Style.Setters>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="controls:AbstractUIGroupPresenter">
+                        <ContentControl  ContentTemplate="{StaticResource DefaultAbstractUIElementGroupTemplate}"
+                                         Content="{TemplateBinding ViewModel}"
+                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+    
+</ResourceDictionary>
+    

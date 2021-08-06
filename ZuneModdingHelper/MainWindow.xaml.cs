@@ -5,6 +5,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json.Linq;
+using OwlCore.AbstractUI.Models;
 using OwlCore.AbstractUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -51,23 +52,32 @@ namespace ZuneModdingHelper
             Mod mod = (Mod)((FrameworkElement)sender).DataContext;
             Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
 
-            progDialog.Maximum = 2;
+            progDialog.Maximum = 3;
             int numCompleted = 0;
 
+            // Stage 0: Initialize mod
             progDialog.SetTitle($"Installing '{mod.Title}'");
-            progDialog.SetMessage($"Preparing to install...");
+            progDialog.SetMessage("Preparing to install...");
             await mod.Init();
             progDialog.SetProgress(++numCompleted);
 
-            // TODO: Implement AbstractUI display for options
-            //if (mod.OptionsUI != null)
-            //{
-            //    var optionsDialog = new AbstractUIGroupDialog();
-            //    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUIElementGroupViewModel(mod.OptionsUI);
-            //    optionsDialog.ShowDialog();
-            //}
+            // Stage 1: Display AbstractUI for options
+            progDialog.SetMessage("Awaiting options...");
+            if (mod.OptionsUI != null)
+            {
+                var optionsDialog = new AbstractUIGroupDialog(mod.OptionsUI);
+                bool? optionsResult = optionsDialog.ShowDialog();
+                if (!(optionsResult.HasValue && optionsResult.Value))
+                {
+                    await progDialog.CloseAsync();
+                    return;
+                }
+                mod.OptionsUI = (AbstractUIElementGroup)optionsDialog.ViewModel.Model;
+            }
+            progDialog.SetProgress(++numCompleted);
 
-            progDialog.SetMessage($"Applying mod...");
+            // Stage 2: Apply mod
+            progDialog.SetMessage("Applying mod...");
             string applyResult = await mod.Apply();
             if (applyResult != null)
             {

@@ -23,8 +23,6 @@ namespace ZuneModCore.Mods
 
         public override string Id => nameof(VideoSyncMod);
 
-        public override AbstractUIElementGroup? OptionsUI => null;
-
 #pragma warning disable CA1416 // Validate platform compatibility
         public override async Task<string?> Apply()
         {

@@ -19,39 +19,42 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Rafael Rivera";
 
-        public override AbstractUIElementGroup OptionsUI => new(nameof(FeaturesOverrideMod))
+        public override AbstractUIElementGroup? GetDefaultOptionsUI()
         {
-            Title = "Select features:",
-            Items =
+            return new(nameof(FeaturesOverrideMod))
             {
-                // We don't know what some of these overrides do exactly, so hide them from the user.
-                // The ID is the name of the registry key, the label is the display name
+                Title = "Select features:",
+                Items =
+                {
+                    // We don't know what some of these overrides do exactly, so hide them from the user.
+                    // The ID is the name of the registry key, the label is the display name
 
-                new AbstractBooleanUIElement("Apps", "Apps"),
-                new AbstractBooleanUIElement("Art", "Art"),
-                new AbstractBooleanUIElement("Channels", "Channels"),
-                new AbstractBooleanUIElement("FirstLaunchIntroVideo", "First Launch Intro Video"),
-                new AbstractBooleanUIElement("Games", "Games"),
-                new AbstractBooleanUIElement("Marketplace", "Marketplace"),
-                new AbstractBooleanUIElement("MBRPreview", "[Marketplace] Media Preview"),
-                new AbstractBooleanUIElement("MBRPurchase", "[Marketplace] Media Purchase"),
-                new AbstractBooleanUIElement("MBRRental", "[Marketplace] Media Rental"),
-                new AbstractBooleanUIElement("Music", "Music"),
-                new AbstractBooleanUIElement("MusicVideos", "Music Videos"),
-                new AbstractBooleanUIElement("Nowplaying", "Now Playing"),
-                new AbstractBooleanUIElement("NowplayingArt", "Now Playing Art"),
-                new AbstractBooleanUIElement("Picks", "Picks"),
-                new AbstractBooleanUIElement("Podcasts", "Podcasts"),
-                new AbstractBooleanUIElement("QuickMixLocal", "Quick Mix (Local)"),
-                new AbstractBooleanUIElement("QuickMixZMP", "Quick Mix (ZMP)"),
-                new AbstractBooleanUIElement("Quickplay", "Quickplay"),
-                new AbstractBooleanUIElement("Sign In Available", "Sign In"),
-                new AbstractBooleanUIElement("Social", "Social"),
-                new AbstractBooleanUIElement("SocialMarketplace", "Social Marketplace"),
-                new AbstractBooleanUIElement("SubscriptionFreeTracks", "Subscription Free Tracks"),
-                new AbstractBooleanUIElement("Videos", "Videos"),
-            }
-        };
+                    new AbstractBooleanUIElement("Apps", "Apps"),
+                    new AbstractBooleanUIElement("Art", "Art"),
+                    new AbstractBooleanUIElement("Channels", "Channels"),
+                    new AbstractBooleanUIElement("FirstLaunchIntroVideo", "First Launch Intro Video"),
+                    new AbstractBooleanUIElement("Games", "Games"),
+                    new AbstractBooleanUIElement("Marketplace", "Marketplace"),
+                    new AbstractBooleanUIElement("MBRPreview", "[Marketplace] Media Preview"),
+                    new AbstractBooleanUIElement("MBRPurchase", "[Marketplace] Media Purchase"),
+                    new AbstractBooleanUIElement("MBRRental", "[Marketplace] Media Rental"),
+                    new AbstractBooleanUIElement("Music", "Music"),
+                    new AbstractBooleanUIElement("MusicVideos", "Music Videos"),
+                    new AbstractBooleanUIElement("Nowplaying", "Now Playing"),
+                    new AbstractBooleanUIElement("NowplayingArt", "Now Playing Art"),
+                    new AbstractBooleanUIElement("Picks", "Picks"),
+                    new AbstractBooleanUIElement("Podcasts", "Podcasts"),
+                    new AbstractBooleanUIElement("QuickMixLocal", "Quick Mix (Local)"),
+                    new AbstractBooleanUIElement("QuickMixZMP", "Quick Mix (ZMP)"),
+                    new AbstractBooleanUIElement("Quickplay", "Quickplay"),
+                    new AbstractBooleanUIElement("Sign In Available", "Sign In"),
+                    new AbstractBooleanUIElement("Social", "Social"),
+                    new AbstractBooleanUIElement("SocialMarketplace", "Social Marketplace"),
+                    new AbstractBooleanUIElement("SubscriptionFreeTracks", "Subscription Free Tracks"),
+                    new AbstractBooleanUIElement("Videos", "Videos"),
+                }
+            };
+        }
 
         public override IReadOnlyList<Type>? DependentMods => null;
 

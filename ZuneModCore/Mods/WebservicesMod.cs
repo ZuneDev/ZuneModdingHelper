@@ -21,18 +21,21 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup? OptionsUI => new(nameof(FeaturesOverrideMod))
+        public override AbstractUIElementGroup? GetDefaultOptionsUI()
         {
-            Title = string.Empty,
-            Items =
+            return new(nameof(FeaturesOverrideMod))
             {
-                new AbstractTextBox("hostBox", "zunes.tk", "zune.net")
+                Title = string.Empty,
+                Items =
                 {
-                    Title = "Host",
-                    TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
+                    new AbstractTextBox("hostBox", "zunes.tk", "zune.net")
+                    {
+                        Title = "Host",
+                        TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
+                    }
                 }
-            }
-        };
+            };
+        }
 
         public override IReadOnlyList<Type>? DependentMods => null;
 

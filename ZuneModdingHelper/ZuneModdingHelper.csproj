@@ -13,6 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\OwlCore.Wpf\OwlCore.Wpf.csproj" />
         <ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
     </ItemGroup>
 

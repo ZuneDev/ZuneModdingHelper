@@ -1,0 +1,46 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="OwlCore.Wpf.AbstractUI.Themes.AbstractBooleanStyle"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:abstractUI="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore"
+    xmlns:convertvis="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible"
+    xmlns:controls="clr-namespace:OwlCore.Wpf.AbstractUI.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/OwlCore.Wpf;component/AbstractUI/Themes/AbstractUIResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="DefaultAbstractBooleanTemplate" DataType="abstractUI:AbstractBooleanViewModel">
+        <StackPanel>
+            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
+                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
+                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+
+            <CheckBox ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" Content="{Binding Label, Mode=OneWay}" IsChecked="{Binding IsToggled, Mode=TwoWay}">
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="Checked">
+                        <behaviors:InvokeCommandAction Command="{Binding ToggledCommand}" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </CheckBox>
+        </StackPanel>
+    </DataTemplate>
+
+    <Style TargetType="controls:AbstractBooleanPresenter">
+        <Style.Setters>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="controls:AbstractBooleanPresenter">
+                        <ContentControl ContentTemplate="{StaticResource DefaultAbstractBooleanTemplate}"
+                                        HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
+</ResourceDictionary>

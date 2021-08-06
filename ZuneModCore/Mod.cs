@@ -30,13 +30,25 @@ namespace ZuneModCore
 
         public abstract string Author { get; }
 
+        public virtual AbstractUIElementGroup? GetDefaultOptionsUI() => null;
+
         public virtual Task Init() => Task.CompletedTask;
 
         public abstract Task<string?> Apply();
 
         public abstract Task<string?> Reset();
 
-        public abstract AbstractUIElementGroup? OptionsUI { get; }
+        private AbstractUIElementGroup? _OptionsUI;
+        public AbstractUIElementGroup? OptionsUI
+        {
+            get
+            {
+                if (_OptionsUI == null)
+                    _OptionsUI = GetDefaultOptionsUI();
+                return _OptionsUI;
+            }
+            set => _OptionsUI = value;
+        }
 
         public string StorageDirectory
         {

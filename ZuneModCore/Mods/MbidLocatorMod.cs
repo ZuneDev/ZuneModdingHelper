@@ -24,21 +24,24 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup OptionsUI => new(nameof(MbidLocatorMod))
+        public override AbstractUIElementGroup? GetDefaultOptionsUI()
         {
-            Title = "Select music folder:",
-            Items =
+            return new(nameof(MbidLocatorMod))
             {
-                new AbstractTextBox("folderBox"),
-                new AbstractBooleanUIElement("recursiveBox", "Search recursively")
-            }
-        };
+                Title = "Select music folder:",
+                Items =
+                {
+                    new AbstractTextBox("folderBox"),
+                    new AbstractBooleanUIElement("recursiveBox", "Search recursively")
+                }
+            };
+        }
 
         public override IReadOnlyList<Type>? DependentMods => null;
 
         public override async Task<string?> Apply()
         {
-            // TODO: Use user choices from AbstractUI
+            // Use user choices from AbstractUI
             string folderPath = ((AbstractTextBox)OptionsUI.Items[0]).Value;
             bool recursive = ((AbstractBooleanUIElement)OptionsUI.Items[1]).State;
             string errorString = string.Empty;

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Diagnostics" Version="7.0.3" />
+      <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+      <PackageReference Include="OwlCore" Version="0.0.21" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Converters\Bools\" />
+    </ItemGroup>
+
+</Project>
