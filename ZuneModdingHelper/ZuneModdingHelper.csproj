@@ -10,6 +10,7 @@
         <RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Platforms>x64;x86</Platforms>
+        <ApplicationIcon>ZMH_Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
