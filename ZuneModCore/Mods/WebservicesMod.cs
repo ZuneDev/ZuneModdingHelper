@@ -17,7 +17,7 @@ namespace ZuneModCore.Mods
         public override string Title => "Community Webservices";
 
         public override string Description => "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
-            "to use the community's recreation of Microsoft's Zune servers at zunes.tk (instead of zune.net).";
+            "to use the community's recreation of Microsoft's Zune servers at zunes.me (instead of zune.net).";
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
@@ -28,7 +28,7 @@ namespace ZuneModCore.Mods
                 Title = string.Empty,
                 Items =
                 {
-                    new AbstractTextBox("hostBox", "zunes.tk", "zune.net")
+                    new AbstractTextBox("hostBox", "zunes.me", "zune.net")
                     {
                         Title = "Host",
                         TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
