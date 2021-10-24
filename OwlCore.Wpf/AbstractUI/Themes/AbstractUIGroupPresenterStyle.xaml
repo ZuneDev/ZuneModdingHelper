@@ -23,43 +23,43 @@
     <controls:AbstractUIGroupItemTemplateSelector x:Key="GroupTemplateSelector">
         <controls:AbstractUIGroupItemTemplateSelector.BooleanTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractBooleanViewModel">
-                <controls:AbstractBooleanPresenter />
+                <controls:AbstractBooleanPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.BooleanTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.ButtonTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractButtonViewModel">
-                <controls:AbstractButtonPresenter />
+                <controls:AbstractButtonPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.ButtonTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.DataListTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractDataListViewModel">
-                <controls:AbstractDataListPresenter />
+                <controls:AbstractDataListPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.DataListTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.MultiChoiceTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractMultiChoiceUIElementViewModel">
-                <controls:AbstractMultiChoicePresenter />
+                <controls:AbstractMultiChoicePresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.MultiChoiceTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.ProgressTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractProgressUIElementViewModel">
-                <controls:AbstractProgessUIElementPresenter />
+                <controls:AbstractProgessUIElementPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.ProgressTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.TextBoxTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractTextBoxViewModel">
-                <controls:AbstractTextBoxPresenter />
+                <controls:AbstractTextBoxPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.TextBoxTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
             <DataTemplate DataType="abstractUIVm:AbstractUIElementGroupViewModel">
-                <controls:AbstractUIGroupPresenter />
+                <controls:AbstractUIGroupPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
     </controls:AbstractUIGroupItemTemplateSelector>

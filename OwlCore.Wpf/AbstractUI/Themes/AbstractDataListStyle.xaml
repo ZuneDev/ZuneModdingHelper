@@ -190,6 +190,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:AbstractDataListPresenter">
                         <ContentControl ContentTemplate="{StaticResource DefaultAbstractDataListTemplate}"
+                                        Content="{Binding}"
                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>
                 </Setter.Value>

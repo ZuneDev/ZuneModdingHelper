@@ -38,6 +38,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:AbstractTextBoxPresenter">
                         <ContentControl ContentTemplate="{StaticResource DefaultAbstractTextBoxTemplate}"
+                                        Content="{Binding}"
                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>
                 </Setter.Value>

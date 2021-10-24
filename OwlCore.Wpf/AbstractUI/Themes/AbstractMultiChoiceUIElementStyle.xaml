@@ -67,6 +67,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:AbstractMultiChoicePresenter">
                         <ContentControl ContentTemplate="{StaticResource DefaultAbstractMultipleChoiceTemplate}"
+                                        Content="{Binding}"
                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>
                 </Setter.Value>

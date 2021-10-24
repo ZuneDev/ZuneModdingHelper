@@ -30,6 +30,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:AbstractButtonPresenter">
                         <ContentControl ContentTemplate="{StaticResource DefaultAbstractBooleanUIElementTemplate}"
+                                        Content="{Binding}"
                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>
                 </Setter.Value>
