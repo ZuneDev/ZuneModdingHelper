@@ -12,18 +12,24 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="DefaultAbstractBooleanTemplate" DataType="abstractUI:AbstractBooleanViewModel">
-        <StackPanel>
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+        <StackPanel Margin="0,0,0,4">
+            <TextBlock Text="{Binding DataContext.Title, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}"
+                       FontSize="{StaticResource DefaultAbstractUITitleFontSize}"
+                       ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}"
+                       Visibility="{Binding DataContext.Title, TargetNullValue=Collapsed, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}" />
 
-            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
+            <TextBlock Text="{Binding DataContext.Subtitle, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}"
+                       FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
                        FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
                        Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+                       Visibility="{Binding DataContext.Subtitle, TargetNullValue=Collapsed, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}"/>
 
-            <CheckBox ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" Content="{Binding Label, Mode=OneWay}" IsChecked="{Binding IsToggled, Mode=TwoWay}">
+            <CheckBox ToolTipService.ToolTip="{Binding DataContext.TooltipText, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}"
+                      Content="{Binding DataContext.Label, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}"
+                      IsChecked="{Binding DataContext.IsToggled, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Checked">
-                        <behaviors:InvokeCommandAction Command="{Binding ToggledCommand}" />
+                        <behaviors:InvokeCommandAction Command="{Binding DataContext.ToggledCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=ContentControl}}" />
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
             </CheckBox>

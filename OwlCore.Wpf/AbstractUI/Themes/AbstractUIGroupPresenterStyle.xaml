@@ -74,7 +74,6 @@
                        Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
 
             <ItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
-                          Margin="0,20,0,0"
                           ItemTemplateSelector="{StaticResource GroupTemplateSelector}" />
         </StackPanel>
     </DataTemplate>
