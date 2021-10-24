@@ -31,7 +31,7 @@ namespace ZuneModCore.Mods
                 Title = "Select music folder:",
                 Items =
                 {
-                    new AbstractTextBox("folderBox"),
+                    new AbstractTextBox("folderBox", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)),
                     new AbstractBooleanUIElement("recursiveBox", "Search recursively")
                 }
             };
@@ -45,10 +45,6 @@ namespace ZuneModCore.Mods
             string folderPath = ((AbstractTextBox)OptionsUI.Items[0]).Value;
             bool recursive = ((AbstractBooleanUIElement)OptionsUI.Items[1]).State;
             string errorString = string.Empty;
-
-            // If the user didn't enter a folder, default to the "My Music" user folder
-            if (string.IsNullOrEmpty(folderPath))
-                folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
 
             // Verify that the folder exists
             DirectoryInfo folder = new(folderPath);
