@@ -50,7 +50,7 @@ namespace ZuneModCore.Mods
 
             // Make a backup if it doesn't already exist
             FileInfo zsDllBackupInfo = new(Path.Combine(StorageDirectory, "ZuneService.original.dll"));
-            if (zsDllBackupInfo.Exists)
+            if (!zsDllBackupInfo.Exists)
             {
                 File.Copy(zsDllInfo.FullName, zsDllBackupInfo.FullName, true);
             }

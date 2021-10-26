@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace ZuneModCore.Win32
 {
@@ -67,6 +70,44 @@ namespace ZuneModCore.Win32
             catch
             {
                 throw;
+            }
+        }
+
+#pragma warning disable CA1416 // Validate platform compatibility
+        public static void TakeOwnership(FileInfo file)
+        {
+            // Activate necessary admin privileges to make changes without NTFS perms
+            AddPrivilege("SeRestorePrivilege"); // Necessary to set Owner Permissions
+            AddPrivilege("SeBackupPrivilege"); // Necessary to bypass Traverse Checking
+            AddPrivilege("SeTakeOwnershipPrivilege"); // Necessary to override FilePermissions
+
+            // Get access control
+            FileSecurity security = file.GetAccessControl();
+            SecurityIdentifier? cu = WindowsIdentity.GetCurrent().User;
+
+            // Set owner to current user
+            security.SetOwner(cu);
+            security.SetAccessRule(new FileSystemAccessRule(cu, FileSystemRights.Modify, AccessControlType.Allow));
+
+            // Update the Access Control on the original WMVCORE.dll
+            file.SetAccessControl(security);
+        }
+#pragma warning restore CA1416 // Validate platform compatibility
+
+
+        public static bool TryTakeOwnership(FileInfo file, out Exception? exception)
+        {
+            try
+            {
+                TakeOwnership(file);
+
+                exception = null;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+                return false;
             }
         }
     }

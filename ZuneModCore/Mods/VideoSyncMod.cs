@@ -23,7 +23,6 @@ namespace ZuneModCore.Mods
 
         public override string Id => nameof(VideoSyncMod);
 
-#pragma warning disable CA1416 // Validate platform compatibility
         public override async Task<string?> Apply()
         {
             // Make a backup of the original file
@@ -39,23 +38,8 @@ namespace ZuneModCore.Mods
 
             try
             {
-                // Activate necessary admin privileges to make changes without NTFS perms
-                TokenManipulator.AddPrivilege("SeRestorePrivilege"); // Necessary to set Owner Permissions
-                TokenManipulator.AddPrivilege("SeBackupPrivilege"); // Necessary to bypass Traverse Checking
-                TokenManipulator.AddPrivilege("SeTakeOwnershipPrivilege"); // Necessary to override FilePermissions
-
-                // Get access control
-                FileSecurity security = wmvDllInfo.GetAccessControl();
-                SecurityIdentifier? cu = WindowsIdentity.GetCurrent().User;
-                if (cu == null)
-                    return "Failed to set permissions on WMVCORE.dll, current user was null.";
-
-                // Set owner to current user
-                security.SetOwner(cu);
-                security.SetAccessRule(new FileSystemAccessRule(cu, FileSystemRights.Modify, AccessControlType.Allow));
-
-                // Update the Access Control on the original WMVCORE.dll
-                wmvDllInfo.SetAccessControl(security);
+                // Take ownership of DLL
+                TokenManipulator.TakeOwnership(wmvDllInfo);
 
                 // Replace with pre-Anniversary Update WMVCORE.dll
                 await File.WriteAllBytesAsync(wmvDllInfo.FullName, wmvDllAniv);
@@ -71,7 +55,6 @@ namespace ZuneModCore.Mods
                 return ex.Message;
             }
         }
-#pragma warning restore CA1416 // Validate platform compatibility
 
         public override Task<string?> Reset()
         {
