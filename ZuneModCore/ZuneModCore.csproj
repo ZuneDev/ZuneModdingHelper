@@ -12,6 +12,7 @@
         <PackageReference Include="OwlCore" Version="0.0.21" />
         <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
         <PackageReference Include="TagLibSharp" Version="2.2.0" />
+        <PackageReference Include="Vestris.ResourceLib" Version="2.1.0" />
     </ItemGroup>
 
     <ItemGroup>

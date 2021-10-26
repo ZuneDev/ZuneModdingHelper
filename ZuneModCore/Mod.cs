@@ -17,6 +17,7 @@ namespace ZuneModCore
             new FeaturesOverrideMod(),
             new VideoSyncMod(),
             new WebservicesMod(),
+            new BackgroundImageMod(),
             new MbidLocatorMod(),
         }.AsReadOnly();
 
