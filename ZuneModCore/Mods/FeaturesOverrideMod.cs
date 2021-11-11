@@ -103,9 +103,7 @@ namespace ZuneModCore.Mods
 
         public override async Task<string?> Reset()
         {
-            foreach (AbstractUIElement uiElem in OptionsUI!.Items)
-                if (uiElem is AbstractBoolean boolElem)
-                    ResetFeatureOverride(boolElem.Id);
+            RegEdit.CurrentUserDeleteKey(ZUNE_FEATURESOVERRIDE_REGKEY);
 
             return null;
         }
@@ -117,6 +115,6 @@ namespace ZuneModCore.Mods
             RegEdit.CurrentUserGetBoolValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature);
 
         public static void ResetFeatureOverride(string feature) =>
-            RegEdit.CurrentUserDeleteValue(RegEdit.ZUNE_REG_PATH + "FeaturesOverride", feature);
+            RegEdit.CurrentUserDeleteValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature);
     }
 }
