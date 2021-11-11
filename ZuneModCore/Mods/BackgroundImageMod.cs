@@ -20,12 +20,12 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup? GetDefaultOptionsUI()
+        public override AbstractUICollection? GetDefaultOptionsUI()
         {
             return new(nameof(BackgroundImageMod))
             {
                 Title = "Select background image:",
-                Items =
+                Items = new List<AbstractUIElement>
                 {
                     new AbstractTextBox("fileBox", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
                 }

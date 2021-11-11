@@ -31,7 +31,7 @@ namespace ZuneModCore
 
         public abstract string Author { get; }
 
-        public virtual AbstractUIElementGroup? GetDefaultOptionsUI() => null;
+        public virtual AbstractUICollection? GetDefaultOptionsUI() => null;
 
         public virtual Task Init() => Task.CompletedTask;
 
@@ -39,8 +39,8 @@ namespace ZuneModCore
 
         public abstract Task<string?> Reset();
 
-        private AbstractUIElementGroup? _OptionsUI;
-        public AbstractUIElementGroup? OptionsUI
+        private AbstractUICollection? _OptionsUI;
+        public AbstractUICollection? OptionsUI
         {
             get
             {

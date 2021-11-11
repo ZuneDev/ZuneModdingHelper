@@ -26,7 +26,7 @@
 
             <CheckBox ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
                       Content="{Binding Label, Mode=OneWay}"
-                      IsChecked="{Binding IsToggled, Mode=TwoWay}">
+                      IsChecked="{Binding IsToggled, Mode=OneWay}">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Checked">
                         <behaviors:InvokeCommandAction Command="{Binding ToggledCommand}" />

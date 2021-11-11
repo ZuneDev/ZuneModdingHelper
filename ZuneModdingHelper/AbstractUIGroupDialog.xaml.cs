@@ -11,13 +11,13 @@ namespace ZuneModdingHelper
     /// </summary>
     public partial class AbstractUIGroupDialog : MetroWindow
     {
-        public AbstractUIGroupDialog(AbstractUIElementGroupViewModel viewModel)
+        public AbstractUIGroupDialog(AbstractUICollectionViewModel viewModel)
         {
             ViewModel = viewModel;
             DataContext = ViewModel;
             InitializeComponent();
         }
-        public AbstractUIGroupDialog(AbstractUIElementGroup group) : this(new AbstractUIElementGroupViewModel(group))
+        public AbstractUIGroupDialog(AbstractUICollection group) : this(new AbstractUICollectionViewModel(group))
         {
 
         }
@@ -32,12 +32,12 @@ namespace ZuneModdingHelper
             Close();
         }
 
-        public AbstractUIElementGroupViewModel ViewModel
+        public AbstractUICollectionViewModel ViewModel
         {
-            get => (AbstractUIElementGroupViewModel)GetValue(ViewModelProperty);
+            get => (AbstractUICollectionViewModel)GetValue(ViewModelProperty);
             set => SetValue(ViewModelProperty, value);
         }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-            nameof(ViewModel), typeof(AbstractUIElementGroupViewModel), typeof(AbstractUIGroupDialog));
+            nameof(ViewModel), typeof(AbstractUICollectionViewModel), typeof(AbstractUIGroupDialog));
     }
 }

@@ -16,7 +16,7 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         /// Backing property for <see cref="ViewModel"/>.
         /// </summary>
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register(nameof(ViewModel), typeof(AbstractUIElementGroupViewModel), typeof(AbstractUIGroupPresenter), new PropertyMetadata(null, (d, e) => ((AbstractUIGroupPresenter)d).OnViewModelChanged()));
+            DependencyProperty.Register(nameof(ViewModel), typeof(AbstractUICollectionViewModel), typeof(AbstractUIGroupPresenter), new PropertyMetadata(null, (d, e) => ((AbstractUIGroupPresenter)d).OnViewModelChanged()));
 
         /// <summary>
         /// Backing property for <see cref="TemplateSelector"/>.
@@ -27,9 +27,9 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         /// <summary>
         /// The ViewModel for this UserControl.
         /// </summary>
-        public AbstractUIElementGroupViewModel? ViewModel
+        public AbstractUICollectionViewModel? ViewModel
         {
-            get => (AbstractUIElementGroupViewModel)GetValue(ViewModelProperty);
+            get => (AbstractUICollectionViewModel)GetValue(ViewModelProperty);
             set => SetValue(ViewModelProperty, value);
         }
 
@@ -71,10 +71,10 @@ namespace OwlCore.Wpf.AbstractUI.Controls
 
             _dataContextBeingSet = true;
 
-            if (DataContext is AbstractUIElementGroup elementGroup)
-                ViewModel = new AbstractUIElementGroupViewModel(elementGroup);
+            if (DataContext is AbstractUICollection elementGroup)
+                ViewModel = new AbstractUICollectionViewModel(elementGroup);
 
-            if (DataContext is AbstractUIElementGroupViewModel elementGroupViewModel)
+            if (DataContext is AbstractUICollectionViewModel elementGroupViewModel)
                 ViewModel = elementGroupViewModel;
 
             _dataContextBeingSet = false;

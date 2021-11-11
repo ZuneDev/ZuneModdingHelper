@@ -40,13 +40,13 @@
         </controls:AbstractUIGroupItemTemplateSelector.DataListTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.MultiChoiceTemplate>
-            <DataTemplate DataType="abstractUIVm:AbstractMultiChoiceUIElementViewModel">
+            <DataTemplate DataType="abstractUIVm:AbstractMultiChoiceViewModel">
                 <controls:AbstractMultiChoicePresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.MultiChoiceTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.ProgressTemplate>
-            <DataTemplate DataType="abstractUIVm:AbstractProgressUIElementViewModel">
+            <DataTemplate DataType="abstractUIVm:AbstractProgressIndicatorViewModel">
                 <controls:AbstractProgessUIElementPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.ProgressTemplate>
@@ -58,13 +58,13 @@
         </controls:AbstractUIGroupItemTemplateSelector.TextBoxTemplate>
 
         <controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
-            <DataTemplate DataType="abstractUIVm:AbstractUIElementGroupViewModel">
+            <DataTemplate DataType="abstractUIVm:AbstractUICollectionViewModel">
                 <controls:AbstractUIGroupPresenter DataContext="{Binding}" />
             </DataTemplate>
         </controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
     </controls:AbstractUIGroupItemTemplateSelector>
 
-    <DataTemplate x:Key="DefaultAbstractUIElementGroupTemplate" DataType="abstractUIVm:AbstractUIElementGroupViewModel">
+    <DataTemplate x:Key="DefaultAbstractUICollectionTemplate" DataType="abstractUIVm:AbstractUICollectionViewModel">
         <StackPanel Margin="10,20">
 
             <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="30" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" 
@@ -83,7 +83,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:AbstractUIGroupPresenter">
-                        <ContentControl  ContentTemplate="{StaticResource DefaultAbstractUIElementGroupTemplate}"
+                        <ContentControl  ContentTemplate="{StaticResource DefaultAbstractUICollectionTemplate}"
                                          Content="{TemplateBinding ViewModel}"
                                          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>

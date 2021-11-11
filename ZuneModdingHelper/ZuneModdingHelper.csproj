@@ -20,11 +20,11 @@
 
     <ItemGroup>
         <PackageReference Include="Flurl.Http" Version="3.2.0" />
-        <PackageReference Include="MahApps.Metro" Version="2.4.7" />
-        <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.3.0" />
-        <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.3.0" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-        <PackageReference Include="OwlCore" Version="0.0.21" />
+        <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+        <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.4.0" />
+        <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.4.0" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
+        <PackageReference Include="OwlCore" Version="0.0.31" />
         <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     </ItemGroup>
 

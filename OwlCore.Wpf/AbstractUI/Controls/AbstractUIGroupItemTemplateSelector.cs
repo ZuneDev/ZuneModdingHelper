@@ -56,7 +56,7 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         }
 
         /// <summary>
-        /// The data template used to display an <see cref="AbstractUIElementGroup"/>.
+        /// The data template used to display an <see cref="AbstractUICollection"/>.
         /// </summary>
         public DataTemplate? ElementGroupTemplate { get; set; }
 
@@ -76,7 +76,7 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         public DataTemplate ButtonTemplate { get; set; }
 
         /// <summary>
-        /// The data template used to display an <see cref="AbstractBooleanUIElement"/>.
+        /// The data template used to display an <see cref="AbstractBoolean"/>.
         /// </summary>
         public DataTemplate BooleanTemplate { get; set; }
 
@@ -93,7 +93,7 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         /// <inheritdoc />
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (!new Themes.AbstractUIGroupPresenterStyle().TryGetValue("DefaultAbstractUIElementGroupTemplate", out var elementGroupTemplate))
+            if (!new Themes.AbstractUIGroupPresenterStyle().TryGetValue("DefaultAbstractUICollectionTemplate", out var elementGroupTemplate))
                 ElementGroupTemplate = ThrowHelper.ThrowArgumentNullException<DataTemplate>(nameof(elementGroupTemplate));
 
             ElementGroupTemplate = (DataTemplate)elementGroupTemplate;
@@ -103,10 +103,10 @@ namespace OwlCore.Wpf.AbstractUI.Controls
                 AbstractTextBoxViewModel => TextBoxTemplate,
                 AbstractDataListViewModel => DataListTemplate,
                 AbstractButtonViewModel => ButtonTemplate,
-                AbstractMultiChoiceUIElementViewModel => MultiChoiceTemplate,
+                AbstractMultiChoiceViewModel => MultiChoiceTemplate,
                 AbstractBooleanViewModel => BooleanTemplate,
-                AbstractProgressUIElementViewModel => ProgressTemplate,
-                AbstractUIElementGroupViewModel => ElementGroupTemplate,
+                AbstractProgressIndicatorViewModel => ProgressTemplate,
+                AbstractUICollectionViewModel => ElementGroupTemplate,
                 _ => null!
             };
         }

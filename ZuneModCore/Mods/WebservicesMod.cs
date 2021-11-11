@@ -21,12 +21,12 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup? GetDefaultOptionsUI()
+        public override AbstractUICollection? GetDefaultOptionsUI()
         {
             return new(nameof(FeaturesOverrideMod))
             {
                 Title = string.Empty,
-                Items =
+                Items = new List<AbstractUIElement>
                 {
                     new AbstractTextBox("hostBox", "zunes.me", "zune.net")
                     {

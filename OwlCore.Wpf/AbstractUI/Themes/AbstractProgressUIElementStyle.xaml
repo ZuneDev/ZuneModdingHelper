@@ -11,7 +11,7 @@
         <ResourceDictionary Source="pack://application:,,,/OwlCore.Wpf;component/AbstractUI/Themes/AbstractUIResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <DataTemplate x:Key="DefaultAbstractProgressUIElementTemplate" DataType="abstractUI:AbstractProgressUIElementViewModel">
+    <DataTemplate x:Key="DefaultAbstractProgressUIElementTemplate" DataType="abstractUI:AbstractProgressIndicatorViewModel">
         <StackPanel>
             <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
 
@@ -29,7 +29,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="controls:AbstractButtonPresenter">
-                        <ContentControl ContentTemplate="{StaticResource DefaultAbstractBooleanUIElementTemplate}"
+                        <ContentControl ContentTemplate="{StaticResource DefaultAbstractBooleanTemplate}"
                                         Content="{Binding}"
                                         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>

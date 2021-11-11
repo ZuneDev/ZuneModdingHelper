@@ -68,7 +68,7 @@ namespace ZuneModdingHelper
                     await progDialog.CloseAsync();
                     return;
                 }
-                mod.OptionsUI = (AbstractUIElementGroup)optionsDialog.ViewModel.Model;
+                mod.OptionsUI = (AbstractUICollection)optionsDialog.ViewModel.Model;
             }
             progDialog.SetProgress(++numCompleted);
 
@@ -116,7 +116,7 @@ namespace ZuneModdingHelper
                 //if (mod.OptionsUI != null)
                 //{
                 //    var optionsDialog = new AbstractUIGroupDialog();
-                //    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUIElementGroupViewModel(mod.OptionsUI);
+                //    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUICollectionViewModel(mod.OptionsUI);
                 //    optionsDialog.ShowDialog();
                 //}
 

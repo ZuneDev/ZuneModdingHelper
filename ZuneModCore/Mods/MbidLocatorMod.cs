@@ -24,15 +24,15 @@ namespace ZuneModCore.Mods
 
         public override string Author => "Joshua \"Yoshi\" Askharoun";
 
-        public override AbstractUIElementGroup? GetDefaultOptionsUI()
+        public override AbstractUICollection? GetDefaultOptionsUI()
         {
             return new(nameof(MbidLocatorMod))
             {
                 Title = "Select music folder:",
-                Items =
+                Items = new List<AbstractUIElement>
                 {
                     new AbstractTextBox("folderBox", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)),
-                    new AbstractBooleanUIElement("recursiveBox", "Search recursively")
+                    new AbstractBoolean("recursiveBox", "Search recursively")
                 }
             };
         }
@@ -42,8 +42,8 @@ namespace ZuneModCore.Mods
         public override async Task<string?> Apply()
         {
             // Use user choices from AbstractUI
-            string folderPath = ((AbstractTextBox)OptionsUI.Items[0]).Value;
-            bool recursive = ((AbstractBooleanUIElement)OptionsUI.Items[1]).State;
+            string folderPath = ((AbstractTextBox)OptionsUI!.Items[0]).Value;
+            bool recursive = ((AbstractBoolean)OptionsUI.Items[1]).State;
             string errorString = string.Empty;
 
             // Verify that the folder exists
