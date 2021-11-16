@@ -5,11 +5,12 @@
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Version>2021.10.23.0</Version>
+        <Version>2021.11.14.0</Version>
         <Authors>Joshua "Yoshi" Askharoun</Authors>
         <RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <Platforms>x64;x86</Platforms>
+		<LangVersion>latest</LangVersion>
         <ApplicationIcon>ZMH_Icon.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -24,8 +25,9 @@
         <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.4.0" />
         <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.4.0" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.37" />
-        <PackageReference Include="OwlCore" Version="0.0.31" />
+        <PackageReference Include="OwlCore" Version="0.0.33" />
         <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+		<PackageReference Include="Syroot.Windows.IO.KnownFolders" Version="1.2.3" />
     </ItemGroup>
 
 </Project>
