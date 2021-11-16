@@ -86,6 +86,7 @@ namespace ZuneModCore.Mods
                 // Patch ZuneServices.dll to use the new host instead of zune.net
                 zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
                 string endpointBlock = System.Text.Encoding.Unicode.GetString(zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH));
+                endpointBlock = endpointBlock.Replace("resources." + oldHost, "www.zuneupdate.com");    // Use zuneupdate.com until resources.zunes.me is online
                 endpointBlock = endpointBlock.Replace(oldHost, newHost);
                 byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
                 if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
