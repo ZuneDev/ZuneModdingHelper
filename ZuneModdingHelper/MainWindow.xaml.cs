@@ -260,7 +260,7 @@ namespace ZuneModdingHelper
                 CommonOpenFileDialog dialog = new()
                 {
                     IsFolderPicker = true,
-                    DefaultFileName = Mod.ZuneInstallDir
+                    DefaultDirectory = Mod.ZuneInstallDir
                 };
                 CommonFileDialogResult result = dialog.ShowDialog();
                 if (result == CommonFileDialogResult.Ok)
