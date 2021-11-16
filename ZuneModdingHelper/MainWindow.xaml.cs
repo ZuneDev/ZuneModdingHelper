@@ -6,6 +6,7 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json.Linq;
 using OwlCore.AbstractUI.Models;
+using Syroot.Windows.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -166,10 +167,11 @@ namespace ZuneModdingHelper
             {
                 // Get releases list from GitHub
                 List<JObject> releases = await "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
-                    .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.Version)
+                    .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.VersionStr)
                     .GetJsonAsync<List<JObject>>();
                 JObject latest = releases[0];
-                if (!App.CheckIfNewerVersion(latest["tag_name"].Value<string>()))
+                string latestVerStr = latest["tag_name"].Value<string>();
+                if (!ReleaseVersion.TryParse(latestVerStr, out var latestVer) || App.Version >= latestVer)
                 {
                     // Already up-to-date
 
@@ -192,7 +194,7 @@ namespace ZuneModdingHelper
                     NegativeButtonText = "Later"
                 };
                 await checkDialog.CloseAsync();
-                var promptResult = await this.ShowMessageAsync("Update available", $"Relase {latest["name"]} is available. Would you like to download it now?",
+                var promptResult = await this.ShowMessageAsync("Update available", $"Release {latest["name"]} is available. Would you like to download it now?",
                     MessageDialogStyle.AffirmativeAndNegative, promptSettings);
                 bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
 
@@ -221,7 +223,8 @@ namespace ZuneModdingHelper
                     // Ask user to save file
                     Microsoft.Win32.SaveFileDialog saveFileDialog = new()
                     {
-                        FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", assetName)
+                        FileName = assetName,
+                        InitialDirectory = new KnownFolder(KnownFolderType.Downloads).Path
                     };
                     bool dialogResult = saveFileDialog.ShowDialog() ?? false;
                     await progDialog.CloseAsync();
@@ -240,6 +243,9 @@ namespace ZuneModdingHelper
             catch
             {
                 App.OpenInBrowser("https://github.com/ZuneDev/ZuneModdingHelper/releases");
+            }
+            finally
+            {
                 if (checkDialog.IsOpen)
                     await checkDialog.CloseAsync();
             }
@@ -266,7 +272,7 @@ namespace ZuneModdingHelper
             {
                 // TODO: Fallback to pre-Vista dialog
                 this.ShowMessageAsync("Error",
-                    "Please use File Explorer to locate an copy the path.",
+                    "Please use File Explorer to locate and copy the path.",
                     settings: defaultMetroDialogSettings);
             }
         }

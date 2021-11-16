@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -13,9 +12,8 @@ namespace ZuneModdingHelper
     {
         public const string Title = "Zune Modding Helper";
 
-        public static readonly Version VersionNum = new(2021, 10, 23, 0);
-        public const string VersionStatus = "alpha";
-        public static readonly string Version = VersionNum.ToString() + (VersionStatus != string.Empty ? "-" + VersionStatus : string.Empty);
+        public static readonly ReleaseVersion Version = new(2021, 11, 14, 0, Phase.Alpha);
+        public static readonly string VersionStr = Version.ToString();
 
         public const string DonateLink = "https://www.paypal.me/YoshiAsk";
 
@@ -39,18 +37,6 @@ namespace ZuneModdingHelper
             {
                 UseShellExecute = true
             });
-        }
-
-        public static bool CheckIfNewerVersion(string otherStr)
-        {
-            int idxSplit = otherStr.IndexOf('-');
-            Version otherNum = new(otherStr[..idxSplit]);
-            string otherStatus = otherStr[(idxSplit + 1)..];
-
-            // TODO: This assumes that the VersionStatus is "alpha"
-            bool isNotAlpha = otherStatus != VersionStatus;
-            bool isNewer = otherNum > VersionNum;
-            return isNotAlpha || isNewer;
         }
     }
 }

@@ -34,7 +34,7 @@
                 </mah:Flyout.Header>
                 <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
                     <Run Text="{x:Static local:App.Title}" FontWeight="Bold" FontSize="16"/><LineBreak/>
-                    <Run Text="{x:Static local:App.Version}"/><LineBreak/>
+                    <Run Text="{x:Static local:App.VersionStr}"/><LineBreak/>
                     <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
                         <Run Text="View source"/>
                     </Hyperlink><LineBreak/>
