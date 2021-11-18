@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-        <PackageReference Include="OwlCore" Version="0.0.31" />
+        <PackageReference Include="OwlCore" Version="0.0.33" />
         <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
         <PackageReference Include="TagLibSharp" Version="2.2.0" />
         <PackageReference Include="Vestris.ResourceLib" Version="2.1.0" />
