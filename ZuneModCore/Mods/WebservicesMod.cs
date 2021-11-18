@@ -1,4 +1,5 @@
-﻿using OwlCore.AbstractUI.Models;
+﻿using OwlCore;
+using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,10 @@ namespace ZuneModCore.Mods
     {
         private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
         private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
+        private const string WEBSERVICE_ICON_TESTING = "\uE72C";
+        private const string WEBSERVICE_ICON_SUCCESS = "\uE73E";
+        private const string WEBSERVICE_ICON_UNREACHABLE = "\uF384";
+        private const string WEBSERVICE_ICON_UNAVAILABLE = "\uE894";
 
         public override string Id => nameof(WebservicesMod);
 
@@ -32,12 +37,88 @@ namespace ZuneModCore.Mods
                     {
                         Title = "Host",
                         TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
+                    },
+                    new AbstractDataList("hostsTest", new List<AbstractUIMetadata>()
+                        {
+                            GetWebserviceAvailabilityUI("Main website", "www"),
+                            GetWebserviceAvailabilityUI("Social website", "social"),
+                            GetWebserviceAvailabilityUI("Catalog", "catalog"),
+                            GetWebserviceAvailabilityUI("Image catalog", "image.catalog"),
+                            GetWebserviceAvailabilityUI("Social", "socialapi"),
+                            GetWebserviceAvailabilityUI("Social [Comments]", "comments"),
+                            GetWebserviceAvailabilityUI("Social [Inbox]", "inbox"),
+                            GetWebserviceAvailabilityUI("Commerce [Sign in]", "commerce"),
+                            GetWebserviceAvailabilityUI("Mix", "mix"),
+                            GetWebserviceAvailabilityUI("Resources [Firmware]", "resources"),
+                            GetWebserviceAvailabilityUI("Statistics", "stats"),
+                        }
+                    )
+                    {
+                        Title = "Availability",
+                        Subtitle = "Tests availability of each known web service on the new host.",
+                        IsUserEditingEnabled = false,
+                        PreferredDisplayMode = AbstractDataListPreferredDisplayMode.Grid,
                     }
                 }
             };
         }
 
+        private static AbstractUIMetadata GetWebserviceAvailabilityUI(string name, string subDomain)
+        {
+            return new("serviceTestUI_" + subDomain)
+            {
+                Title = name,
+                IconCode = WEBSERVICE_ICON_TESTING
+            };
+        }
+
         public override IReadOnlyList<Type>? DependentMods => null;
+
+        public override Task Init()
+        {
+            Threading.SetPrimarySynchronizationContext(System.Threading.SynchronizationContext.Current!);
+
+            AbstractTextBox newHostBox = (AbstractTextBox)OptionsUI!.Items[0];
+            System.Net.NetworkInformation.Ping ping = new();
+            async void OnHostChanged(object? sender, string newHost)
+            {
+                ping.SendAsyncCancel();
+                AbstractDataList list = (AbstractDataList)OptionsUI!.Items[1];
+                // Reset all statuses
+                foreach (AbstractUIMetadata metadata in list.Items)
+                    metadata.IconCode = WEBSERVICE_ICON_TESTING;
+
+                // Update all statuses
+                foreach (AbstractUIMetadata metadata in list.Items)
+                {
+                    string url = (metadata.Id.Split('_')[1] + '.' + newHost).Replace("www.", string.Empty);
+                    try
+                    {
+                        var pingResult = await ping.SendPingAsync(url);
+                        if (pingResult.Status == System.Net.NetworkInformation.IPStatus.Success)
+                        {
+                            metadata.IconCode = WEBSERVICE_ICON_SUCCESS;
+                            metadata.ImagePath = "http://free.pagepeeker.com/v2/thumbs.php?size=m&url=" + url;
+                        }
+                        else
+                        {
+                            metadata.IconCode = WEBSERVICE_ICON_UNAVAILABLE;
+                            metadata.Subtitle = pingResult.Status.ToString();
+                        }
+                    }
+                    catch (System.Net.NetworkInformation.PingException ex)
+                    {
+                        metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
+                        if (ex.InnerException?.Message != null)
+                            metadata.Subtitle = ex.InnerException.Message;
+                    }
+                }
+            }
+            OnHostChanged(newHostBox, newHostBox.Value);
+            newHostBox.ValueChanged += OnHostChanged;
+
+            return Task.CompletedTask;
+        }
 
         public override async Task<string?> Apply()
         {

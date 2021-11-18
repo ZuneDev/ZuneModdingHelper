@@ -15,6 +15,7 @@
 
     <convertvis:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     <convertvis:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    <convertvis:NotNullOrEmptyToVisibilityConverter x:Key="NotNullOrEmptyToVisibilityConverter"/>
     <converters:SelectionChangedEventArgsToClickedItemConverter x:Key="SelectionChangedEventArgsToClickedItemConverter" />
     
     <DataTemplate x:Key="DefaultAbstractDataListListTemplate" DataType="abstractUI:AbstractDataListViewModel">
@@ -120,6 +121,11 @@
                     </Setter>
                 </Style>
             </ListView.ItemContainerStyle>
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate DataType="abstractUI:AbstractDataListItemViewModel">
                     <Grid ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" Width="150" Margin="15">
@@ -136,9 +142,10 @@
 
                         <Border BorderBrush="White" BorderThickness="1">
                             <Grid Height="150" Width="150" Grid.ColumnSpan="2">
-                                <TextBlock Text="{Binding IconCode}" FontFamily="Segoe MDL2 Assets" FontSize="34" />
+                                <TextBlock Text="{Binding IconCode}" FontFamily="Segoe MDL2 Assets" FontSize="34"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <TextBlock Visibility="{Binding IsAddItem, Converter={StaticResource BoolToVisibilityConverter}}" Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="34" />
-                                <Image Source="{Binding ImageSource, Mode=OneWay}" />
+                                <Image Source="{Binding ImageSource, Mode=OneWay}"/>
                             </Grid>
                         </Border>
 
@@ -173,7 +180,7 @@
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
                        FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
                        Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}}"/>
 
             <ContentControl Content="{Binding}">
                 <ContentControl.ContentTemplateSelector>
