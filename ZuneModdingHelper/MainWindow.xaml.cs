@@ -9,7 +9,9 @@ using OwlCore.AbstractUI.Models;
 using Syroot.Windows.IO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Navigation;
 using ZuneModCore;
@@ -37,10 +39,21 @@ namespace ZuneModdingHelper
             ThemeManager.Current.SyncTheme();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ModList.ItemsSource = Mod.AvailableMods;
             ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
+
+            // Show a warning if Zune is running
+            Process[] procs = Process.GetProcessesByName("Zune");
+            string zuneExePath = Path.Combine(Mod.ZuneInstallDir, "Zune.exe");
+            if (procs.Length > 0 && procs.Any(p => p.MainModule.FileName == zuneExePath))
+            {
+                await this.ShowMessageAsync(
+                    "Warning",
+                    "The Zune software is currently running. You may run into issues applying or resetting mods.",
+                    settings: defaultMetroDialogSettings);
+            }
         }
 
         private async void ModInstallButton_Click(object sender, RoutedEventArgs e)
