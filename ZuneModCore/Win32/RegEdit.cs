@@ -40,21 +40,22 @@ namespace ZuneModCore.Win32
 
         public static void CurrentUserDeleteKey(string key)
         {
-            string[] targetKeySplit = key.Split('\\', System.StringSplitOptions.RemoveEmptyEntries);
             using RegistryKey? targetKey = Registry.CurrentUser.OpenSubKey(key, true);
             if (targetKey == null)
                 // Key is already deleted
                 return;
 
-            // Delete all subkeys
-            RegistryKey? hdr = targetKey.OpenSubKey(targetKeySplit[^1], true);
-            if (hdr != null)
-                foreach (string subKey in hdr.GetSubKeyNames())
-                    hdr.DeleteSubKey(subKey);
-            hdr?.Close();
+            // Delete target subkeys
+            if (targetKey.SubKeyCount > 0)
+                targetKey.DeleteSubKeyTree(key, false);
+
+            // Delete target values
+            string[] values = targetKey.GetValueNames();
+            foreach (string value in values)
+                targetKey.DeleteValue(value, false);
 
             // Delete target key
-            targetKey.DeleteSubKeyTree(targetKeySplit[^1]);
+            Registry.CurrentUser.DeleteSubKey(key);
         }
 
         public static void CurrentUserDeleteValue(string key, string name)
