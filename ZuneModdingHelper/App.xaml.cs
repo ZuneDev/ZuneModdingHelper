@@ -15,7 +15,7 @@ namespace ZuneModdingHelper
         public static readonly ReleaseVersion Version = new(2021, 12, 30, 0, Phase.Alpha);
         public static readonly string VersionStr = Version.ToString();
 
-        public const string DonateLink = "https://www.paypal.me/YoshiAsk";
+        public const string DonateLink = "http://josh.askharoun.com/donate";
 
         protected override void OnStartup(StartupEventArgs e)
         {
