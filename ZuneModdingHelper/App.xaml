@@ -12,6 +12,8 @@
                 <!-- Theme setting -->
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Magenta.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

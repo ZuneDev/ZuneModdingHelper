@@ -9,14 +9,21 @@
                  mc:Ignorable="d"
                  Title="{x:Static local:App.Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen"
                  Loaded="Window_Loaded">
-    
+
+    <mah:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <mah:FontIcon Glyph="&#xE000;" FontFamily="{StaticResource ZMHIcons}"
+                          Margin="0,0,-6,0"/>
+        </DataTemplate>
+    </mah:MetroWindow.IconTemplate>
+
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" ToolTip="Check for updates" Click="UpdatesButton_Click">
-                <mah:FontIcon Glyph="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="18"/>
+                <mah:FontIcon Glyph="&#xE003;" FontFamily="{StaticResource ZMHIcons}"/>
             </Button>
             <Button Style="{StaticResource MahApps.Styles.Button.WindowCommands}" ToolTip="About" Click="AboutButton_Click">
-                <mah:FontIcon Glyph="&#xE946;" FontFamily="Segoe MDL2 Assets"/>
+                <mah:FontIcon Glyph="&#xE004;" FontFamily="{StaticResource ZMHIcons}"/>
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
@@ -27,24 +34,43 @@
                 <mah:Flyout.Header>
                     <Grid>
                         <TextBlock Text="About" FontSize="26" FontWeight="Bold"/>
-                        <Button Content="Donate" Click="DonateButton_Click" ToolTip="Support development of this and other projects"
-                                Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Right" Margin="4"
-                                Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}"/>
+                        <Button Click="DonateButton_Click" ToolTip="Support development of this and other projects"
+                                HorizontalAlignment="Right" Margin="4"
+                                Style="{StaticResource MahApps.Styles.Button.MetroSquare.Accent}">
+                            <mah:FontIcon Glyph="&#xE006;" FontFamily="{StaticResource ZMHIcons}"/>
+                        </Button>
                     </Grid>
                 </mah:Flyout.Header>
-                <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
-                    <Run Text="{x:Static local:App.Title}" FontWeight="Bold" FontSize="16"/><LineBreak/>
-                    <Run Text="{x:Static local:App.VersionStr}"/><LineBreak/>
-                    <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
-                        <Run Text="View source"/>
-                    </Hyperlink><LineBreak/>
-                    <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper/releases" RequestNavigate="Link_RequestNavigate">
-                        <Run Text="View releases"/>
-                    </Hyperlink><LineBreak/><LineBreak/>
-                    <Run Text="Developed by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
-                    <Run Text="Mods included with authors' permission."/><LineBreak/><LineBreak/>
-                    <Run Text="I am not liable for any damages caused directly or indirectly by this tool or any of the mods it contains."/>
-                </TextBlock>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock FontSize="14" Padding="16" TextWrapping="Wrap">
+                        <Run Text="{x:Static local:App.Title}" FontWeight="Bold" FontSize="16"/><LineBreak/>
+                        <Run Text="{x:Static local:App.VersionStr}"/><LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
+                            <Run Text="&#xE005;" FontFamily="{StaticResource ZMHIcons}"/>
+                            <Run Text="View source"/>
+                        </Hyperlink><LineBreak/>
+                        <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper/releases" RequestNavigate="Link_RequestNavigate">
+                            <Run Text="&#xE003;" FontFamily="{StaticResource ZMHIcons}"/>
+                            <Run Text="View releases"/>
+                        </Hyperlink><LineBreak/>
+                        <Hyperlink NavigateUri="https://reddit.com/r/Zune" RequestNavigate="Link_RequestNavigate">
+                            <Run Text="&#xE001;" FontFamily="{StaticResource ZMHIcons}"/>
+                            <Run Text="Join r/Zune subreddit"/>
+                        </Hyperlink><LineBreak/>
+                        <Hyperlink NavigateUri="https://discord.zunes.me/" RequestNavigate="Link_RequestNavigate">
+                            <Run Text="&#xE002;" FontFamily="{StaticResource ZMHIcons}"/>
+                            <Run Text="Join r/Zune Discord server"/>
+                        </Hyperlink><LineBreak/><LineBreak/>
+                        <Run Text="Developed by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
+                        <Run Text="Mods included with authors' permission."/><LineBreak/><LineBreak/>
+                        <Run Text="I am not liable for any damages caused directly or indirectly by this tool or any of the mods it contains."/>
+                    </TextBlock>
+                </Grid>
             </mah:Flyout>
         </mah:FlyoutsControl>
     </mah:MetroWindow.Flyouts>
@@ -54,7 +80,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <ListView x:Name="ModList" HorizontalContentAlignment="Stretch"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.Resources>
@@ -69,12 +95,12 @@
                     <Setter Property="Grid.RowSpan" Value="3"/>
                 </Style>
             </ListView.Resources>
-            
+
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:Mod}">
-                    <Border BorderThickness="0,0,0,0" BorderBrush="{StaticResource MahApps.Brushes.Separator}">
-                        <Grid Margin="8">
-
+                    <Border BorderThickness="0,0,0,0" BorderBrush="{StaticResource MahApps.Brushes.Separator}"
+                            Padding="8">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>

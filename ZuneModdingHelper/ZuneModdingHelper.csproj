@@ -1,33 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-        <TargetFramework>net5.0-windows</TargetFramework>
-        <UseWPF>true</UseWPF>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Version>2021.12.30.0</Version>
-        <Authors>Joshua "Yoshi" Askharoun</Authors>
-        <RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <Platforms>x64;x86</Platforms>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<Version>2021.12.30.0</Version>
+		<Authors>Joshua "Yoshi" Askharoun</Authors>
+		<RepositoryUrl>https://github.com/ZuneDev/ZuneModdingHelper</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Platforms>x64;x86</Platforms>
 		<LangVersion>latest</LangVersion>
-        <ApplicationIcon>ZMH_Icon.ico</ApplicationIcon>
-    </PropertyGroup>
+		<ApplicationIcon>Assets\ZMH_Icon.ico</ApplicationIcon>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\OwlCore.Wpf\OwlCore.Wpf.csproj" />
-        <ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\OwlCore.Wpf\OwlCore.Wpf.csproj" />
+		<ProjectReference Include="..\ZuneModCore\ZuneModCore.csproj" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Flurl.Http" Version="3.2.0" />
-        <PackageReference Include="MahApps.Metro" Version="2.4.9" />
-        <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.4.0" />
-        <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.4.0" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-        <PackageReference Include="OwlCore" Version="0.0.43" />
-        <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+	<ItemGroup>
+		<PackageReference Include="Flurl.Http" Version="3.2.0" />
+		<PackageReference Include="MahApps.Metro" Version="2.4.9" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.4.0" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.4.0" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+		<PackageReference Include="OwlCore" Version="0.0.43" />
+		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
 		<PackageReference Include="Syroot.Windows.IO.KnownFolders" Version="1.2.3" />
-    </ItemGroup>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Assets\ZMH_Icons.ttf">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	</ItemGroup>
 
 </Project>
