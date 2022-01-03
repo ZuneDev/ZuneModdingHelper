@@ -3,6 +3,7 @@ using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
 
@@ -16,6 +17,9 @@ namespace ZuneModCore.Mods
         private const string WEBSERVICE_ICON_SUCCESS = "\uE73E";
         private const string WEBSERVICE_ICON_UNREACHABLE = "\uF384";
         private const string WEBSERVICE_ICON_UNAVAILABLE = "\uE894";
+        private const string WEBSERVICE_SUBTITLE_TESTING = "Testing...";
+        private const string WEBSERVICE_SUBTITLE_SUCCESS = "OK";
+        private const string WEBSERVICE_SUBTITLE_UNREACHABLE = "Unreachable";
 
         public override string Id => nameof(WebservicesMod);
 
@@ -33,7 +37,7 @@ namespace ZuneModCore.Mods
                 Title = string.Empty,
                 Items = new List<AbstractUIElement>
                 {
-                    new AbstractTextBox("hostBox", "zunes.me", "zune.net")
+                    new AbstractTextBox("hostBox", string.Empty, "zune.net")
                     {
                         Title = "Host",
                         TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
@@ -76,46 +80,9 @@ namespace ZuneModCore.Mods
 
         public override Task Init()
         {
-            Threading.SetPrimarySynchronizationContext(System.Threading.SynchronizationContext.Current!);
-
             AbstractTextBox newHostBox = (AbstractTextBox)OptionsUI!.Items[0];
-            System.Net.NetworkInformation.Ping ping = new();
-            async void OnHostChanged(object? sender, string newHost)
-            {
-                ping.SendAsyncCancel();
-                AbstractDataList list = (AbstractDataList)OptionsUI!.Items[1];
-                // Reset all statuses
-                foreach (AbstractUIMetadata metadata in list.Items)
-                    metadata.IconCode = WEBSERVICE_ICON_TESTING;
-
-                // Update all statuses
-                foreach (AbstractUIMetadata metadata in list.Items)
-                {
-                    string url = (metadata.Id.Split('_')[1] + '.' + newHost).Replace("www.", string.Empty);
-                    try
-                    {
-                        var pingResult = await ping.SendPingAsync(url);
-                        if (pingResult.Status == System.Net.NetworkInformation.IPStatus.Success)
-                        {
-                            metadata.IconCode = WEBSERVICE_ICON_SUCCESS;
-                            metadata.ImagePath = "http://free.pagepeeker.com/v2/thumbs.php?size=m&url=" + url;
-                        }
-                        else
-                        {
-                            metadata.IconCode = WEBSERVICE_ICON_UNAVAILABLE;
-                            metadata.Subtitle = pingResult.Status.ToString();
-                        }
-                    }
-                    catch (System.Net.NetworkInformation.PingException ex)
-                    {
-                        metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
-                        if (ex.InnerException?.Message != null)
-                            metadata.Subtitle = ex.InnerException.Message;
-                    }
-                }
-            }
-            OnHostChanged(newHostBox, newHostBox.Value);
             newHostBox.ValueChanged += OnHostChanged;
+            newHostBox.Value = "zunes.me";
 
             return Task.CompletedTask;
         }
@@ -253,6 +220,65 @@ namespace ZuneModCore.Mods
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+        }
+
+        async void OnHostChanged(object? sender, string newHost)
+        {
+            AbstractDataList list = (AbstractDataList)OptionsUI!.Items[1];
+
+            // Reset all statuses
+            foreach (AbstractUIMetadata metadata in list.Items)
+            {
+                metadata.IconCode = WEBSERVICE_ICON_TESTING;
+                metadata.Subtitle = WEBSERVICE_SUBTITLE_TESTING;
+            }
+
+            // Update all statuses
+            foreach (AbstractUIMetadata metadata in list.Items)
+            {
+                string url = "http://" + (metadata.Id.Split('_')[1] + '.' + newHost).Replace("www.", string.Empty);
+                string? pingResult = await Ping(url);
+
+                if (pingResult == null)
+                {
+                    metadata.IconCode = WEBSERVICE_ICON_SUCCESS;
+                    metadata.Subtitle = WEBSERVICE_SUBTITLE_SUCCESS;
+                }
+                else if (pingResult != string.Empty)
+                {
+                    metadata.IconCode = WEBSERVICE_ICON_UNAVAILABLE;
+                    metadata.Subtitle = pingResult;
+                }
+                else
+                {
+                    metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
+                    metadata.Subtitle = WEBSERVICE_SUBTITLE_UNREACHABLE;
+                }
+            }
+        }
+
+        private async Task<string?> Ping(string url)
+        {
+            try
+            {
+                HttpWebRequest request = WebRequest.CreateHttp(url);
+                request.Timeout = 3000;
+                request.AllowAutoRedirect = true;
+                request.Method = "GET";
+
+                using var response = await request.GetResponseAsync();
+                return null;
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.InnerException?.InnerException != null)
+                    return webEx.InnerException.InnerException.Message;
+                return webEx?.Message ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex?.Message ?? string.Empty;
             }
         }
     }

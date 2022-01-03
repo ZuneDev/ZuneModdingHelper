@@ -34,10 +34,14 @@ namespace ZuneModdingHelper
         public MainWindow()
         {
             InitializeComponent();
+            OwlCore.Threading.SetPrimarySynchronizationContext(System.Threading.SynchronizationContext.Current!);
+            OwlCore.Threading.SetPrimaryThreadInvokeHandler(RunOnUI);
 
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
         }
+
+        private async System.Threading.Tasks.Task RunOnUI(Action action) => await Dispatcher.BeginInvoke(action);
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -76,6 +80,7 @@ namespace ZuneModdingHelper
             if (mod.OptionsUI != null)
             {
                 var optionsDialog = new AbstractUIGroupDialog(mod.OptionsUI);
+                optionsDialog.Title = optionsDialog.Title + " | " + mod.Title;
                 bool? optionsResult = optionsDialog.ShowDialog();
                 if (!(optionsResult.HasValue && optionsResult.Value))
                 {
