@@ -34,20 +34,21 @@ namespace ZuneModdingHelper
         public MainWindow()
         {
             InitializeComponent();
+            // https://github.com/Arlodotexe/OwlCore/issues/1
             OwlCore.Threading.SetPrimarySynchronizationContext(System.Threading.SynchronizationContext.Current!);
             OwlCore.Threading.SetPrimaryThreadInvokeHandler(RunOnUI);
 
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
+
+            ModList.ItemsSource = Mod.AvailableMods;
+            ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
         }
 
         private async System.Threading.Tasks.Task RunOnUI(Action action) => await Dispatcher.BeginInvoke(action);
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ModList.ItemsSource = Mod.AvailableMods;
-            ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
-
             // Show a warning if Zune is running
             Process[] procs = Process.GetProcessesByName("Zune");
             string zuneExePath = Path.Combine(Mod.ZuneInstallDir, "Zune.exe");

@@ -6,6 +6,8 @@
                  xmlns:local="clr-namespace:ZuneModdingHelper"
                  xmlns:core="clr-namespace:ZuneModCore;assembly=ZuneModCore"
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                 xmlns:b="clr-namespace:ZuneModdingHelper.Behaviors"
                  mc:Ignorable="d"
                  Title="{x:Static local:App.Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen"
                  Loaded="Window_Loaded">
@@ -131,6 +133,14 @@
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
+
+            <i:Interaction.Behaviors>
+                <b:FadeAnimateItemsBehavior Tick="0:0:0.05">
+                    <b:FadeAnimateItemsBehavior.Animation>
+                        <DoubleAnimation From="0" To="1" Duration="0:0:0.3"/>
+                    </b:FadeAnimateItemsBehavior.Animation>
+                </b:FadeAnimateItemsBehavior>
+            </i:Interaction.Behaviors>
         </ListView>
 
         <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{StaticResource MahApps.Brushes.Control.Border}">
