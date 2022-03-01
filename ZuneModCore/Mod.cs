@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ZuneModCore.Mods;
 
@@ -9,20 +10,6 @@ namespace ZuneModCore
 {
     public abstract class Mod
     {
-        /// <summary>
-        /// A list of all available mods
-        /// </summary>
-        public static readonly IReadOnlyList<Mod> AvailableMods = new List<Mod>
-        {
-            new FeaturesOverrideMod(),
-            new VideoSyncMod(),
-            new WebservicesMod(),
-            new BackgroundImageMod(),
-            new MbidLocatorMod(),
-        }.AsReadOnly();
-
-        public static string ZuneInstallDir { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
-
         public abstract string Id { get; }
 
         public abstract string Title { get; }
@@ -55,13 +42,71 @@ namespace ZuneModCore
         {
             get
             {
-                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ZuneModCore", Id);
+                string dir = Path.Combine(ModManager.CoreStorageDir, Id);
                 // Create the directory just in case the consumer assumes the folder exists already
                 Directory.CreateDirectory(dir);
                 return dir;
             }
         }
 
-        public abstract IReadOnlyList<Type>? DependentMods { get; }
+        public abstract IReadOnlyList<ModDependency>? DependentMods { get; }
+
+        /// <summary>
+        /// Initializes any missing depedencies.
+        /// </summary>
+        public Task InitDependencies() => ForAllDependencies(async mod =>
+        {
+            bool isDepApplied = await mod.CheckApplied();
+            if (!isDepApplied)
+                await mod.Init();
+        });
+
+        /// <summary>
+        /// Applies any missing depedencies.
+        /// </summary>
+        /// <remarks>
+        /// Make sure to call <see cref="InitDependencies"/> first.
+        /// </remarks>
+        public Task ApplyDependencies() => ForAllDependencies(async mod =>
+        {
+            bool isDepApplied = await mod.CheckApplied();
+            if (!isDepApplied)
+                await mod.Apply();
+        });
+
+        public Task<bool> CheckApplied() => TrueForAllDependencies(mod => mod.CheckApplied());
+
+        private async Task ForAllDependencies(Func<Mod, Task> asyncAction)
+        {
+            // Check if there are any dependencies
+            if (DependentMods == null)
+                return;
+
+            foreach (var dep in DependentMods)
+            {
+                var depMod = ModManager.AvailableMods.First(m => m.Id == dep.Id);
+                if (depMod != null)
+                    await asyncAction(depMod);
+            }
+        }
+
+        private async Task<bool> TrueForAllDependencies(Func<Mod, Task<bool>> asyncAction)
+        {
+            // Check if there are any dependencies
+            if (DependentMods == null)
+                return true;
+
+            foreach (var dep in DependentMods)
+            {
+                var depMod = ModManager.AvailableMods.First(m => m.Id == dep.Id);
+                if (depMod != null)
+                    if (!await asyncAction(depMod))
+                        return false;
+            }
+
+            return true;
+        }
+
+        public override string ToString() => Title;
     }
 }

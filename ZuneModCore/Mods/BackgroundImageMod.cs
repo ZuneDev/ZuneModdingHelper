@@ -32,7 +32,7 @@ namespace ZuneModCore.Mods
             };
         }
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override IReadOnlyList<ModDependency>? DependentMods => null;
 
         public override async Task<string?> Apply()
         {
@@ -43,7 +43,7 @@ namespace ZuneModCore.Mods
                 return $"The file '{bgimgInfo.FullName}' does not exist.";
             }
 
-            FileInfo zsrDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneShellResources.dll"));
+            FileInfo zsrDllInfo = new(Path.Combine(ModManager.ZuneInstallDir, "ZuneShellResources.dll"));
             if (!zsrDllInfo.Exists)
             {
                 return $"The file '{zsrDllInfo.FullName}' does not exist.";
@@ -120,7 +120,7 @@ namespace ZuneModCore.Mods
             {
                 // Copy backup to application folder
                 File.Copy(Path.Combine(StorageDirectory, "ZuneShellResources.original.dll"),
-                    Path.Combine(ZuneInstallDir, "ZuneShellResources.dll"), true);
+                    Path.Combine(ModManager.ZuneInstallDir, "ZuneShellResources.dll"), true);
 
                 return Task.FromResult<string?>(null);
             }

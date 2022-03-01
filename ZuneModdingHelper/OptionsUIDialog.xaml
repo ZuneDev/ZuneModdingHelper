@@ -1,14 +1,14 @@
-﻿<mah:MetroWindow x:Class="ZuneModdingHelper.AbstractUIGroupDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ZuneModdingHelper"
-        xmlns:absui="clr-namespace:OwlCore.Wpf.AbstractUI.Controls;assembly=OwlCore.Wpf"
-        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        mc:Ignorable="d"
-        Title="Options" Height="450" Width="800"
-        WindowStyle="ToolWindow">
+﻿<mah:MetroWindow x:Class="ZuneModdingHelper.OptionsUIDialog"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:ZuneModdingHelper"
+                 xmlns:absui="clr-namespace:OwlCore.Wpf.AbstractUI.Controls;assembly=OwlCore.Wpf"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 mc:Ignorable="d"
+                 Title="Options" Height="450" Width="800"
+                 WindowStyle="ToolWindow">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,8 +24,13 @@
         </Grid.RowDefinitions>
         
         <ScrollViewer>
-            <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding}"
-                                        TemplateSelector="{StaticResource GroupTemplateSelector}"/>
+            <StackPanel Orientation="Vertical">
+                <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding OptionsViewModel}"
+                                                TemplateSelector="{StaticResource GroupTemplateSelector}"/>
+
+                <HeaderedItemsControl x:Name="DependenciesPresenter" Header="Dependencies"
+                                      ItemsSource="{Binding CurrentMod.DependentMods}"/>
+            </StackPanel>
         </ScrollViewer>
         
         <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{StaticResource MahApps.Brushes.Control.Border}">

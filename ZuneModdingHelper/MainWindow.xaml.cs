@@ -41,8 +41,8 @@ namespace ZuneModdingHelper
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
 
-            ModList.ItemsSource = Mod.AvailableMods;
-            ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
+            ModList.ItemsSource = ModManager.AvailableMods;
+            ZuneInstallDirBox.Text = ModManager.ZuneInstallDir;
         }
 
         private async System.Threading.Tasks.Task RunOnUI(Action action) => await Dispatcher.BeginInvoke(action);
@@ -51,7 +51,7 @@ namespace ZuneModdingHelper
         {
             // Show a warning if Zune is running
             Process[] procs = Process.GetProcessesByName("Zune");
-            string zuneExePath = Path.Combine(Mod.ZuneInstallDir, "Zune.exe");
+            string zuneExePath = Path.Combine(ModManager.ZuneInstallDir, "Zune.exe");
             if (procs.Length > 0 && procs.Any(p => p.MainModule.FileName == zuneExePath))
             {
                 await this.ShowMessageAsync(
@@ -65,7 +65,7 @@ namespace ZuneModdingHelper
         {
             var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mod", settings: defaultMetroDialogSettings);
             Mod mod = (Mod)((FrameworkElement)sender).DataContext;
-            Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
+            ModManager.ZuneInstallDir = ZuneInstallDirBox.Text;
 
             progDialog.Maximum = 3;
             int numCompleted = 0;
@@ -80,15 +80,14 @@ namespace ZuneModdingHelper
             progDialog.SetMessage("Awaiting options...");
             if (mod.OptionsUI != null)
             {
-                var optionsDialog = new AbstractUIGroupDialog(mod.OptionsUI);
-                optionsDialog.Title = optionsDialog.Title + " | " + mod.Title;
+                var optionsDialog = new OptionsUIDialog(mod);
                 bool? optionsResult = optionsDialog.ShowDialog();
                 if (!(optionsResult.HasValue && optionsResult.Value))
                 {
                     await progDialog.CloseAsync();
                     return;
                 }
-                mod.OptionsUI = (AbstractUICollection)optionsDialog.ViewModel.Model;
+                mod.OptionsUI = (AbstractUICollection)optionsDialog.OptionsViewModel.Model;
             }
             progDialog.SetProgress(++numCompleted);
 
@@ -122,7 +121,7 @@ namespace ZuneModdingHelper
             if (sender is FrameworkElement elem && elem.DataContext is Mod mod)
             {
                 var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to reset mod", settings: defaultMetroDialogSettings);
-                Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
+                ModManager.ZuneInstallDir = ZuneInstallDirBox.Text;
 
                 progDialog.Maximum = 2;
                 int numCompleted = 0;
@@ -279,7 +278,7 @@ namespace ZuneModdingHelper
                 CommonOpenFileDialog dialog = new()
                 {
                     IsFolderPicker = true,
-                    DefaultDirectory = Mod.ZuneInstallDir
+                    DefaultDirectory = ModManager.ZuneInstallDir
                 };
                 CommonFileDialogResult result = dialog.ShowDialog();
                 if (result == CommonFileDialogResult.Ok)

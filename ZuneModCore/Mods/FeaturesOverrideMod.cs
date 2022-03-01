@@ -56,7 +56,7 @@ namespace ZuneModCore.Mods
             };
         }
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override IReadOnlyList<ModDependency>? DependentMods => null;
 
         public override Task Init()
         {

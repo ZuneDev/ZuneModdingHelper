@@ -1,14 +1,13 @@
 ﻿using CommunityToolkit.Diagnostics;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace ZuneModdingHelper
+namespace ZuneModCore
 {
+    [JsonConverter(typeof(ReleaseVersionJsonConverter))]
     public sealed class ReleaseVersion : ICloneable, IComparable, IComparable<ReleaseVersion?>, IEquatable<ReleaseVersion?>
     {
         /// <summary>
@@ -480,5 +479,18 @@ namespace ZuneModdingHelper
         Beta,
         ReleaseCandidate,
         Production
+    }
+
+    internal class ReleaseVersionJsonConverter : JsonConverter<ReleaseVersion>
+    {
+        public override ReleaseVersion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return ReleaseVersion.Parse(reader.GetString()!);
+        }
+
+        public override void Write(Utf8JsonWriter writer, ReleaseVersion value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
     }
 }

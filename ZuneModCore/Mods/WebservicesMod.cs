@@ -76,7 +76,10 @@ namespace ZuneModCore.Mods
             };
         }
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override IReadOnlyList<ModDependency>? DependentMods => new List<ModDependency>
+        {
+            new(nameof(FeaturesOverrideMod))
+        };
 
         public override Task Init()
         {
@@ -90,7 +93,7 @@ namespace ZuneModCore.Mods
         public override async Task<string?> Apply()
         {
             // Verify that ZuneServices.dll exists
-            FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
+            FileInfo zsDllInfo = new(Path.Combine(ModManager.ZuneInstallDir, "ZuneService.dll"));
             if (!zsDllInfo.Exists)
             {
                 return $"The file '{zsDllInfo.FullName}' does not exist.";
@@ -182,7 +185,7 @@ namespace ZuneModCore.Mods
 
         public override async Task<string?> Reset()
         {
-            string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
+            string zsDllPath = Path.Combine(ModManager.ZuneInstallDir, "ZuneService.dll");
             try
             {
                 // Copy backup to application folder
@@ -258,7 +261,7 @@ namespace ZuneModCore.Mods
             }
         }
 
-        private async Task<string?> Ping(string url)
+        private static async Task<string?> Ping(string url)
         {
             try
             {
