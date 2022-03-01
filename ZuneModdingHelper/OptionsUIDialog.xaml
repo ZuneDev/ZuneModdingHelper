@@ -4,6 +4,8 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:local="clr-namespace:ZuneModdingHelper"
+                 xmlns:convert="clr-namespace:ZuneModdingHelper.Converters"
+                 xmlns:mod="clr-namespace:ZuneModCore;assembly=ZuneModCore"
                  xmlns:absui="clr-namespace:OwlCore.Wpf.AbstractUI.Controls;assembly=OwlCore.Wpf"
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                  mc:Ignorable="d"
@@ -14,6 +16,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/OwlCore.Wpf;component/AbstractUI/Themes/AbstractUIGroupPresenterStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <convert:BoolToSymbolConverter x:Key="BoolToSymbolConverter"/>
+            <convert:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -25,11 +30,27 @@
         
         <ScrollViewer>
             <StackPanel Orientation="Vertical">
+                <StackPanel Margin="10,10,10,0" Visibility="{Binding CurrentMod.DependentMods, Converter={StaticResource NullToVisibilityConverter}}">
+                    <TextBlock Text="Dependencies" FontSize="26"/>
+                    <ItemsControl x:Name="DependenciesPresenter" ItemsSource="{Binding CurrentMod.DependentMods}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type mod:ModDependency}">
+                                <TextBlock Margin="4" FontSize="14">
+                                <Run Text="{Binding Status, ConverterParameter='&#xE73E;,&#xE711;', Mode=OneWay, Converter={StaticResource BoolToSymbolConverter}}"
+                                     Foreground="{Binding Status, ConverterParameter='#16c60c,#f03a17', Mode=OneWay, Converter={StaticResource BoolToSymbolConverter}}"
+                                     FontFamily="Segoe MDL2 Assets" BaselineAlignment="Center"/>
+                                <Run Text="{Binding Id}" BaselineAlignment="Center"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Rectangle Fill="{StaticResource MahApps.Brushes.Control.Border}"
+                               Height="2" Margin="0,10,0,-7"/>
+                </StackPanel>
+                
                 <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding OptionsViewModel}"
                                                 TemplateSelector="{StaticResource GroupTemplateSelector}"/>
-
-                <HeaderedItemsControl x:Name="DependenciesPresenter" Header="Dependencies"
-                                      ItemsSource="{Binding CurrentMod.DependentMods}"/>
             </StackPanel>
         </ScrollViewer>
         
