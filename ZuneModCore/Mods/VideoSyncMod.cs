@@ -1,10 +1,7 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using ZuneModCore.Win32;
 
@@ -23,7 +20,7 @@ namespace ZuneModCore.Mods
 
         public override string Id => nameof(VideoSyncMod);
 
-        public override async Task<string?> Apply()
+        protected override async Task<string?> ApplyCore()
         {
             // Make a backup of the original file
             FileVersionInfo wmvDllVersionInfo = FileVersionInfo.GetVersionInfo(WMVCORE_PATH);
@@ -56,7 +53,7 @@ namespace ZuneModCore.Mods
             }
         }
 
-        public override Task<string?> Reset()
+        protected override Task<string?> ResetCore()
         {
             try
             {

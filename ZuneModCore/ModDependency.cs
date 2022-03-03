@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -26,9 +27,7 @@ namespace ZuneModCore
         [Obsolete]
         internal ModDependency() { }
 
-        public Task<bool> CheckStatusAsync() => ModManager.CheckStatus(Id);
-
-        private bool CheckStatus() => CheckStatusAsync().Result;
+        public bool CheckStatus() => ModManager.CheckStatus(Id);
 
         public override string ToString() => $"{Id} / {Version}";
     }

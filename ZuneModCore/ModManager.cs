@@ -33,21 +33,19 @@ namespace ZuneModCore
         /// <summary>
         /// Marks the specified mod as applied in the status file.
         /// </summary>
-        internal static Task MarkApplied(string modId) => MarkStatus(modId, true);
+        internal static void MarkApplied(string modId) => MarkStatus(modId, true);
 
         /// <summary>
         /// Marks the specified mod as reset in the status file.
         /// </summary>
-        internal static Task MarkReset(string modId) => MarkStatus(modId, false);
+        internal static void MarkReset(string modId) => MarkStatus(modId, false);
 
         /// <summary>
         /// Sets the status of the specified mod in the status file.
         /// </summary>
-        private static async Task MarkStatus(string modId, bool status)
+        private static void MarkStatus(string modId, bool status)
         {
-            using var stream = File.Open(CoreStatusFile, FileMode.OpenOrCreate);
-            var model = await JsonSerializer.DeserializeAsync<StatusModel>(stream);
-            Guard.IsNotNull(model, nameof(model));
+            var model = GetOrCreateStatusModel();
 
             bool curStatus = model.InstalledMods.ContainsKey(modId);
             if (curStatus && !status)
@@ -59,22 +57,37 @@ namespace ZuneModCore
                 model.InstalledMods.Add(modId, CurrentVersion);
             }
 
-            await JsonSerializer.SerializeAsync(stream, model);
+            string json = JsonSerializer.Serialize(model);
+            File.WriteAllText(CoreStatusFile, json);
         }
 
         /// <summary>
         /// Gets the status of the specified mod from the status file.
         /// </summary>
-        internal static async Task<bool> CheckStatus(string modId)
+        internal static bool CheckStatus(string modId)
         {
-            if (!File.Exists(CoreStatusFile))
-                return false;
-
-            using var stream = File.OpenRead(CoreStatusFile);
-            var model = await JsonSerializer.DeserializeAsync<StatusModel>(stream);
-            Guard.IsNotNull(model, nameof(model));
-
+            var model = GetOrCreateStatusModel();
             return model.InstalledMods.ContainsKey(modId);
+        }
+
+        private static StatusModel GetOrCreateStatusModel()
+        {
+            StatusModel? model = null;
+            if (File.Exists(CoreStatusFile))
+            {
+                string json = File.ReadAllText(CoreStatusFile);
+                if (!string.IsNullOrWhiteSpace(json))
+                    model = JsonSerializer.Deserialize<StatusModel>(json);
+            }
+
+            model ??= new()
+            {
+                Version = CurrentVersion,
+                InstalledMods = new()
+            };
+
+            Guard.IsNotNull(model, nameof(model));
+            return model;
         }
     }
 }

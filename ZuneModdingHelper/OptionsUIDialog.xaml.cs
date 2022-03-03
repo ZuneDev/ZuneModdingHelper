@@ -17,13 +17,9 @@ namespace ZuneModdingHelper
             InitializeComponent();
 
             DataContext = this;
-            CurrentMod = mod;
-            if (CurrentMod.OptionsUI != null)
-            {
-                OptionsViewModel = new(CurrentMod.OptionsUI);
-            }
+            ViewModel = new(mod);
 
-            Title = "Options | " + CurrentMod.Title;
+            Title = "Options | " + ViewModel.Mod.Title;
         }
 
         private void OptionsUINextButton_Click(object sender, RoutedEventArgs e) => Finish(true);
@@ -36,22 +32,17 @@ namespace ZuneModdingHelper
             Close();
         }
 
-        public Mod CurrentMod
+        public ModViewModel ViewModel
         {
-            get => (Mod)GetValue(CurrentModProperty);
-            set => SetValue(CurrentModProperty, value);
+            get => (ModViewModel)GetValue(ViewModelProperty);
+            set => SetValue(ViewModelProperty, value);
         }
-        public static readonly DependencyProperty CurrentModProperty = DependencyProperty.Register(
-            nameof(CurrentMod), typeof(Mod), typeof(OptionsUIDialog));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+            nameof(ViewModel), typeof(ModViewModel), typeof(OptionsUIDialog));
 
-        public AbstractUICollectionViewModel OptionsViewModel
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            get => (AbstractUICollectionViewModel)GetValue(OptionsViewModelProperty);
-            set => SetValue(OptionsViewModelProperty, value);
+            await ViewModel.LoadAsync();
         }
-        public static readonly DependencyProperty OptionsViewModelProperty = DependencyProperty.Register(
-            nameof(OptionsViewModel), typeof(AbstractUICollectionViewModel), typeof(OptionsUIDialog));
-
-        public bool HasOptions => CurrentMod.OptionsUI != null;
     }
 }

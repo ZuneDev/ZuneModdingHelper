@@ -54,10 +54,17 @@ namespace ZuneModdingHelper
             string zuneExePath = Path.Combine(ModManager.ZuneInstallDir, "Zune.exe");
             if (procs.Length > 0 && procs.Any(p => p.MainModule.FileName == zuneExePath))
             {
+                MetroDialogSettings dialogSettings = new()
+                {
+                    ColorScheme = MetroDialogColorScheme.Accented,
+                    AnimateShow = true,
+                    AnimateHide = true,
+                    AffirmativeButtonText = "OK"
+                };
                 await this.ShowMessageAsync(
                     "Warning",
                     "The Zune software is currently running. You may run into issues applying or resetting mods.",
-                    settings: defaultMetroDialogSettings);
+                    settings: dialogSettings);
             }
         }
 
@@ -87,7 +94,7 @@ namespace ZuneModdingHelper
                     await progDialog.CloseAsync();
                     return;
                 }
-                mod.OptionsUI = (AbstractUICollection)optionsDialog.OptionsViewModel.Model;
+                //mod.OptionsUI = (AbstractUICollection)optionsDialog.ViewModel.Model;
             }
             progDialog.SetProgress(++numCompleted);
 

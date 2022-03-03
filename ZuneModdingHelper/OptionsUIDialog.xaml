@@ -10,7 +10,8 @@
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                  mc:Ignorable="d"
                  Title="Options" Height="450" Width="800"
-                 WindowStyle="ToolWindow">
+                 WindowStyle="ToolWindow"
+                 Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,9 +31,9 @@
         
         <ScrollViewer>
             <StackPanel Orientation="Vertical">
-                <StackPanel Margin="10,10,10,0" Visibility="{Binding CurrentMod.DependentMods, Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel Margin="10,10,10,0" Visibility="{Binding ViewModel.HasDependencies}">
                     <TextBlock Text="Dependencies" FontSize="26"/>
-                    <ItemsControl x:Name="DependenciesPresenter" ItemsSource="{Binding CurrentMod.DependentMods}">
+                    <ItemsControl x:Name="DependenciesPresenter" ItemsSource="{Binding ViewModel.Mod.DependentMods}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type mod:ModDependency}">
                                 <TextBlock Margin="4" FontSize="14">
@@ -49,8 +50,9 @@
                                Height="2" Margin="0,10,0,-7"/>
                 </StackPanel>
                 
-                <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding OptionsViewModel}"
-                                                TemplateSelector="{StaticResource GroupTemplateSelector}"/>
+                <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding ViewModel.OptionsViewModel}"
+                                                TemplateSelector="{StaticResource GroupTemplateSelector}"
+                                                Visibility="{Binding ViewModel.HasOptions}"/>
             </StackPanel>
         </ScrollViewer>
         
@@ -80,7 +82,8 @@
                 <Button x:Name="OptionsUICancelButton" Content="Cancel" Click="OptionsUICancelButton_Click"
                         Grid.Column="1" Style="{StaticResource SecondaryButton}"/>
                 
-                <Button x:Name="OptionsUINextButton" Content="Next" Click="OptionsUINextButton_Click"
+                <Button x:Name="OptionsUINextButton" Content="{Binding ViewModel.ActionButtonText}"
+                        Command="{Binding ViewModel.ActionCommand}"
                         Grid.Column="2" Style="{StaticResource PrimaryButton}"/>
             </Grid>
         </Border>

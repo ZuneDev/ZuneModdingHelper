@@ -18,13 +18,18 @@ namespace ZuneModCore
 
         public abstract string Author { get; }
 
+        public delegate void StatusChangedHandler(Mod sender, bool status);
+        public event StatusChangedHandler? StatusChanged;
+
         public virtual AbstractUICollection? GetDefaultOptionsUI() => null;
 
         public virtual Task Init() => Task.CompletedTask;
 
-        public abstract Task<string?> Apply();
+        protected abstract Task<string?> ApplyCore();
 
-        public abstract Task<string?> Reset();
+        protected abstract Task<string?> ResetCore();
+
+        protected virtual void FireStatusChanged(bool status) => StatusChanged?.Invoke(this, status);
 
         private AbstractUICollection? _OptionsUI;
         public AbstractUICollection? OptionsUI
@@ -38,6 +43,10 @@ namespace ZuneModCore
             set => _OptionsUI = value;
         }
 
+        /// <summary>
+        /// Gets a directory that mods can use to store mod-specific information,
+        /// such as backups for resetting.
+        /// </summary>
         public string StorageDirectory
         {
             get
@@ -52,11 +61,28 @@ namespace ZuneModCore
         public abstract IReadOnlyList<ModDependency>? DependentMods { get; }
 
         /// <summary>
+        /// Applies this mod, without any of its dependencies.
+        /// </summary>
+        /// <returns>
+        /// The error message if not successful.
+        /// </returns>
+        public async Task<string?> Apply()
+        {
+            string? error = await ApplyCore();
+            if (error == null)
+            {
+                ModManager.MarkApplied(Id);
+                FireStatusChanged(true);
+            }
+            return error;
+        }
+
+        /// <summary>
         /// Initializes any missing depedencies.
         /// </summary>
-        public Task InitDependencies() => ForAllDependencies(async mod =>
+        public Task InitDependencies() => ForAllDependenciesAsync(async mod =>
         {
-            bool isDepApplied = await mod.CheckApplied();
+            bool isDepApplied = mod.CheckApplied();
             if (!isDepApplied)
                 await mod.Init();
         });
@@ -67,16 +93,58 @@ namespace ZuneModCore
         /// <remarks>
         /// Make sure to call <see cref="InitDependencies"/> first.
         /// </remarks>
-        public Task ApplyDependencies() => ForAllDependencies(async mod =>
+        public Task ApplyDependencies() => ForAllDependenciesAsync(async mod =>
         {
-            bool isDepApplied = await mod.CheckApplied();
+            bool isDepApplied = mod.CheckApplied();
             if (!isDepApplied)
                 await mod.Apply();
         });
 
-        public Task<bool> CheckApplied() => TrueForAllDependencies(mod => mod.CheckApplied());
+        /// <summary>
+        /// Applies this mod and all its dependencies.
+        /// </summary>
+        /// <returns>
+        /// The error message if not successful.
+        /// </returns>
+        public async Task<string?> ApplyWithDependencies()
+        {
+            await ApplyDependencies();
+            return await Apply();
+        }
 
-        private async Task ForAllDependencies(Func<Mod, Task> asyncAction)
+        /// <summary>
+        /// Resets this mod, without resetting any dependencies.
+        /// </summary>
+        public async Task<string?> Reset()
+        {
+            string? error = await ResetCore();
+            if (error == null)
+            {
+                ModManager.MarkReset(Id);
+                FireStatusChanged(false);
+            }
+            return error;
+        }
+
+        public bool CheckApplied() => ModManager.CheckStatus(Id);
+
+        public bool CheckDependenciesApplied() => TrueForAllDependencies(mod => mod.CheckApplied());
+
+        private void ForAllDependencies(Action<Mod> action)
+        {
+            // Check if there are any dependencies
+            if (DependentMods == null)
+                return;
+
+            foreach (var dep in DependentMods)
+            {
+                var depMod = ModManager.AvailableMods.First(m => m.Id == dep.Id);
+                if (depMod != null)
+                    action(depMod);
+            }
+        }
+
+        private async Task ForAllDependenciesAsync(Func<Mod, Task> asyncAction)
         {
             // Check if there are any dependencies
             if (DependentMods == null)
@@ -90,7 +158,7 @@ namespace ZuneModCore
             }
         }
 
-        private async Task<bool> TrueForAllDependencies(Func<Mod, Task<bool>> asyncAction)
+        private bool TrueForAllDependencies(Func<Mod, bool> action)
         {
             // Check if there are any dependencies
             if (DependentMods == null)
@@ -100,7 +168,7 @@ namespace ZuneModCore
             {
                 var depMod = ModManager.AvailableMods.First(m => m.Id == dep.Id);
                 if (depMod != null)
-                    if (!await asyncAction(depMod))
+                    if (!action(depMod))
                         return false;
             }
 

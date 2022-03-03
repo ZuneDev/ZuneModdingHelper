@@ -34,7 +34,7 @@ namespace ZuneModCore.Mods
 
         public override IReadOnlyList<ModDependency>? DependentMods => null;
 
-        public override async Task<string?> Apply()
+        protected override async Task<string?> ApplyCore()
         {
             string bgimgPath = ((AbstractTextBox)OptionsUI!.Items[0]).Value;
             FileInfo bgimgInfo = new(bgimgPath);
@@ -114,7 +114,7 @@ namespace ZuneModCore.Mods
             }
         }
 
-        public override Task<string?> Reset()
+        protected override Task<string?> ResetCore()
         {
             try
             {

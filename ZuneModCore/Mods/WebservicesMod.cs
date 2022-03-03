@@ -90,7 +90,7 @@ namespace ZuneModCore.Mods
             return Task.CompletedTask;
         }
 
-        public override async Task<string?> Apply()
+        protected override async Task<string?> ApplyCore()
         {
             // Verify that ZuneServices.dll exists
             FileInfo zsDllInfo = new(Path.Combine(ModManager.ZuneInstallDir, "ZuneService.dll"));
@@ -183,7 +183,7 @@ namespace ZuneModCore.Mods
             }
         }
 
-        public override async Task<string?> Reset()
+        protected override async Task<string?> ResetCore()
         {
             string zsDllPath = Path.Combine(ModManager.ZuneInstallDir, "ZuneService.dll");
             try
