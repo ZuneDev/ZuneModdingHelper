@@ -1,6 +1,7 @@
 ﻿using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using ZuneModCore.Win32;
 
@@ -56,7 +57,7 @@ namespace ZuneModCore.Mods
             };
         }
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override IReadOnlyList<ModDependency>? DependentMods => null;
 
         public override Task Init()
         {
@@ -72,10 +73,13 @@ namespace ZuneModCore.Mods
             return Task.CompletedTask;
         }
 
-        public override async Task<string?> Apply() => await Apply(false);
+        protected override async Task<string?> ApplyCore() => await Apply(false);
 
         public async Task<string?> Apply(bool applyAll = false)
         {
+            // Save backup of current values
+            ExportFeatureOverrides(Path.Combine(StorageDirectory, "FeatureOverrides.reg"));
+
             // Use user choices from AbstractUI
             foreach (AbstractUIElement uiElem in OptionsUI!.Items)
             {
@@ -84,7 +88,7 @@ namespace ZuneModCore.Mods
                     bool isSuccess = SetFeatureOverride(boolElem.Id, true);
                     if (!isSuccess)
                     {
-                        string? resetStatus = await Reset();
+                        string? resetStatus = await ResetCore();
                         if (resetStatus != null)
                         {
                             // The reset failed as well, return both errors
@@ -101,12 +105,23 @@ namespace ZuneModCore.Mods
             return null;
         }
 
-        public override async Task<string?> Reset()
+        protected override async Task<string?> ResetCore()
         {
+            // Delete all values first, so if a backup exists it has a clean slate
             RegEdit.CurrentUserDeleteKey(ZUNE_FEATURESOVERRIDE_REGKEY);
+
+            FileInfo reg = new(Path.Combine(StorageDirectory, "FeatureOverrides.reg"));
+            if (reg.Exists)
+            {
+                // Load backup of original values
+                RegEdit.ImportKey(reg.FullName);
+            }
 
             return null;
         }
+
+        public static void ExportFeatureOverrides(string path) =>
+            RegEdit.ExportKey(RegEdit.HIVE_CURRENTUSER, ZUNE_FEATURESOVERRIDE_REGKEY, path);
 
         public static bool SetFeatureOverride(string feature, bool value) =>
             RegEdit.CurrentUserSetBoolValue(ZUNE_FEATURESOVERRIDE_REGKEY, feature, value);

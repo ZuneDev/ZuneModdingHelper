@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using OwlCore.AbstractUI.ViewModels;
-using OwlCore.AbstractUI.Models;
 
 namespace OwlCore.Wpf.AbstractUI.Controls
 {
@@ -16,7 +15,7 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         /// Backing property for <see cref="ViewModel"/>.
         /// </summary>
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register(nameof(ViewModel), typeof(AbstractUICollectionViewModel), typeof(AbstractUIGroupPresenter), new PropertyMetadata(null, (d, e) => ((AbstractUIGroupPresenter)d).OnViewModelChanged()));
+            DependencyProperty.Register(nameof(ViewModel), typeof(AbstractUICollectionViewModel), typeof(AbstractUIGroupPresenter), new PropertyMetadata(null));
 
         /// <summary>
         /// Backing property for <see cref="TemplateSelector"/>.
@@ -48,62 +47,6 @@ namespace OwlCore.Wpf.AbstractUI.Controls
         public AbstractUIGroupPresenter()
         {
             this.DefaultStyleKey = typeof(AbstractUIGroupPresenter);
-
-            AttachEvents();
-        }
-
-        private void AttachEvents()
-        {
-            Loaded += OnLoaded;
-
-            DataContextChanged += OnDataContextChanged;
-        }
-
-        private void DetachEvents()
-        {
-            DataContextChanged -= OnDataContextChanged;
-        }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (_dataContextBeingSet)
-                return;
-
-            _dataContextBeingSet = true;
-
-            if (DataContext is AbstractUICollection elementGroup)
-                ViewModel = new AbstractUICollectionViewModel(elementGroup);
-
-            if (DataContext is AbstractUICollectionViewModel elementGroupViewModel)
-                ViewModel = elementGroupViewModel;
-
-            _dataContextBeingSet = false;
-        }
-
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            Loaded -= OnLoaded;
-            Unloaded += OnUnloaded;
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            Unloaded -= OnUnloaded;
-
-            DetachEvents();
-        }
-
-        /// <summary>
-        /// Raised when the <see cref="ViewModel"/> changes.
-        /// </summary>
-        public void OnViewModelChanged()
-        {
-            if (_dataContextBeingSet)
-                return;
-
-            _dataContextBeingSet = true;
-            DataContext = ViewModel;
-            _dataContextBeingSet = false;
         }
     }
 }

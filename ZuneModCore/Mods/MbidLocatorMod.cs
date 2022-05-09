@@ -42,9 +42,9 @@ namespace ZuneModCore.Mods
             };
         }
 
-        public override IReadOnlyList<Type>? DependentMods => null;
+        public override IReadOnlyList<ModDependency>? DependentMods => null;
 
-        public override async Task<string?> Apply()
+        protected override async Task<string?> ApplyCore()
         {
             // Use user choices from AbstractUI
             string folderPath = ((AbstractTextBox)OptionsUI!.Items[0]).Value;
@@ -82,7 +82,7 @@ namespace ZuneModCore.Mods
                 return null;
         }
 
-        public override Task<string?> Reset()
+        protected override Task<string?> ResetCore()
         {
             return Task.FromResult<string?>(null);
         }

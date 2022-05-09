@@ -3,23 +3,23 @@ using OwlCore.AbstractUI.Models;
 using OwlCore.AbstractUI.ViewModels;
 using OwlCore.Wpf.AbstractUI.Controls;
 using System.Windows;
+using ZuneModCore;
 
 namespace ZuneModdingHelper
 {
     /// <summary>
-    /// Interaction logic for AbstractUIGroupDialog.xaml
+    /// A dialog that displays the options and dependencies for the given <see cref="CurrentMod"/>.
     /// </summary>
-    public partial class AbstractUIGroupDialog : MetroWindow
+    public partial class OptionsUIDialog : MetroWindow
     {
-        public AbstractUIGroupDialog(AbstractUICollectionViewModel viewModel)
+        public OptionsUIDialog(Mod mod)
         {
-            ViewModel = viewModel;
-            DataContext = ViewModel;
             InitializeComponent();
-        }
-        public AbstractUIGroupDialog(AbstractUICollection group) : this(new AbstractUICollectionViewModel(group))
-        {
 
+            DataContext = this;
+            ViewModel = new(mod);
+
+            Title = "Options | " + ViewModel.Mod.Title;
         }
 
         private void OptionsUINextButton_Click(object sender, RoutedEventArgs e) => Finish(true);
@@ -32,12 +32,17 @@ namespace ZuneModdingHelper
             Close();
         }
 
-        public AbstractUICollectionViewModel ViewModel
+        public ModViewModel ViewModel
         {
-            get => (AbstractUICollectionViewModel)GetValue(ViewModelProperty);
+            get => (ModViewModel)GetValue(ViewModelProperty);
             set => SetValue(ViewModelProperty, value);
         }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-            nameof(ViewModel), typeof(AbstractUICollectionViewModel), typeof(AbstractUIGroupDialog));
+            nameof(ViewModel), typeof(ModViewModel), typeof(OptionsUIDialog));
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await ViewModel.LoadAsync();
+        }
     }
 }

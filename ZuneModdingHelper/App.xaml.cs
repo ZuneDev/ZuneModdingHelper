@@ -2,6 +2,7 @@
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using ZuneModCore;
 
 namespace ZuneModdingHelper
 {
@@ -12,7 +13,7 @@ namespace ZuneModdingHelper
     {
         public const string Title = "Zune Modding Helper";
 
-        public static readonly ReleaseVersion Version = new(2021, 12, 30, 0, Phase.Alpha);
+        public static readonly ReleaseVersion Version = ModManager.CurrentVersion;
         public static readonly string VersionStr = Version.ToString();
 
         public const string DonateLink = "http://josh.askharoun.com/donate";

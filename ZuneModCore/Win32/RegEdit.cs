@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace ZuneModCore.Win32
 {
@@ -7,6 +8,7 @@ namespace ZuneModCore.Win32
 
     public class RegEdit
     {
+        public const string HIVE_CURRENTUSER = "HKEY_CURRENT_USER";
         public const string ZUNE_REG_PATH = @"SOFTWARE\Microsoft\Zune\";
 
         public static bool CurrentUserSetBoolValue(string key, string name, bool value)
@@ -65,6 +67,46 @@ namespace ZuneModCore.Win32
                 return;
 
             regKey.DeleteValue(name, false);
+        }
+
+        public static void ExportKey(string hive, string regKey, string savePath, bool overwrite = true)
+        {
+            string path = $"\"{savePath}\"";
+            string key = $"\"{hive}\\{regKey}\"";
+
+            Process proc = null!;
+            try
+            {
+                string cmd = $"reg export {key} {path}";
+
+                if (overwrite)
+                    cmd += " /y";
+
+                proc = Process.Start("cmd.exe", $"/c {cmd}");
+                if (proc != null) proc.WaitForExit();
+            }
+            finally
+            {
+                if (proc != null) proc.Dispose();
+            }
+        }
+
+        public static void ImportKey(string savePath)
+        {
+            string path = "\"" + savePath + "\"";
+
+            Process proc = null!;
+            try
+            {
+                string cmd = $"reg import {path}";
+
+                proc = Process.Start("cmd.exe", $"/c \"{cmd}\"");
+                if (proc != null) proc.WaitForExit();
+            }
+            finally
+            {
+                if (proc != null) proc.Dispose();
+            }
         }
     }
 

@@ -85,6 +85,7 @@
                     <ControlTemplate TargetType="controls:AbstractUIGroupPresenter">
                         <ContentControl  ContentTemplate="{StaticResource DefaultAbstractUICollectionTemplate}"
                                          Content="{TemplateBinding ViewModel}"
+                                         DataContext="{TemplateBinding ViewModel}"
                                          HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
                     </ControlTemplate>
                 </Setter.Value>
