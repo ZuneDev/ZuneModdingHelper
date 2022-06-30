@@ -14,6 +14,11 @@ namespace ZuneModCore.Mods
         public const string ZUNE_MEDIA_ID_NAME = "ZuneMediaID";
         public const string ZUNE_COLLECTION_ID_NAME = "ZuneCollectionID";
 
+        private static readonly string[] KNOWN_EXTS = new[]
+        {
+            ".mp3", ".mp4", ".m4a", ".wav"
+        };
+
         public override string Id => nameof(FeaturesOverrideMod);
 
         public override string Title => "MusicBrainz ID Locator";
@@ -53,11 +58,16 @@ namespace ZuneModCore.Mods
                 return $"The folder '{folder.FullName}' does not exist.";
             }
 
-            foreach (FileInfo file in folder.EnumerateFiles("*.*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+            foreach (FileInfo file in folder.GetFiles("*.*", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
             {
                 try
                 {
-                    UpdateMbidInFile(file);
+                    if (KNOWN_EXTS.Contains(file.Extension))
+                        UpdateMbidInFile(file);
+
+#if DEBUG
+                    System.Diagnostics.Debug.WriteLine(file);
+#endif
                 }
                 catch (Exception ex)
                 {
@@ -114,30 +124,43 @@ namespace ZuneModCore.Mods
                 {
                     var frames = id3v2.GetFrames<TagLib.Id3v2.PrivateFrame>();
 
-                    var albumArtistFrame = frames.FirstOrDefault(f => f.Owner == ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME);
-                    if (albumArtistFrame == null && tag.MusicBrainzReleaseArtistId != null)
+                    // Note the use of .ToList(): this is because calling RemoveFrame() will
+                    // modify the underlying collection, causing an exception to be thrown
+                    // when attempting the next iteration of the for loop
+
+                    if (tag.MusicBrainzReleaseArtistId != null)
                     {
-                        albumArtistFrame = new TagLib.Id3v2.PrivateFrame(ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME);
-                        albumArtistFrame.PrivateData = new TagLib.ByteVector(
-                            new Guid(tag.MusicBrainzReleaseArtistId).ToByteArray());
+                        foreach (var oldAlbumArtistFrame in frames.Where(f => f.Owner == ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME).ToList())
+                            id3v2.RemoveFrame(oldAlbumArtistFrame);
+
+                        TagLib.Id3v2.PrivateFrame albumArtistFrame = new(ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME)
+                        {
+                            PrivateData = new(new Guid(tag.MusicBrainzReleaseArtistId).ToByteArray())
+                        };
                         id3v2.AddFrame(albumArtistFrame);
                     }
 
-                    var albumFrame = frames.FirstOrDefault(f => f.Owner == ZUNE_ALBUM_MEDIA_ID_NAME);
-                    if (albumFrame == null && tag.MusicBrainzReleaseId != null)
+                    if (tag.MusicBrainzReleaseId != null)
                     {
-                        albumFrame = new TagLib.Id3v2.PrivateFrame(ZUNE_ALBUM_MEDIA_ID_NAME);
-                        albumFrame.PrivateData = new TagLib.ByteVector(
-                            new Guid(tag.MusicBrainzReleaseId).ToByteArray());
+                        foreach (var oldAlbumFrame in frames.Where(f => f.Owner == ZUNE_ALBUM_MEDIA_ID_NAME).ToList())
+                            id3v2.RemoveFrame(oldAlbumFrame);
+
+                        TagLib.Id3v2.PrivateFrame albumFrame = new(ZUNE_ALBUM_MEDIA_ID_NAME)
+                        {
+                            PrivateData = new(new Guid(tag.MusicBrainzReleaseId).ToByteArray())
+                        };
                         id3v2.AddFrame(albumFrame);
                     }
 
-                    var trackFrame = frames.FirstOrDefault(f => f.Owner == ZUNE_MEDIA_ID_NAME);
-                    if (trackFrame == null && tag.MusicBrainzTrackId != null)
+                    if (tag.MusicBrainzTrackId != null)
                     {
-                        trackFrame = new TagLib.Id3v2.PrivateFrame(ZUNE_MEDIA_ID_NAME);
-                        trackFrame.PrivateData = new TagLib.ByteVector(
-                            new Guid(tag.MusicBrainzTrackId).ToByteArray());
+                        foreach (var oldTrackFrame in frames.Where(f => f.Owner == ZUNE_MEDIA_ID_NAME).ToList())
+                            id3v2.RemoveFrame(oldTrackFrame);
+
+                        TagLib.Id3v2.PrivateFrame trackFrame = new(ZUNE_MEDIA_ID_NAME)
+                        {
+                            PrivateData = new(new Guid(tag.MusicBrainzTrackId).ToByteArray())
+                        };
                         id3v2.AddFrame(trackFrame);
                     }
                 }
