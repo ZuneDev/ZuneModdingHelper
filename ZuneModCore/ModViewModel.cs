@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ZuneModCore
 {
-    public class ModViewModel : ObservableObject, IDisposable
+    public class ModViewModel : ObservableObject
     {
         public ModViewModel(Mod mod)
         {
@@ -102,11 +102,6 @@ namespace ZuneModCore
                 ActionButtonText = "Apply";
                 ActionCommand = _applyCommand;
             }
-        }
-
-        public void Dispose()
-        {
-            Mod.StatusChanged -= OnStatusChanged;
         }
     }
 }
