@@ -23,6 +23,10 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <Window.DataContext>
+        <mod:ModViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
     <Grid x:Name="OptionsUIGrid" Grid.RowSpan="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -31,9 +35,9 @@
         
         <ScrollViewer>
             <StackPanel Orientation="Vertical">
-                <StackPanel Margin="10,10,10,0" Visibility="{Binding ViewModel.HasDependencies}">
+                <StackPanel Margin="10,10,10,0" Visibility="{Binding HasDependencies, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="Dependencies" FontSize="26"/>
-                    <ItemsControl x:Name="DependenciesPresenter" ItemsSource="{Binding ViewModel.Mod.DependentMods}">
+                    <ItemsControl x:Name="DependenciesPresenter" ItemsSource="{Binding Dependencies}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type mod:ModDependency}">
                                 <TextBlock Margin="4" FontSize="14">
@@ -50,9 +54,9 @@
                                Height="2" Margin="0,10,0,-7"/>
                 </StackPanel>
                 
-                <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding ViewModel.OptionsViewModel}"
+                <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding OptionsViewModel}"
                                                 TemplateSelector="{StaticResource GroupTemplateSelector}"
-                                                Visibility="{Binding ViewModel.HasOptions}"/>
+                                                Visibility="{Binding OptionsViewModel, Converter={StaticResource NullToVisibilityConverter}}"/>
             </StackPanel>
         </ScrollViewer>
         
@@ -82,8 +86,8 @@
                 <Button x:Name="OptionsUICancelButton" Content="Cancel" Click="OptionsUICancelButton_Click"
                         Grid.Column="1" Style="{StaticResource SecondaryButton}"/>
                 
-                <Button x:Name="OptionsUINextButton" Content="{Binding ViewModel.ActionButtonText}"
-                        Command="{Binding ViewModel.ActionCommand}"
+                <Button x:Name="OptionsUINextButton" Content="{Binding ActionButtonText}"
+                        Command="{Binding ActionCommand}"
                         Grid.Column="2" Style="{StaticResource PrimaryButton}"/>
             </Grid>
         </Border>

@@ -16,8 +16,8 @@ namespace ZuneModdingHelper
         {
             InitializeComponent();
 
-            DataContext = this;
-            ViewModel = new(mod);
+            //DataContext = this;
+            ViewModel.Mod = mod;
 
             Title = "Options | " + ViewModel.Mod.Title;
         }
@@ -31,14 +31,6 @@ namespace ZuneModdingHelper
             DialogResult = result;
             Close();
         }
-
-        public ModViewModel ViewModel
-        {
-            get => (ModViewModel)GetValue(ViewModelProperty);
-            set => SetValue(ViewModelProperty, value);
-        }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-            nameof(ViewModel), typeof(ModViewModel), typeof(OptionsUIDialog));
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
