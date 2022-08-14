@@ -19,7 +19,7 @@ namespace ZuneModCore.Mods
             ".mp3", ".mp4", ".m4a", ".wav"
         };
 
-        public override string Id => nameof(FeaturesOverrideMod);
+        public override string Id => nameof(MbidLocatorMod);
 
         public override string Title => "MusicBrainz ID Locator";
 
