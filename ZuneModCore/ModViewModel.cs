@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ZuneModCore
 {
-    public class ModViewModel : ObservableObject, IDisposable
+    public class ModViewModel : ObservableObject
     {
         public ModViewModel()
         {
