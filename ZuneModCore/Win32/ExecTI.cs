@@ -16,7 +16,7 @@ namespace ZuneModCore.Win32
 			SafeHSNAPSHOT hSnapshot = CreateToolhelp32Snapshot(TH32CS.TH32CS_SNAPPROCESS, 0);
 			if (hSnapshot.IsInvalid)
 			{
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			uint pid = unchecked((uint)-1);
@@ -35,7 +35,7 @@ namespace ZuneModCore.Win32
 			else
 			{
 				CloseHandle(hSnapshot.DangerousGetHandle());
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			if (unchecked((int)pid) == -1)
@@ -56,7 +56,7 @@ namespace ZuneModCore.Win32
 				ScManagerAccessTypes.SC_MANAGER_CONNECT | ScManagerAccessTypes.SC_MANAGER_LOCK);
 			if (hSCManager == SC_HANDLE.NULL)
 			{
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			SC_HANDLE hService = OpenService(
@@ -66,7 +66,7 @@ namespace ZuneModCore.Win32
 			if (hService == SC_HANDLE.NULL)
 			{
 				CloseServiceHandle(hSCManager);
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			SERVICE_STATUS_PROCESS statusBuffer = default;
@@ -83,7 +83,7 @@ namespace ZuneModCore.Win32
 					{
 						CloseServiceHandle(hService);
 						CloseServiceHandle(hSCManager);
-						Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+						Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 					}
 				}
 				if (statusBuffer.dwCurrentState == ServiceState.SERVICE_START_PENDING ||
@@ -101,7 +101,7 @@ namespace ZuneModCore.Win32
 			}
 			CloseServiceHandle(hService);
 			CloseServiceHandle(hSCManager);
-			Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+			Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			return 0;
 		}
 
@@ -112,7 +112,7 @@ namespace ZuneModCore.Win32
 			var hSystemProcess = OpenProcess(am, false, systemPid);
 			if (hSystemProcess.IsInvalid)
 			{
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			if (!OpenProcessToken(
@@ -121,7 +121,7 @@ namespace ZuneModCore.Win32
 				out var hSystemToken))
 			{
 				CloseHandle(hSystemProcess.DangerousGetHandle());
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			SECURITY_ATTRIBUTES tokenAttributes = new()
@@ -138,21 +138,21 @@ namespace ZuneModCore.Win32
 				out var hDupToken))
 			{
 				CloseHandle(hSystemToken.DangerousGetHandle());
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			if (!ImpersonateLoggedOnUser(hDupToken))
 			{
 				CloseHandle(hDupToken.DangerousGetHandle());
 				CloseHandle(hSystemToken.DangerousGetHandle());
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			CloseHandle(hDupToken.DangerousGetHandle());
 			CloseHandle(hSystemToken.DangerousGetHandle());
 		}
 
-		public static void CreateProcessAsTrustedInstaller(uint pid, string commandLine)
+		public static SafePROCESS_INFORMATION? CreateProcessAsTrustedInstaller(uint pid, string commandLine)
 		{
 			TokenManipulator.AddPrivilege(SE_DEBUG_NAME);
 			TokenManipulator.AddPrivilege(SE_IMPERSONATE_NAME);
@@ -162,7 +162,7 @@ namespace ZuneModCore.Win32
 			var hTIProcess = OpenProcess(am, false, pid);
 			if (hTIProcess.IsInvalid)
 			{
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			if (!OpenProcessToken(
@@ -171,7 +171,7 @@ namespace ZuneModCore.Win32
 				out var hTIToken))
 			{
 				CloseHandle(hTIProcess.DangerousGetHandle());
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
             SECURITY_ATTRIBUTES tokenAttributes = new()
@@ -188,12 +188,12 @@ namespace ZuneModCore.Win32
 				out var hDupToken))
 			{
 				CloseHandle(hTIToken.DangerousGetHandle());
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			STARTUPINFO startupInfo = new()
             {
-				lpDesktop = "Winsta0\\Default"
+				lpDesktop = "Winsta0\\Default",
 			};
 			if (!CreateProcessWithTokenW(
 				hDupToken,
@@ -206,8 +206,10 @@ namespace ZuneModCore.Win32
 				startupInfo,
 				out var processInfo))
 			{
-				Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
+				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
+
+			return processInfo;
 		}
 	}
 }
