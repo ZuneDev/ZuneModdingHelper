@@ -34,17 +34,17 @@ namespace ZuneModCore.Win32
 			}
 			else
 			{
-				CloseHandle(hSnapshot.DangerousGetHandle());
+				CloseHandle(hSnapshot.DangerousGetHandle(), nameof(hSnapshot));
 				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			if (unchecked((int)pid) == -1)
 			{
-				CloseHandle(hSnapshot.DangerousGetHandle());
+				CloseHandle(hSnapshot.DangerousGetHandle(), nameof(hSnapshot));
 				throw new Exception("Process not found: " + processName);
 			}
 
-			CloseHandle(hSnapshot.DangerousGetHandle());
+			CloseHandle(hSnapshot.DangerousGetHandle(), nameof(hSnapshot));
 			return pid;
 		}
 
@@ -120,7 +120,7 @@ namespace ZuneModCore.Win32
 				(TokenAccess)MAXIMUM_ALLOWED,
 				out var hSystemToken))
 			{
-				CloseHandle(hSystemProcess.DangerousGetHandle());
+				CloseHandle(hSystemProcess.DangerousGetHandle(), nameof(hSystemProcess));
 				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
@@ -137,19 +137,19 @@ namespace ZuneModCore.Win32
 				TOKEN_TYPE.TokenImpersonation,
 				out var hDupToken))
 			{
-				CloseHandle(hSystemToken.DangerousGetHandle());
+				CloseHandle(hSystemToken.DangerousGetHandle(), nameof(hSystemToken));
 				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
 			if (!ImpersonateLoggedOnUser(hDupToken))
 			{
-				CloseHandle(hDupToken.DangerousGetHandle());
-				CloseHandle(hSystemToken.DangerousGetHandle());
+				CloseHandle(hDupToken.DangerousGetHandle(), nameof(hDupToken));
+				CloseHandle(hSystemToken.DangerousGetHandle(), nameof(hSystemToken));
 				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
-			CloseHandle(hDupToken.DangerousGetHandle());
-			CloseHandle(hSystemToken.DangerousGetHandle());
+			CloseHandle(hDupToken.DangerousGetHandle(), nameof(hDupToken));
+			CloseHandle(hSystemToken.DangerousGetHandle(), nameof(hSystemToken));
 		}
 
 		public static SafePROCESS_INFORMATION? CreateProcessAsTrustedInstaller(uint pid, string commandLine)
@@ -170,7 +170,7 @@ namespace ZuneModCore.Win32
 				TokenAccess.TOKEN_ALL_ACCESS,
 				out var hTIToken))
 			{
-				CloseHandle(hTIProcess.DangerousGetHandle());
+				CloseHandle(hTIProcess.DangerousGetHandle(), nameof(hTIProcess));
 				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
@@ -187,7 +187,7 @@ namespace ZuneModCore.Win32
 				TOKEN_TYPE.TokenImpersonation,
 				out var hDupToken))
 			{
-				CloseHandle(hTIToken.DangerousGetHandle());
+				CloseHandle(hTIToken.DangerousGetHandle(), nameof(hTIToken));
 				Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 			}
 
@@ -211,5 +211,11 @@ namespace ZuneModCore.Win32
 
 			return processInfo;
 		}
+
+		private static void CloseHandle(IntPtr hObject, string name)
+        {
+			System.Diagnostics.Debug.WriteLine($"{name} = {hObject:X}");
+			Kernel32.CloseHandle(hObject);
+        }
 	}
 }

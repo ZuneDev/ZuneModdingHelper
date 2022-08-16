@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ZuneModCore.Mods;
 
 namespace ZuneModCore
@@ -15,8 +14,9 @@ namespace ZuneModCore
         /// </summary>
         public static readonly IReadOnlyList<Mod> AvailableMods = new List<Mod>
         {
-            new FeaturesOverrideMod(),
             new VideoSyncMod(),
+            new Win11DriverMod(),
+            new FeaturesOverrideMod(),
             new WebservicesMod(),
             new BackgroundImageMod(),
             new MbidLocatorMod(),
