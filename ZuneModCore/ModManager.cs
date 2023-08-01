@@ -15,7 +15,9 @@ namespace ZuneModCore
         public static readonly IReadOnlyList<Mod> AvailableMods = new List<Mod>
         {
             new VideoSyncMod(),
+#if DEBUG
             new Win11DriverMod(),
+#endif
             new FeaturesOverrideMod(),
             new WebservicesMod(),
             new BackgroundImageMod(),

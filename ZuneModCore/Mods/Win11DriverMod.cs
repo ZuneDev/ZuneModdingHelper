@@ -73,25 +73,6 @@ namespace ZuneModCore.Mods
                 }
                 await enumProc.WaitForExitAsync();
 
-                //if (zuneInfPublishedName != null)
-                //{
-                //    // There may be a corrupted driver from previous attempts,
-                //    // removing it before installing brings better results
-                //    startInfo.Arguments = $"/delete-driver {zuneInfPublishedName} /uninstall";
-                //    Process deleteProc = new()
-                //    {
-                //        StartInfo = startInfo
-                //    };
-
-                //    deleteProc.Start();
-                //    while (!deleteProc.StandardOutput.EndOfStream)
-                //    {
-                //        string? currentLine = await deleteProc.StandardOutput.ReadLineAsync();
-                //        Debug.WriteLine(currentLine);
-                //    }
-                //    await deleteProc.WaitForExitAsync();
-                //}
-
                 // Copy all .dll.mui files, then install the driver.
                 // This loop generates a batch script that can run as TrustedInstaller
                 // to copy all the necessary files to System32. If we don't run this
@@ -124,14 +105,14 @@ namespace ZuneModCore.Mods
 
                 // Manually copy files and install the driver
                 string? installErrorMsg = null;
-                using (var procInfo = Win32.ExecTI.CreateProcessAsTrustedInstaller(tiSvc, $"cmd /k {installScriptPath}"))
+                var procInfo = Win32.ExecTI.CreateProcessAsTrustedInstaller(tiSvc, $"cmd /k {installScriptPath}");
                 {
                     Debug.WriteLine(procInfo.hProcess.DangerousGetHandle().ToString("X"));
                     Process installProc = Process.GetProcessById(unchecked((int)procInfo!.dwProcessId));
                     await installProc.WaitForExitAsync();
 
                     if (Vanara.PInvoke.Kernel32.GetExitCodeProcess(procInfo.hProcess, out var exitCode)
-                        && (exitCode != 0 || exitCode != 0xc000013A))
+                        && (exitCode != 0 || exitCode != 0xC000013A))
                         installErrorMsg = "An unknown error occurred while attempting to install driver.";
 
                     //Vanara.PInvoke.Kernel32.CloseHandle(procInfo.hProcess.DangerousGetHandle());
