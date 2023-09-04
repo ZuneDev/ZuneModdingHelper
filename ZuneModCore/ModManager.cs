@@ -75,18 +75,21 @@ namespace ZuneModCore
         private static StatusModel GetOrCreateStatusModel()
         {
             StatusModel? model = null;
-            if (File.Exists(CoreStatusFile))
+
+            try
             {
                 string json = File.ReadAllText(CoreStatusFile);
                 if (!string.IsNullOrWhiteSpace(json))
                     model = JsonSerializer.Deserialize<StatusModel>(json);
             }
-
-            model ??= new()
+            catch
             {
-                Version = CurrentVersion,
-                InstalledMods = new()
-            };
+                model = new()
+                {
+                    Version = CurrentVersion,
+                    InstalledMods = new()
+                };
+            }
 
             Guard.IsNotNull(model, nameof(model));
             return model;
