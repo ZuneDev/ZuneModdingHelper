@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using OwlCore.AbstractUI.Models;
 using OwlCore.AbstractUI.ViewModels;
-using Microsoft.Toolkit.Diagnostics;
-using OwlCore.Wpf.AbstractUI.Controls;
+using CommunityToolkit.Diagnostics;
 using System.Windows.Data;
 using System.Globalization;
 

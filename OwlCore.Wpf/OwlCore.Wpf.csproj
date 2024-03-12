@@ -7,13 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Diagnostics" Version="7.1.2" />
-      <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
-      <PackageReference Include="OwlCore" Version="0.0.43" />
+        <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+        <PackageReference Include="OwlCore" Version="0.4.1" />
+        <PackageReference Include="OwlCore.AbstractUI" Version="0.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Converters\Bools\" />
+        <Folder Include="Converters\Bools\" />
     </ItemGroup>
 
 </Project>

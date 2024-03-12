@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="OwlCore.Wpf.AbstractUI.Themes.AbstractUIGroupPresenterStyle"
     xmlns:controls="clr-namespace:OwlCore.Wpf.AbstractUI.Controls"
-    xmlns:abstractUIVm="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore"
+    xmlns:abstractUIVm="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore.AbstractUI"
     xmlns:themes="clr-namespace:OwlCore.Wpf.AbstractUI.Themes"
     xmlns:convertvis="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible">
 

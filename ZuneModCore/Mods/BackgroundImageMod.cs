@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Vestris.ResourceLib;
 using ZuneModCore.Win32;
@@ -22,21 +21,19 @@ namespace ZuneModCore.Mods
 
         public override AbstractUICollection? GetDefaultOptionsUI()
         {
-            return new(nameof(BackgroundImageMod))
+            AbstractUICollection optionsUi = new(nameof(BackgroundImageMod))
             {
-                Title = "Select background image:",
-                Items = new List<AbstractUIElement>
-                {
-                    new AbstractTextBox("fileBox", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
-                }
+                new AbstractTextBox("fileBox", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
             };
+            optionsUi.Title = "Select background image:";
+            return optionsUi;
         }
 
         public override IReadOnlyList<Type>? DependentMods => null;
 
         public override async Task<string?> Apply()
         {
-            string bgimgPath = ((AbstractTextBox)OptionsUI!.Items[0]).Value;
+            string bgimgPath = ((AbstractTextBox)OptionsUI![0]).Value;
             FileInfo bgimgInfo = new(bgimgPath);
             if (!bgimgInfo.Exists)
             {

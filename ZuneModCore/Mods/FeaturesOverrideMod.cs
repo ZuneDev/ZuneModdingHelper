@@ -21,46 +21,44 @@ namespace ZuneModCore.Mods
 
         public override AbstractUICollection? GetDefaultOptionsUI()
         {
-            return new(nameof(FeaturesOverrideMod))
+            AbstractUICollection optionsUi = new(nameof(FeaturesOverrideMod))
             {
-                Title = "Select features:",
-                Items = new List<AbstractUIElement>
-                {
-                    // We don't know what some of these overrides do exactly, so hide them from the user.
-                    // The ID is the name of the registry key, the label is the display name
+                // We don't know what some of these overrides do exactly, so hide them from the user.
+                // The ID is the name of the registry key, the label is the display name
 
-                    new AbstractBoolean("Apps", "Apps"),
-                    new AbstractBoolean("Art", "Art"),
-                    new AbstractBoolean("Channels", "Channels"),
-                    new AbstractBoolean("FirstLaunchIntroVideo", "First Launch Intro Video"),
-                    new AbstractBoolean("Games", "Games"),
-                    new AbstractBoolean("Marketplace", "Marketplace"),
-                    new AbstractBoolean("MBRPreview", "[Marketplace] Media Preview"),
-                    new AbstractBoolean("MBRPurchase", "[Marketplace] Media Purchase"),
-                    new AbstractBoolean("MBRRental", "[Marketplace] Media Rental"),
-                    new AbstractBoolean("Music", "Music"),
-                    new AbstractBoolean("MusicVideos", "Music Videos"),
-                    new AbstractBoolean("Nowplaying", "Now Playing"),
-                    new AbstractBoolean("NowplayingArt", "Now Playing Art"),
-                    new AbstractBoolean("Picks", "Picks"),
-                    new AbstractBoolean("Podcasts", "Podcasts"),
-                    new AbstractBoolean("QuickMixLocal", "Quick Mix (Local)"),
-                    new AbstractBoolean("QuickMixZMP", "Quick Mix (ZMP)"),
-                    new AbstractBoolean("Quickplay", "Quickplay"),
-                    new AbstractBoolean("Sign In Available", "Sign In"),
-                    new AbstractBoolean("Social", "Social"),
-                    new AbstractBoolean("SocialMarketplace", "Social Marketplace"),
-                    new AbstractBoolean("SubscriptionFreeTracks", "Subscription Free Tracks"),
-                    new AbstractBoolean("Videos", "Videos"),
-                }
+                new AbstractBoolean("Apps", "Apps"),
+                new AbstractBoolean("Art", "Art"),
+                new AbstractBoolean("Channels", "Channels"),
+                new AbstractBoolean("FirstLaunchIntroVideo", "First Launch Intro Video"),
+                new AbstractBoolean("Games", "Games"),
+                new AbstractBoolean("Marketplace", "Marketplace"),
+                new AbstractBoolean("MBRPreview", "[Marketplace] Media Preview"),
+                new AbstractBoolean("MBRPurchase", "[Marketplace] Media Purchase"),
+                new AbstractBoolean("MBRRental", "[Marketplace] Media Rental"),
+                new AbstractBoolean("Music", "Music"),
+                new AbstractBoolean("MusicVideos", "Music Videos"),
+                new AbstractBoolean("Nowplaying", "Now Playing"),
+                new AbstractBoolean("NowplayingArt", "Now Playing Art"),
+                new AbstractBoolean("Picks", "Picks"),
+                new AbstractBoolean("Podcasts", "Podcasts"),
+                new AbstractBoolean("QuickMixLocal", "Quick Mix (Local)"),
+                new AbstractBoolean("QuickMixZMP", "Quick Mix (ZMP)"),
+                new AbstractBoolean("Quickplay", "Quickplay"),
+                new AbstractBoolean("Sign In Available", "Sign In"),
+                new AbstractBoolean("Social", "Social"),
+                new AbstractBoolean("SocialMarketplace", "Social Marketplace"),
+                new AbstractBoolean("SubscriptionFreeTracks", "Subscription Free Tracks"),
+                new AbstractBoolean("Videos", "Videos"),
             };
+            optionsUi.Title = "Select features:";
+            return optionsUi;
         }
 
         public override IReadOnlyList<Type>? DependentMods => null;
 
         public override Task Init()
         {
-            foreach (AbstractUIElement uiElem in OptionsUI.Items)
+            foreach (AbstractUIElement uiElem in OptionsUI!)
             {
                 if (uiElem is AbstractBoolean boolElem)
                 {
@@ -77,7 +75,7 @@ namespace ZuneModCore.Mods
         public async Task<string?> Apply(bool applyAll = false)
         {
             // Use user choices from AbstractUI
-            foreach (AbstractUIElement uiElem in OptionsUI!.Items)
+            foreach (AbstractUIElement uiElem in OptionsUI!)
             {
                 if (uiElem is AbstractBoolean boolElem && (boolElem.State || applyAll))
                 {

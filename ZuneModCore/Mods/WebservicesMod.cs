@@ -1,5 +1,4 @@
-﻿using OwlCore;
-using OwlCore.AbstractUI.Models;
+﻿using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,39 +31,37 @@ namespace ZuneModCore.Mods
 
         public override AbstractUICollection? GetDefaultOptionsUI()
         {
-            return new(nameof(FeaturesOverrideMod))
+            AbstractUICollection optionsUi = new(nameof(FeaturesOverrideMod))
             {
-                Title = string.Empty,
-                Items = new List<AbstractUIElement>
+                new AbstractTextBox("hostBox", string.Empty, "zune.net")
                 {
-                    new AbstractTextBox("hostBox", string.Empty, "zune.net")
+                    Title = "Host",
+                    TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
+                },
+                new AbstractDataList("hostsTest", new List<AbstractUIMetadata>()
                     {
-                        Title = "Host",
-                        TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
-                    },
-                    new AbstractDataList("hostsTest", new List<AbstractUIMetadata>()
-                        {
-                            GetWebserviceAvailabilityUI("Main website", "www"),
-                            GetWebserviceAvailabilityUI("Social website", "social"),
-                            GetWebserviceAvailabilityUI("Catalog", "catalog"),
-                            GetWebserviceAvailabilityUI("Image catalog", "image.catalog"),
-                            GetWebserviceAvailabilityUI("Social", "socialapi"),
-                            GetWebserviceAvailabilityUI("Social [Comments]", "comments"),
-                            GetWebserviceAvailabilityUI("Social [Inbox]", "inbox"),
-                            GetWebserviceAvailabilityUI("Commerce [Sign in]", "commerce"),
-                            GetWebserviceAvailabilityUI("Mix", "mix"),
-                            GetWebserviceAvailabilityUI("Resources [Firmware]", "resources"),
-                            GetWebserviceAvailabilityUI("Statistics", "stats"),
-                        }
-                    )
-                    {
-                        Title = "Availability",
-                        Subtitle = "Tests availability of each known web service on the new host.",
-                        IsUserEditingEnabled = false,
-                        PreferredDisplayMode = AbstractDataListPreferredDisplayMode.Grid,
+                        GetWebserviceAvailabilityUI("Main website", "www"),
+                        GetWebserviceAvailabilityUI("Social website", "social"),
+                        GetWebserviceAvailabilityUI("Catalog", "catalog"),
+                        GetWebserviceAvailabilityUI("Image catalog", "image.catalog"),
+                        GetWebserviceAvailabilityUI("Social", "socialapi"),
+                        GetWebserviceAvailabilityUI("Social [Comments]", "comments"),
+                        GetWebserviceAvailabilityUI("Social [Inbox]", "inbox"),
+                        GetWebserviceAvailabilityUI("Commerce [Sign in]", "commerce"),
+                        GetWebserviceAvailabilityUI("Mix", "mix"),
+                        GetWebserviceAvailabilityUI("Resources [Firmware]", "resources"),
+                        GetWebserviceAvailabilityUI("Statistics", "stats"),
                     }
+                )
+                {
+                    Title = "Availability",
+                    Subtitle = "Tests availability of each known web service on the new host.",
+                    IsUserEditingEnabled = false,
+                    PreferredDisplayMode = AbstractDataListPreferredDisplayMode.Grid,
                 }
             };
+            optionsUi.Title = string.Empty;
+            return optionsUi;
         }
 
         private static AbstractUIMetadata GetWebserviceAvailabilityUI(string name, string subDomain)
@@ -80,7 +77,7 @@ namespace ZuneModCore.Mods
 
         public override Task Init()
         {
-            AbstractTextBox newHostBox = (AbstractTextBox)OptionsUI!.Items[0];
+            AbstractTextBox newHostBox = (AbstractTextBox)OptionsUI![0];
             newHostBox.ValueChanged += OnHostChanged;
             newHostBox.Value = "zunes.me";
 
@@ -120,7 +117,7 @@ namespace ZuneModCore.Mods
 
                 // Get and validate replacement host
                 string oldHost = "zune.net";
-                string newHost = ((AbstractTextBox)OptionsUI!.Items[0]).Value;
+                string newHost = ((AbstractTextBox)OptionsUI![0]).Value;
                 if (newHost.Length != oldHost.Length)
                 {
                     return $"The new host (\"{newHost}\") must have the same length as \"{oldHost}\".";
@@ -225,7 +222,7 @@ namespace ZuneModCore.Mods
 
         async void OnHostChanged(object? sender, string newHost)
         {
-            AbstractDataList list = (AbstractDataList)OptionsUI!.Items[1];
+            AbstractDataList list = (AbstractDataList)OptionsUI![1];
 
             // Reset all statuses
             foreach (AbstractUIMetadata metadata in list.Items)

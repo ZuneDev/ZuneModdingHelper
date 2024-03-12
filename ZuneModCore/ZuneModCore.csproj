@@ -10,11 +10,12 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-        <PackageReference Include="OwlCore" Version="0.0.43" />
+        <PackageReference Include="OwlCore" Version="0.4.1" />
+        <PackageReference Include="OwlCore.AbstractUI" Version="0.0.0" />
         <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
-        <PackageReference Include="TagLibSharp" Version="2.2.0" />
-        <PackageReference Include="Vanara.PInvoke.Kernel32" Version="3.4.6" />
-        <PackageReference Include="Vanara.PInvoke.Security" Version="3.4.6" />
+        <PackageReference Include="TagLibSharp" Version="2.3.0" />
+        <PackageReference Include="Vanara.PInvoke.Kernel32" Version="3.4.17" />
+        <PackageReference Include="Vanara.PInvoke.Security" Version="3.4.17" />
         <PackageReference Include="Vestris.ResourceLib" Version="2.1.0" />
     </ItemGroup>
 
