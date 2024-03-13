@@ -1,4 +1,5 @@
-﻿using OwlCore.AbstractUI.Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,16 +13,36 @@ namespace ZuneModCore
         /// <summary>
         /// A list of all available mods
         /// </summary>
-        public static readonly IReadOnlyList<Mod> AvailableMods = new List<Mod>
+        public static readonly IReadOnlyList<Type> AvailableModTypes = new List<Type>
         {
-            new FeaturesOverrideMod(),
-            new VideoSyncMod(),
-            new WebservicesMod(),
-            new BackgroundImageMod(),
-            new MbidLocatorMod(),
+            typeof(FeaturesOverrideMod),
+            typeof(VideoSyncMod),
+            typeof(WebservicesMod),
+            typeof(BackgroundImageMod),
+            typeof(MbidLocatorMod),
         }.AsReadOnly();
 
         public static string ZuneInstallDir { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
+
+        private static List<Mod>? _mods;
+        public static IReadOnlyList<Mod> AvailableMods
+        {
+            get
+            {
+                if (_mods is null)
+                {
+                    _mods = new(AvailableModTypes.Count);
+                    var services = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default;
+                    foreach (var modType in AvailableModTypes)
+                    {
+                        var instance = ActivatorUtilities.CreateInstance(services, modType);
+                        if (instance is Mod mod)
+                            _mods.Add(mod);
+                    }
+                }
+                return _mods;
+            }
+        }
 
         public abstract string Id { get; }
 

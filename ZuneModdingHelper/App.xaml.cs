@@ -1,7 +1,9 @@
 ﻿using System.Windows;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ZuneModdingHelper
 {
@@ -29,6 +31,8 @@ namespace ZuneModdingHelper
             // Disable crash and event analytics when in debug
             AppCenter.SetEnabledAsync(false);
 #endif
+
+            ConfigureServices();
         }
 
         public static void OpenInBrowser(string url)
@@ -37,6 +41,12 @@ namespace ZuneModdingHelper
             {
                 UseShellExecute = true
             });
+        }
+
+        private static void ConfigureServices()
+        {
+            ServiceCollection services = new();
+            Ioc.Default.ConfigureServices(services.BuildServiceProvider());
         }
     }
 }
