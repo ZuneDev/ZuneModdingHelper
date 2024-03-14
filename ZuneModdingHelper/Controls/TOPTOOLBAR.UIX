@@ -1,0 +1,698 @@
+<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
+<UIX xmlns="http://schemas.microsoft.com/2007/uix"
+  xmlns:sys="assembly://mscorlib/System"
+  xmlns:iris="assembly://UIX/Microsoft.Iris"
+  xmlns:isui="assembly://IrisShell/IrisShell.UI"
+  xmlns:zcfg="assembly://ZuneDBApi/Microsoft.Zune.Configuration"
+  xmlns:zuneutil="assembly://ZuneShell/Microsoft.Zune.Util"
+  xmlns:zuneutilapi="assembly://ZuneDBApi/Microsoft.Zune.Util"
+  xmlns:styles="res://UIXControls!Styles.uix"
+  xmlns:style="res://UIXControls!Style.uix"
+  xmlns:menu="res://ZuneShellResources!ContextMenu.uix"
+  xmlns:images="res://UIXControls!ImageStyle.uix"
+  xmlns:core="res://UIXControls!Controls.uix"
+  xmlns:nonclient="res://ZuneShellResources!NonClientControls.uix"
+  xmlns:anim="res://UIXControls!Animations.uix"
+  xmlns:button="res://UIXControls!Button.uix"
+  xmlns:msgdata="res://ZuneShellResources!MessagingData.schema.xml"
+  xmlns:animations="res://UIXControls!Animations.uix"
+  xmlns:listcore="res://ZuneShellResources!ContentList.uix"
+  xmlns:scroll="res://UIXControls!ScrollBar.uix"
+  xmlns:me="Me">
+
+  
+  <UI Name="TopToolbar">
+    <Properties>
+      <isui:Shell Name="Shell" Shell="$Required"/>
+      <iris:Command Name="SettingsButtonModel" Description="{isui:Shell.LoadString(&quot;IDS_SETTINGS_LAND_HEADER&quot;)}"/>
+      <sys:Boolean Name="InvisibleMode"/>
+      <iris:Command Name="MenuCommand" />
+    </Properties>
+
+    <Locals>
+
+      <isui:IrisPage Name="Page" IrisPage="{null}"/>
+
+      <Image Name="ZuneMenuLogo" Source="res://ZuneShellResources!ZuneLogoText.png"/>
+      
+      <iris:BooleanChoice Name="CaptionHasInput"/>
+
+      <iris:Command Name="MinimizeCommand" Description="{isui:Shell.LoadString(&quot;IDS_FRAME_MINIMIZE_TOOLTIP&quot;)}"/>
+      <iris:Command Name="RestoreCommand" Description="{isui:Shell.LoadString(&quot;IDS_FRAME_RESTORE_TOOLTIP&quot;)}"/>
+      <iris:Command Name="MaximizeCommand" Description="{isui:Shell.LoadString(&quot;IDS_FRAME_MAXIMIZE_TOOLTIP&quot;)}"/>
+      <iris:Command Name="CloseCommand" Description="{isui:Shell.LoadString(&quot;IDS_FRAME_CLOSE_TOOLTIP&quot;)}"/>
+
+      <core:ContextMenu Name="SysMenu">
+        <Options>
+          <iris:Command Command="{RestoreCommand}" />
+          <iris:Command Description="{isui:Shell.LoadString(&quot;IDS_FRAME_MOVE_TOOLTIP&quot;)}" Available="false" />
+          <iris:Command Description="{isui:Shell.LoadString(&quot;IDS_FRAME_SIZE_TOOLTIP&quot;)}" Available="false" />
+          <iris:Command Command="{MinimizeCommand}" />
+          <iris:Command Command="{MaximizeCommand}" />
+          <menu:MenuDivider />
+          <iris:Command Command="{CloseCommand}" />
+        </Options>
+      </core:ContextMenu>
+      
+    </Locals>
+
+    <Input>
+      <ClickHandler Name="RightClick" ClickType="RightMouse" HandlerStage="Bubbled"/>
+    </Input>
+
+    <Scripts>
+
+      <Script>
+        [DeclareTrigger(CloseCommand.Invoked)]
+        iris:Application.Window.Close();
+      </Script>
+
+      <Script>
+        [DeclareTrigger(MinimizeCommand.Invoked)]
+        iris:Application.Window.WindowState = iris:WindowState.Minimized;
+      </Script>
+
+      <Script>
+        [DeclareTrigger(RestoreCommand.Invoked)]
+        iris:Application.Window.WindowState = iris:WindowState.Normal;
+      </Script>
+
+      <Script>
+        [DeclareTrigger(MaximizeCommand.Invoked)]
+        iris:Application.Window.WindowState = iris:WindowState.Maximized;
+      </Script>
+
+      <Script>
+        iris:WindowState windowState = iris:Application.Window.WindowState;
+       
+        MinimizeCommand.Available = (windowState != iris:WindowState.Minimized);
+        RestoreCommand.Available = (windowState != iris:WindowState.Normal);
+        MaximizeCommand.Available = (windowState != iris:WindowState.Maximized);
+      </Script>
+
+      <Script>
+        if (Shell.CurrentFrame != null)
+          TopPivot.Content = Shell.CurrentFrame.Experiences.Options;
+      </Script>
+      <Script>
+        if (Shell.CurrentExperience != null)
+          BottomPivot.Content = Shell.CurrentExperience.Nodes.Options;
+      </Script>
+
+      <Script>
+        BottomPivot.Visible = !Shell.PivotMismatch;
+      </Script>
+
+      <Script>
+        [DeclareTrigger(SettingsButtonModel.Invoked)]
+        Page.InvokeSettings();
+      </Script>
+      
+      
+      <Script>
+        Page = Shell.CurrentPage;
+
+        SearchBox.Visible = Page.ShowSearch;
+        SettingsButton.Visible = Page.ShowSettings;
+        SettingsSeparator.Visible = Page.ShowSettings;
+        SignInSeparator.Visible = Page.ShowSettings;  
+
+        Pivots.Visible = Page.ShowPivots;
+
+        if (Page.ShowLogo)
+        {
+          Logo.Visible = true;
+          Body.MaximumSize = new Size(0,100);
+        }
+        else
+        {
+          Logo.Visible = false;
+          Body.MaximumSize = new Size(0,32);
+        }
+      </Script>
+
+      <Script>
+        BackButton.Visible = Shell.CurrentPage.ShowBackArrow;
+      </Script>
+
+      
+      <Script>
+        WindowControls.Visible = !iris:Application.Window.ShowWindowFrame;
+        Caption.Visible = !iris:Application.Window.ShowWindowFrame;
+      </Script>
+
+      <Script>
+        bool hidden = InvisibleMode;
+
+        float alpha = 1.0;
+        if (hidden)
+        {
+          alpha = 0.0;
+        }
+
+        Body.Alpha = alpha;
+      </Script>
+
+      <Script>
+        styles:WindowState.TopToolbarInputActivity = UI.DeepMouseFocus;
+      </Script>
+
+      <Script>
+        Logo.Visible = true;
+        SignInSeparator.Visible = true;
+        SettingsButton.Visible = true;
+        SettingsSeparator.Visible = true;
+      </Script>
+
+      
+      <Script>
+        [DeclareTrigger(RightClick.Invoked)]
+
+        SysMenu.LayoutInput = new PopupLayoutInput();
+        SysMenu.LayoutInput.Placement = PlacementMode.MouseOrigin;
+        SysMenu.Helper.Show(SysMenu);
+      </Script>
+
+      
+      <Script>
+        [DeclareTrigger(MenuCommand.Invoked)]
+
+        SysMenu.LayoutInput = new PopupLayoutInput();
+        SysMenu.LayoutInput.Offset = new Point(0,2);
+        SysMenu.LayoutInput.Placement = PlacementMode.Bottom;
+        SysMenu.LayoutInput.PlacementTarget = Logo;
+        SysMenu.Helper.Show(SysMenu);
+      </Script>
+
+      
+    </Scripts>
+
+    <Content>
+      <Panel Name="Body" Layout="Form" MaximumSize="0,100">
+        <Animations>
+          <Animation Animation="{animations:Animations.ToolbarAlpha}"/>
+        </Animations>
+        <Children>
+
+          
+          <Graphic Name="Logo" Content="res://ZuneShellResources!ZuneLogo.png">
+            <LayoutInput>
+              <FormLayoutInput Left="Parent,0,15" Top="Parent,0,27"/>
+            </LayoutInput>
+          </Graphic>
+
+          
+          <images:IconButton Name="BackButton" Model="{Shell.NavigateBackCommand}"
+              Style="{images:Images.WindowBack}">
+            <LayoutInput>
+              <FormLayoutInput Left="Parent,0,54" Bottom="Parent,1"/>
+            </LayoutInput>
+          </images:IconButton>
+
+          
+          <Panel Name="Pivots" Layout="VerticalFlow">
+            <LayoutInput>
+              <FormLayoutInput Left="Parent,0,55" Right="WindowControlContainer,0,-20"
+                               Top="Parent,0,21"/>
+            </LayoutInput>
+            <Children>
+
+              
+              <me:Pivot Name="TopPivot"
+                  FocusOrder="2"
+                  OverrideStyle="{styles:SharedStyles.TopPivot}"
+                  ItemAnimation="{null}">
+                <ListLayout>
+                  <FlowLayout Orientation="Horizontal" Spacing="18,0"/>
+                </ListLayout>
+                <ScrollControlHorizontal>
+                  <AnchorLayoutInput Right="Scroller,1" Top="Scroller,0,3"  
+                                     ContributesToWidth="false" ContributesToHeight="false"/>
+                </ScrollControlHorizontal>
+              </me:Pivot>
+
+              
+              <me:Pivot Name="BottomPivot"
+                  FocusOrder="1"
+                  OverrideStyle="{styles:SharedStyles.BottomPivot}"
+                  ListItemType="{typeof(me:BottomPivotLabelListItem)}"
+                  Margins="{me:Constants.OverlapMargins}">
+                <ListLayout>
+                  <FlowLayout Orientation="Horizontal" Spacing="15,0"/>
+                </ListLayout>
+              </me:Pivot>
+
+            </Children>
+          </Panel>
+
+          
+          <me:SearchBox Name="SearchBox" Shell="{Shell}" FocusOrder="5">
+            <LayoutInput>
+              <FormLayoutInput Right="Parent,1,-55" Left="Parent,1,-239" Top="Parent,0,41" Bottom="Parent,0,67"/>
+            </LayoutInput>
+            <Animations>
+              
+              <Animation Type="Hide">
+                <Keyframes>
+                  <AlphaKeyframe Time="0" Value="0" RelativeTo="Absolute"/>
+                  <AlphaKeyframe Time="0.01" Value="0" RelativeTo="Absolute"/>
+                </Keyframes>
+              </Animation>
+            </Animations>
+          </me:SearchBox>
+
+          <Panel Name="WindowControlContainer" Layout="HorizontalFlow">
+            <LayoutInput>
+              <FormLayoutInput Right="Parent,1" Top="Parent,0"/>
+            </LayoutInput>
+            <Children>
+              
+              <ColorFill Name="SignInSeparator" Content="{styles:SharedStyles.SettingsButtonStyle.Default.Color}" MinimumSize="1,9" Margins="0,15,10,0"/>
+              
+              
+              <core:Button Name="SettingsButton" OverrideStyle="{styles:SharedStyles.SettingsButtonStyle}"  Model="{SettingsButtonModel}" FocusOrder="4" Margins="0,12,10,0" />       
+              
+              
+              <ColorFill Name="SettingsSeparator" Content="{styles:SharedStyles.SettingsButtonStyle.Default.Color}" MinimumSize="1,9" Margins="0,15,7,0"/>
+
+              
+              <me:WindowControls 
+                    Name="WindowControls" 
+                    FocusOrder="6"
+                    MinimizeCommand="{MinimizeCommand}"
+                    MaximizeCommand="{MaximizeCommand}"
+                    RestoreCommand="{RestoreCommand}"
+                    CloseCommand="{CloseCommand}" />
+            </Children>
+          </Panel>
+
+          
+          
+          <nonclient:WindowCaption Name="Caption" Layout="Fill" MaximumSize="0,70">
+            <LayoutInput>
+              <FormLayoutInput Left="Parent,0" Top="Parent,0"/>
+            </LayoutInput>
+          </nonclient:WindowCaption>
+
+        </Children>
+      </Panel>
+    </Content>
+  </UI>
+
+  <UI Name="WindowControls">
+    <Properties>
+      <iris:Command Name="MinimizeCommand" Command="$Required" />
+      <iris:Command Name="RestoreCommand" Command="$Required"  />
+      <iris:Command Name="MaximizeCommand" Command="$Required" />
+      <iris:Command Name="CloseCommand" Command="$Required" />
+    </Properties>
+    <Locals>
+      <iris:Command Name="HelpCommand" Description="{isui:Shell.LoadString(&quot;IDS_FRAME_HELP_TOOLTIP&quot;)}"/>
+    </Locals>
+
+    <Scripts>
+      <Script>
+        [DeclareTrigger(HelpCommand.Invoked)]
+        
+        string helpPath = "Help\" + isui:Shell.LoadString(&quot;IDS_ZUNECLIENT_LOCALE&quot;) + "\LandingPage.htm";
+        isui:Shell.DefaultInstance.Execute(helpPath, null);
+        zuneutil:SQMLog.Log(zuneutilapi:SQMDataId.HelpClicks, 1);        
+      </Script>
+
+      <Script>
+        
+        
+        if (iris:Application.Window.WindowState == iris:WindowState.Maximized)
+        {
+          MaximizeButton.Style = images:Images.ContextualWindowRestore;
+          MaximizeButton.Model = RestoreCommand;
+        }
+        else
+        {
+          MaximizeButton.Style = images:Images.ContextualWindowMaximize;
+          MaximizeButton.Model = MaximizeCommand;
+        }
+      </Script>
+    </Scripts>
+
+    <Content>
+      <Panel>
+        <Layout>
+          <FlowLayout Orientation="Horizontal"/>
+        </Layout>
+        <Children>
+
+          <images:IconButton
+              TileMinSize="18,25"
+              TilePadding="0,1,20,3"
+              VerticalAlignment="Far"
+              HorizontalAlignment="Center"
+              Style="{images:Images.ContextualWindowHelp}"
+              KeyInteractiveNStuff="false"
+              Model="{HelpCommand}"
+              Margins="0,0,24,0"/>
+
+          <images:IconButton
+              TileMinSize="18,25"
+              TilePadding="0,1,0,3"
+              VerticalAlignment="Far"
+              HorizontalAlignment="Center"
+              Style="{images:Images.ContextualWindowMinimize}"
+              KeyInteractiveNStuff="false"
+              Model="{MinimizeCommand}"/>
+
+          <images:IconButton
+              Name="MaximizeButton"
+              TileMinSize="18,25"
+              TilePadding="0,1,0,3"
+              VerticalAlignment="Far"
+              HorizontalAlignment="Center"
+              KeyInteractiveNStuff="false"
+              Model="{null}"/>
+
+          <images:IconButton
+              TileMinSize="18,25"
+              TilePadding="0,1,1,3"
+              VerticalAlignment="Far"
+              Style="{images:Images.ContextualWindowClose}"
+              KeyInteractiveNStuff="false"
+              Model="{CloseCommand}"/>
+
+        </Children>
+      </Panel>
+    </Content>
+  </UI>
+  
+  
+
+
+  <UI Name="SearchBox">
+    <Properties>
+      <isui:Shell Name="Shell" Shell="$Required"/>
+      <iris:Command Name="SearchButton"/>
+      <EditableTextData Name="SearchBoxModel" Value=""/>
+    </Properties>
+    
+    <Scripts>
+      <Script>
+        [DeclareTrigger(SearchButton.Invoked)]
+        [DeclareTrigger(SearchBoxModel.Submitted)]
+        if ( isui:Search.Instance.IsValidKeyword(SearchBoxModel.Value) )
+        {
+          zuneutil:SQMLog.Log(zuneutilapi:SQMDataId.SearchExecuted, 1);
+          isui:Search.Instance.Execute(SearchBoxModel.Value);
+          Shell.SearchButton.Invoke();
+        }
+      </Script>
+
+      <Script>
+        if (UI.DeepKeyFocus)
+        {
+          SearchBoxBackground.Content = styles:Styles.SearchBoxBackgroundImageActive;
+        }
+        else
+        {
+          SearchBoxBackground.Content = styles:Styles.SearchBoxBackgroundImage;
+        }
+      </Script>
+      
+      <Script>
+        [InitialEvaluate(true)]
+        [DeclareTrigger(SearchBoxModel.Value)]
+        SearchButton.Available = isui:Search.Instance.IsValidKeyword(SearchBoxModel.Value);
+      </Script>
+
+      <Script>
+        [DeclareTrigger(isui:Search.Instance.SearchFocusHotkey.Invoked)]
+        SearchEditBox.NavigateInto(); 
+      </Script>
+    </Scripts>
+    
+    <Content>
+      <Panel Layout="Anchor">
+        <Children>
+
+          <me:SearchEditbox Name="SearchEditBox" Model="{SearchBoxModel}" FocusOrder="1">
+            <LayoutInput>
+              <AnchorLayoutInput Top="SearchBoxBackground,0,4" Left="SearchBoxBackground,0,4"/>
+            </LayoutInput>
+          </me:SearchEditbox>
+          
+          <core:IconButton Name="SearchActionButton" Model="{SearchButton}"
+              Image="res://ZuneShellResources!Search.Icon.png"
+              FocusImage="res://ZuneShellResources!Search.Icon.png"
+              DisabledImage="res://ZuneShellResources!Search.Icon.Disabled.png"
+              PressedImage="res://ZuneShellResources!Search.Icon.Clicked.png"
+              KeyInteractiveNStuff="false"
+              FocusOrder="2"
+              TileMinSize="22,18">
+            <LayoutInput>
+              <AnchorLayoutInput Left="SearchEditBox,1" Right="Parent,1" Top="SearchEditBox,0" Bottom="SearchEditBox,1"/>
+            </LayoutInput>
+          </core:IconButton>
+
+          <Graphic Name="SearchBoxBackground" SizingPolicy="SizeToConstraint" StretchingPolicy="Uniform">
+            <LayoutInput>
+              <AnchorLayoutInput Top="Parent,0" Bottom="Parent,1" Left="Parent,0" Right="Parent,1"/>
+            </LayoutInput>
+          </Graphic>
+
+        </Children>
+      </Panel>
+    </Content>
+  </UI>
+
+  
+
+
+  <UI Name="SearchEditbox">
+    <Properties>
+      
+      <EditableTextData Name="Model" EditableTextData="$Required"/>
+
+      
+      <style:Style Name="Style" Style="{styles:SharedStyles.SearchEditBoxStyle}"/>
+      <Color Name="TextFocusedColor" Color="{styles:Styles.EditTextFocusedForeground}"/>
+      <Color Name="TextHighlightColor" Color="{styles:Styles.EditTextFocusedBackground}"/>
+
+      
+      <Inset Name="TilePadding" Inset="4,2,4,0"/>
+      <Size Name="TileMinSize" Size="154,18"/>
+      <Size Name="TileMaxSize" Size="154,18"/>
+    </Properties>
+
+    <Scripts>
+      <Script>
+        <![CDATA[
+        Overlay.Visible = (!UI.DeepKeyFocus && String.IsNullOrEmpty(Model.Value));
+        ]]>
+      </Script>
+    </Scripts>
+
+    <Content>
+      <Panel Layout="Anchor">
+        <Children>
+
+          
+          <Text Name="Overlay" Content="{isui:Shell.LoadString(&quot;IDS_SEARCH_STARTER_TEXT&quot;)}"
+                FadeSize="1"  Font="{Style.Font}" Color="{Style.Color}"
+                HighlightColor="{TextHighlightColor}" TextHighlightColor="{TextFocusedColor}">
+            <LayoutInput>
+              <AnchorLayoutInput Top="SearchEditBox,0,1" Left="SearchEditBox,0,4"/>
+            </LayoutInput>
+            <Animations>
+              <Animation Type="Hide">
+                <Keyframes>
+                  <AlphaKeyframe Time="0" Value="1.0" RelativeTo="Current" Interpolation="Log, 500.0"/>
+                  <AlphaKeyframe Time="0.5" Value="0" RelativeTo="Final"/>
+                </Keyframes>
+              </Animation>
+              <Animation Type="Show">
+                <Keyframes>
+                  <AlphaKeyframe Time="0" Value="0" RelativeTo="Current" Interpolation="Log, 5.0"/>
+                  <AlphaKeyframe Time="0.5" Value="1.0" RelativeTo="Final"/>
+                </Keyframes>
+              </Animation>
+            </Animations>
+          </Text>
+
+          
+          <core:Editbox Name="SearchEditBox" Model="{Model}" AccessibleDescription="{isui:Shell.LoadString(&quot;IDS_SEARCH_STARTER_TEXT&quot;)}"  Style="{Style}" TextFocusedColor="{TextFocusedColor}"
+                TextHighlightColor="{TextHighlightColor}" TilePadding="{TilePadding}" TileMinSize="{TileMinSize}"
+                TileMaxSize="{TileMaxSize}" BackgroundColor="{styles:Styles.SearchBoxBackground}"
+                BackgroundColorFocus="{styles:Styles.SearchBoxBackgroundActive}"/>
+
+        </Children>
+      </Panel>
+    </Content>
+  </UI>
+
+  
+  
+  
+  <UI Name="Pivot" Base="core:ListView">
+    <Properties>
+      <Type Name="ProviderType" Type="{typeof(button:CommandButtonProvider)}"/>
+
+      <TransformByAttributeAnimation Name="ItemAnimation" Attribute="Index" Delay="0.125" Source="{anim:Animations.PivotShowAnim}"/>
+      
+      <Type Name="ScrollControlType" Type="{typeof(me:ScrollArrows)}"/>
+      <AnchorLayoutInput Name="ScrollControlHorizontal"
+        Right="Scroller,1" Top="Scroller,0,12"  
+        ContributesToWidth="false" ContributesToHeight="false"/>
+      
+      <Orientation Name="ScrollOrientation" Orientation="Horizontal"/>
+      
+      <Inset Name="HorizontalScrollMargins" Inset="0,0,30,0"/>
+      
+      <Single Name="FadeSize" Single="10.0"/>
+      <Single Name="FadeAmount" Single="1.0"/>
+      
+      <Animation Name="ScrollMove" Type="Move">
+        <Keyframes>
+          <PositionKeyframe Time="0.00" RelativeTo="Current" Interpolation="EaseIn"/>
+          <PositionKeyframe Time="0.10" RelativeTo="Final"/>
+        </Keyframes>
+      </Animation>
+      
+      <Timer Name="SetFadeTimer" Interval="100" AutoRepeat="false"/>
+    </Properties>
+    
+    <Scripts>
+      <Script> 
+        
+        
+        Scroller.Prefetch = 2.0; 
+      </Script>
+      
+      <Script> 
+        [DeclareTrigger(ScrollData.CanScrollUp)]
+        [DeclareTrigger(ScrollData.CanScrollDown)]
+        
+        
+        
+        
+        
+        
+        if (ScrollData.CanScrollUp)
+          Scroller.ShowNear = true; 
+          
+        if (ScrollData.CanScrollDown)
+          Scroller.ShowFar = true;
+          
+        if (!ScrollData.CanScrollUp || !ScrollData.CanScrollDown)
+            SetFadeTimer.Start();
+      </Script>
+      
+      <Script>
+        [InitialEvaluate(true)]
+        [DeclareTrigger(SetFadeTimer.Tick)]
+        Scroller.ShowNear = ScrollData.CanScrollUp; 
+        Scroller.ShowFar = ScrollData.CanScrollDown; 
+      </Script>
+    </Scripts>
+  </UI>
+  
+  
+  
+
+
+
+  <UI Name="ScrollArrows" Base="scroll:ScrollControl">
+    <Locals>
+      <iris:Command Name="ScrollLeftCommand"/>
+      <iris:Command Name="ScrollRightCommand"/>
+    </Locals>
+    
+    <Scripts>
+      <Script>
+        ScrollLeftCommand.Available = ScrollData.CanScrollUp;
+        ScrollRightCommand.Available = ScrollData.CanScrollDown;
+        
+        
+        float disabledAlpha = 0.0;
+        if (ScrollData.CanScrollUp || ScrollData.CanScrollDown)
+          disabledAlpha = 0.4;
+        
+        if (ScrollData.CanScrollUp)
+          ScrollLeft.Alpha = 1.0;
+        else
+          ScrollLeft.Alpha = disabledAlpha; 
+        
+        if (ScrollData.CanScrollDown)
+          ScrollRight.Alpha = 1.0; 
+        else
+          ScrollRight.Alpha = disabledAlpha; 
+      </Script>
+      
+      <Script>
+        [DeclareTrigger(ScrollLeftCommand.Invoked)]
+        ScrollData.ScrollUp();
+      </Script>
+      
+      <Script>
+        [DeclareTrigger(ScrollRightCommand.Invoked)]
+        ScrollData.ScrollDown();
+      </Script>
+    </Scripts>
+    
+    <Content>
+      <Panel Layout="HorizontalFlow">
+        <Children>
+          
+          <images:IconButton Name="ScrollLeft" Model="{ScrollLeftCommand}"
+                  Style="{me:ScrollArrowImages.LeftArrow}"
+                  KeyInteractiveNStuff="false"
+                  AllowDoubleClicks="false"
+                  HandlerTransition="Down"/>
+          
+          <images:IconButton Name="ScrollRight" Model="{ScrollRightCommand}"
+                  Style="{me:ScrollArrowImages.RightArrow}"
+                  KeyInteractiveNStuff="false"
+                  AllowDoubleClicks="false"
+                  HandlerTransition="Down"/>
+          
+        </Children>
+      </Panel>
+    </Content>
+  </UI>
+  
+  
+
+
+
+  <Class Name="ScrollArrowImages" Shared="true">
+    <Properties>
+      <images:ImageStyle Name="LeftArrow"
+                         Image="res://ZuneShellResources!Pivot.Scroll.Left.png"
+                         HoverImage="res://ZuneShellResources!Pivot.Scroll.Left.Hover.png"
+                         PressedImage="res://ZuneShellResources!Pivot.Scroll.Left.Click.png"/>
+        
+      <images:ImageStyle Name="RightArrow"
+                         Image="res://ZuneShellResources!Pivot.Scroll.Right.png"
+                         HoverImage="res://ZuneShellResources!Pivot.Scroll.Right.Hover.png"
+                         PressedImage="res://ZuneShellResources!Pivot.Scroll.Right.Click.png"/>
+    </Properties>
+  </Class>
+
+  
+
+
+
+
+  <UI Name="BottomPivotLabelListItem" Base="listcore:LabelListItemBase">
+    <Scripts>
+      <Script>UI.FocusInterestTargetMargins = me:Constants.OverlapMargins;</Script>
+    </Scripts>
+  </UI>
+
+  
+  
+  
+  <Class Name="Constants" Shared="true">
+    <Properties>
+      <Inset Name="OverlapMargins" Inset="0,-6,0,0"/>
+    </Properties>
+  </Class>
+
+</UIX>

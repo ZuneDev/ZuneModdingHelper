@@ -4,6 +4,7 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OwlCore.AbstractUI.Models;
 using Syroot.Windows.IO;
@@ -33,7 +34,6 @@ namespace ZuneModdingHelper
 
         public MainWindow()
         {
-            InitializeComponent();
             // https://github.com/Arlodotexe/OwlCore/issues/1
             OwlCore.Threading.SetPrimarySynchronizationContext(System.Threading.SynchronizationContext.Current!);
             OwlCore.Threading.SetPrimaryThreadInvokeHandler(RunOnUI);
@@ -41,8 +41,8 @@ namespace ZuneModdingHelper
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
 
-            ModList.ItemsSource = Mod.AvailableMods;
-            ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
+            //ModList.ItemsSource = Mod.AvailableMods;
+            //ZuneInstallDirBox.Text = Mod.ZuneInstallDir;
         }
 
         private async System.Threading.Tasks.Task RunOnUI(Action action) => await Dispatcher.BeginInvoke(action);
@@ -65,7 +65,7 @@ namespace ZuneModdingHelper
         {
             var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to apply mod", settings: defaultMetroDialogSettings);
             Mod mod = (Mod)((FrameworkElement)sender).DataContext;
-            Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
+            Mod.ZuneInstallDir = "";// ZuneInstallDirBox.Text;
 
             progDialog.Maximum = 3;
             int numCompleted = 0;
@@ -122,7 +122,7 @@ namespace ZuneModdingHelper
             if (sender is FrameworkElement elem && elem.DataContext is Mod mod)
             {
                 var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to reset mod", settings: defaultMetroDialogSettings);
-                Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
+                Mod.ZuneInstallDir = "";// ZuneInstallDirBox.Text;
 
                 progDialog.Maximum = 2;
                 int numCompleted = 0;
@@ -167,8 +167,8 @@ namespace ZuneModdingHelper
 
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
-            AboutFlyout.Width = Math.Max(Math.Min(500, ActualWidth), ActualWidth / 3);
-            AboutFlyout.IsOpen = true;
+            //AboutFlyout.Width = Math.Max(Math.Min(500, ActualWidth), ActualWidth / 3);
+            //AboutFlyout.IsOpen = true;
         }
 
         private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -184,11 +184,15 @@ namespace ZuneModdingHelper
 
             try
             {
+                var request = "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
+                    .WithHeader("User-Agent", App.Current.Title.Replace(" ", "") + "/" + App.VersionStr);
+                var response = await request.GetStreamAsync();
+
                 // Get releases list from GitHub
-                List<JObject> releases = await "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
-                    .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.VersionStr)
-                    .GetJsonAsync<List<JObject>>();
-                JObject latest = releases[0];
+                StreamReader streamReader = new(response);
+                var jsonReader = new JsonTextReader(streamReader);
+                var releases = await JArray.LoadAsync(jsonReader);
+                JObject latest = releases.OfType<JObject>().First();
                 string latestVerStr = latest["tag_name"].Value<string>();
                 if (!ReleaseVersion.TryParse(latestVerStr, out var latestVer) || App.Version >= latestVer)
                 {
@@ -284,7 +288,7 @@ namespace ZuneModdingHelper
                 CommonFileDialogResult result = dialog.ShowDialog();
                 if (result == CommonFileDialogResult.Ok)
                 {
-                    ZuneInstallDirBox.Text = dialog.FileName;
+                    //ZuneInstallDirBox.Text = dialog.FileName;
                 }
             }
             else

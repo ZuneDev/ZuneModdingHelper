@@ -15,7 +15,6 @@ namespace ZuneModdingHelper
         {
             ViewModel = viewModel;
             DataContext = ViewModel;
-            InitializeComponent();
         }
         public AbstractUIGroupDialog(AbstractUICollection group) : this(new AbstractUICollectionViewModel(group))
         {
