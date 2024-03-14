@@ -1,0 +1,3 @@
+[submodule "libs/MicrosoftIris"]
+	path = libs/MicrosoftIris
+	url = https://github.com/ZuneDev/MicrosoftIris
