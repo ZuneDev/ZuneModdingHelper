@@ -268,9 +268,9 @@
                                         <Children>
                                             <Text WordWrap="true" Content="Bottom toolbar!" />
                                         </Children>
-										<!--<LayoutInput>
-											<DockLayoutInput>Bottom</DockLayoutInput>
-										</LayoutInput>-->
+                                        <!--<LayoutInput>
+                                            <DockLayoutInput>Bottom</DockLayoutInput>
+                                        </LayoutInput>-->
                                     </Panel>
 
 

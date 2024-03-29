@@ -1,6 +1,7 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using IrisShell;
+using IrisShell.UI;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -19,7 +20,9 @@ public class App : IrisAppBase
 
     public override string Title => "Zune Modding Helper";
 
-    public override string WindowSource => "clr-res://ZuneModdingHelper!Home.uix";
+    public override string WindowSource => "clr-res://ZuneModdingHelper!Home.uix#Frame";
+
+    public override bool EnableDebugging => false;
 
     public App()
     {
@@ -30,6 +33,9 @@ public class App : IrisAppBase
     public static int Main(string[] args)
     {
         ConfigureAppCenter();
+
+        _ = new Shell();
+
         App app = new();
         return app.Run(args);
     }

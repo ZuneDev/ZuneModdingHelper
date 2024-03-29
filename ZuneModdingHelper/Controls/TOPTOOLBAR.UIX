@@ -6,7 +6,6 @@
   xmlns:istyles="clr-res://IrisShell!Controls.Styles.uix"
   xmlns:ianim="clr-res://IrisShell!Controls.Animations.uix"
   xmlns:images="clr-res://IrisShell!Controls.ImageStyle.uix"
-  xmlns:scroll="clr-res://IrisShell!Controls.ScrollBar.uix"
   xmlns:animations="clr-res://IrisShell!Controls.Animations.uix"
   xmlns:nonclient="clr-res://ZuneModdingHelper!Controls.NonClientControls.uix"
   xmlns:styles="res://UIXControls!Styles.uix"
@@ -14,6 +13,7 @@
   xmlns:core="res://UIXControls!Controls.uix"
   xmlns:button="res://UIXControls!Button.uix"
   xmlns:listcore="res://UIXControls!ContentList.uix"
+  xmlns:scroll="res://UIXControls!ScrollBar.uix"
   xmlns:me="Me">
 
   <!--
