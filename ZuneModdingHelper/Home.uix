@@ -4,381 +4,304 @@
   xmlns:sys="assembly://mscorlib/System"
   xmlns:isui="assembly://IrisShell/IrisShell.UI"
   xmlns:iris="assembly://UIX/Microsoft.Iris"
-  xmlns:styles="clr-res://UIXControls!Controls.Styles.uix"
+  xmlns:styles="res://UIXControls!Styles.uix"
+  xmlns:istyles="clr-res://IrisShell!Controls.Styles.uix"
+  xmlns:ianim="clr-res://IrisShell!Controls.Animations.uix"
   xmlns:page="clr-res://IrisShell!Controls.PageStack.uix"
   xmlns:toptoolbar="clr-res://ZuneModdingHelper!Controls.TopToolbar.uix"
-  xmlns:popuplayer="clr-res://UIXControls!Controls.PopupLayer.uix"
-  xmlns:jil="clr-res://IrisShell!Controls.JumpInList.uix"
+  xmlns:popuplayer="res://UIXControls!PopupLayer.uix"
+  xmlns:animations="res://UIXControls!Animations.uix"
+  xmlns:nonclient="clr-res://ZuneModdingHelper!Controls.NonClientControls.uix"
+  xmlns:focus="clr-res://IrisShell!Controls.FocusRect.uix">
+
+  <!--
   xmlns:bottomtoolbar="clr-res://IrisShell!Controls.BottomToolbar.uix"
   xmlns:cnav="clr-res://IrisShell!Controls.CollectionNavigation.uix"
   xmlns:snav="clr-res://IrisShell!Controls.SocialNavigation.uix"
-  xmlns:animations="clr-res://UIXControls!Controls.Animations.uix"
-  xmlns:nonclient="clr-res://IrisShell!Controls.NonClientControls.uix"
-  xmlns:focus="clr-res://IrisShell!Controls.FocusRect.uix">
+  -->
 
+    <UI Name="Frame" Base="page:PageStack">
+        <Properties>
+            <isui:Shell Name="Shell" Shell="{(isui:Shell)isui:Shell.DefaultInstance}"/>
+        </Properties>
 
-	<UI Name="Frame" Base="page:PageStack">
-		<Properties>
-			<isui:Shell Name="Shell" Shell="{(isui:Shell)isui:Shell.DefaultInstance}"/>
-		</Properties>
+        <Locals>
+            <isui:DictionaryCommandHandler Name="ShellCommandHandlers">
+                <Handlers>
 
-		<Locals>
-			<isui:DictionaryCommandHandler Name="ShellCommandHandlers">
-				<Handlers>
+                    <isui:CurrentPageCommandHandler Name="Page"/>
 
-					<isui:CurrentPageCommandHandler Name="Page"/>
+                    <!--<isui:DictionaryCommandHandler Name="Collection"
+                      DictionaryCommandHandler="{cnav:Navigation.Root}"/>
 
-					<isui:DictionaryCommandHandler Name="Collection"
-					  DictionaryCommandHandler="{cnav:Navigation.Root}"/>
+                    <isui:DictionaryCommandHandler Name="Device"
+                      DictionaryCommandHandler="{cnav:DeviceNavigation.Root}"/>
 
-					<isui:DictionaryCommandHandler Name="Device"
-					  DictionaryCommandHandler="{cnav:DeviceNavigation.Root}"/>
+                    <isui:DictionaryCommandHandler Name="Social"
+                      DictionaryCommandHandler="{snav:Navigation.Root}"/>-->
 
-					<isui:DictionaryCommandHandler Name="Social"
-					  DictionaryCommandHandler="{snav:Navigation.Root}"/>
+                    <!--<isui:WebUrlCommandHandler Name="Web"/>
 
-					<isui:WebUrlCommandHandler Name="Web"/>
+                    <isui:HelpCommandHandler Name="Help"/>-->
 
-					<isui:HelpCommandHandler Name="Help"/>
+                </Handlers>
+            </isui:DictionaryCommandHandler>
 
-				</Handlers>
-			</isui:DictionaryCommandHandler>
-			<jil:JumpInList Name="JumpInList"/>
 
 
+            <AnchorLayoutInput Name="EnergyBarLayoutMax" Bottom="Parent,1" Left="Parent,0" Right="Parent,1,-1"/>
+            <AnchorLayoutInput Name="EnergyBarLayoutNorm" Bottom="Parent,1" Left="Parent,0,1" Right="Grabber,0"/>
 
-			<AnchorLayoutInput Name="EnergyBarLayoutMax" Bottom="Parent,1" Left="Parent,0" Right="Parent,1,-1"/>
-			<AnchorLayoutInput Name="EnergyBarLayoutNorm" Bottom="Parent,1" Left="Parent,0,1" Right="Grabber,0"/>
+            <Int32 Name="MouseActivityTimeout" Int32="5000"/>
 
-			<Int32 Name="MouseActivityTimeout" Int32="5000"/>
+            <sys:Boolean Name="AutoHideToolbars"/>
+            <Timer Name="KeyIdleTimer" Interval="{MouseActivityTimeout}" AutoRepeat="false" Enabled="false"/>
+            <istyles:WindowState Name="WindowState"/>
+        </Locals>
 
-			<sys:Boolean Name="AutoHideToolbars"/>
-			<Timer Name="KeyIdleTimer" Interval="{MouseActivityTimeout}" AutoRepeat="false" Enabled="false"/>
-			<styles:WindowState Name="WindowState"/>
-		</Locals>
+        <Input>
 
-		<Input>
+            <ClickHandler Name="MouseDown" ClickType="Mouse" HandlerTransition="Down" HandlerStage="Routed" Handle="false"/>
 
-			<ClickHandler Name="MouseDown" ClickType="Mouse" HandlerTransition="Down" HandlerStage="Routed" Handle="false"/>
 
+            <KeyHandler Name="CancelSettings" Key="Escape" DisallowedModifiers="Alt,Shift,Windows,Ctrl" HandlerStage="Bubbled" />
+            
+            <KeyHandler Name="KeyHandlerHelp"          Key="F1" DisallowedModifiers="Alt,Shift,Ctrl,Windows" HandlerStage="Bubbled"/>
+            <!--<KeyHandler Name="KeyHandlerSearchFocus"   Key="E"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled" Command="{isui:Search.Instance.SearchFocusHotkey}"/>-->
 
-			<KeyHandler Name="CancelSettings" Key="Escape" DisallowedModifiers="Alt,Shift,Windows,Ctrl" HandlerStage="Bubbled" />
+            <FocusHandler Name="FocusChangedUsingKeyboard" Reason="Key" HandlerStage="Bubbled"/>
+            <KeyHandler Name="ShowFocusRectF10" Key="F10" Handle="false" HandlerStage="Routed"/>
+            <KeyHandler Name="ShowFocusRectApps" Key="Apps" Handle="false" HandlerStage="Routed"/>
 
-			<ShortcutHandler Name="ShortcutPlay" Shortcut="Play" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Play}"/>
-			<ShortcutHandler Name="ShortcutPause" Shortcut="Pause" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Pause}"/>
-			<ShortcutHandler Name="ShortcutPlayPause" Shortcut="PlayPause" HandlerStage="Bubbled"/>
-			<ShortcutHandler Name="ShortcutStop" Shortcut="Stop" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Stop}"/>
-			<ShortcutHandler Name="ShortcutSkipBack" Shortcut="SkipBack" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Back}"/>
-			<ShortcutHandler Name="ShortcutSkipForward" Shortcut="SkipForward" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Forward}"/>
+            <KeyHandler Name="SpaceKeyHandler" Key="Space" RequiredModifiers="Alt" DisallowedModifiers="Ctrl,Shift,Windows" HandlerStage="Routed,Direct" Repeat="false" />
 
-			<KeyHandler Name="KeyHandlerForward"       Key="F"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Forward}"/>
-			<KeyHandler Name="KeyHandlerBack"          Key="B"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Back}"/>
-			<KeyHandler Name="KeyHandlerStop"          Key="S"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.Stop}"/>
-			<KeyHandler Name="KeyHandlerPlayPause"     Key="P"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerToggleShuffle" Key="H"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerToggleRepeat"  Key="T"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerHelp"          Key="F1" DisallowedModifiers="Alt,Shift,Ctrl,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerToggleMute"    Key="F7" DisallowedModifiers="Alt,Shift,Ctrl,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerVolumeDown"    Key="F8" DisallowedModifiers="Alt,Shift,Ctrl,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerVolumeUp"      Key="F9" DisallowedModifiers="Alt,Shift,Ctrl,Windows" HandlerStage="Bubbled"/>
-			<KeyHandler Name="KeyHandlerFastForward"   Key="F"  RequiredModifiers="Ctrl,Shift" DisallowedModifiers="Alt,Windows" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.FastforwardHotkey}"/>
-			<KeyHandler Name="KeyHandlerRewind"        Key="B"  RequiredModifiers="Ctrl,Shift" DisallowedModifiers="Alt,Windows" HandlerStage="Bubbled" Command="{isui:TransportControls.Instance.RewindHotkey}"/>
-			<KeyHandler Name="KeyHandlerSearchFocus"   Key="E"  RequiredModifiers="Ctrl" DisallowedModifiers="Alt,Shift,Windows" HandlerStage="Bubbled" Command="{isui:Search.Instance.SearchFocusHotkey}"/>
+            <KeyHandler Name="AnyKeys" Key="Any" HandlerStage="Routed" Handle="false"/>
+        </Input>
 
-			<FocusHandler Name="FocusChangedUsingKeyboard" Reason="Key" HandlerStage="Bubbled"/>
-			<KeyHandler Name="ShowFocusRectF10" Key="F10" Handle="false" HandlerStage="Routed"/>
-			<KeyHandler Name="ShowFocusRectApps" Key="Apps" Handle="false" HandlerStage="Routed"/>
 
-			<KeyHandler Name="SpaceKeyHandler" Key="Space" RequiredModifiers="Alt" DisallowedModifiers="Ctrl,Shift,Windows" HandlerStage="Routed,Direct" Repeat="false" />
+        <Scripts>
 
-			<KeyHandler Name="AnyKeys" Key="Any" HandlerStage="Routed" Handle="false"/>
-		</Input>
+            <Script>isui:Shell.DefaultInstance.CommandHandler = ShellCommandHandlers;</Script>
 
 
-		<Scripts>
+            <Script>
+                MouseDown.Command = PopupLayer.MouseDownCommand;
+            </Script>
 
-			<Script>isui:Shell.DefaultInstance.CommandHandler = ShellCommandHandlers;</Script>
 
+            <!--<Script>
+                //isui:IrisPage page = [Shell.CurrentPage];
+                isui:IrisPage page = Shell.CurrentPage;
+                if (page is isui:CategoryPage)
+                {
+                    CancelSettings.Command = ((isui:CategoryPage) page).CancelButton;
+                }
+                else
+                {
+                    CancelSettings.Command = null;
+                }
+            </Script>-->
 
-			<Script>
-				MouseDown.Command = PopupLayer.MouseDownCommand;
-			</Script>
 
+            <Script>
+                //bool modalPopup = [PopupLayer.IsModal];
+                //bool backArrow = [Shell.CurrentPage.ShowBackArrow];
+                //bool computerIcon = ([Shell.CurrentPage.ShowComputerIcon] != isui:ComputerIconState.Hide);
+                //bool nowPlayingX = [Shell.CurrentPage.ShowNowPlayingX];
 
-			<Script>
-				//isui:IrisPage page = [Shell.CurrentPage];
-				isui:IrisPage page = Shell.CurrentPage;
-				if (page is isui:CategoryPage)
-				{
-				CancelSettings.Command = ((isui:CategoryPage) page).CancelButton;
-				}
-				else
-				{
-				CancelSettings.Command = null;
-				}
-			</Script>
+                bool modalPopup = PopupLayer.IsModal;
+                bool backArrow = Shell.CurrentPage.ShowBackArrow;
 
 
-			<Script>
-				//bool modalPopup = [PopupLayer.IsModal];
-				//bool backArrow = [Shell.CurrentPage.ShowBackArrow];
-				//bool computerIcon = ([Shell.CurrentPage.ShowComputerIcon] != isui:ComputerIconState.Hide);
-				//bool nowPlayingX = [Shell.CurrentPage.ShowNowPlayingX];
+                CanGoBack = !modalPopup &amp;&amp; backArrow;
+            </Script>
 
-				bool modalPopup = PopupLayer.IsModal;
-				bool backArrow = Shell.CurrentPage.ShowBackArrow;
 
 
-				CanGoBack = !modalPopup &amp;&amp; backArrow;
-			</Script>
+            <Script>
+                ResizeBorders.Visible = (!iris:Application.Window.ShowWindowFrame) &amp;&amp;
+                    //([iris:Application.Window.WindowState] != iris:WindowState.Maximized);
+                    (iris:Application.Window.WindowState != iris:WindowState.Maximized);
+            </Script>
 
+            <Script>
+                if (iris:Application.Window.WindowState == iris:WindowState.Maximized)
+                {
+                    EnergyBar.LayoutInput = EnergyBarLayoutMax;
+                    Grabber.Visible = false;
+                }
+                else
+                {
+                    Grabber.Visible = true;
+                    EnergyBar.LayoutInput = EnergyBarLayoutNorm;
+                }
+            </Script>
 
 
-			<Script>
-				ResizeBorders.Visible = (!iris:Application.Window.ShowWindowFrame) &amp;&amp;
-					//([iris:Application.Window.WindowState] != iris:WindowState.Maximized);
-					(iris:Application.Window.WindowState != iris:WindowState.Maximized);
-			</Script>
+            <Script>
+                AutoHideToolbars = Shell.CurrentPage.AutoHideToolbars &amp;&amp; WindowState.CanHideMouse;
 
-			<Script>
-				if (iris:Application.Window.WindowState == iris:WindowState.Maximized)
-				{
-					EnergyBar.LayoutInput = EnergyBarLayoutMax;
-					Grabber.Visible = false;
-				}
-				else
-				{
-					Grabber.Visible = true;
-					EnergyBar.LayoutInput = EnergyBarLayoutNorm;
-				}
-			</Script>
+                iris:Application.Window.HideMouseOnIdle = AutoHideToolbars;
+            </Script>
 
 
-			<Script>
-				AutoHideToolbars = Shell.CurrentPage.AutoHideToolbars &amp;&amp; WindowState.CanHideMouse;
+            <Script>
+                iris:Application.Window.MouseIdleTimeout = MouseActivityTimeout;
+            </Script>
 
-				iris:Application.Window.HideMouseOnIdle = AutoHideToolbars;
-			</Script>
 
+            <Script>
+                [DeclareTrigger(Shell.CurrentPage)]
+                WindowState.PageInputActivity = false;
+            </Script>
 
-			<Script>
-				iris:Application.Window.MouseIdleTimeout = MouseActivityTimeout;
-			</Script>
 
+            <Script>
+                bool hideNow = AutoHideToolbars &amp;&amp;
+                    !iris:Application.Window.MouseActive &amp;&amp;
+                    !WindowState.KeysActive;
 
-			<Script>
-				[DeclareTrigger(Shell.CurrentPage)]
-				WindowState.PageInputActivity = false;
-			</Script>
 
 
-			<Script>
-				bool hideNow = AutoHideToolbars &amp;&amp;
-					!iris:Application.Window.MouseActive &amp;&amp;
-					!WindowState.KeysActive;
+                TopToolbar.InvisibleMode    = hideNow;
+                //BottomToolbar.InvisibleMode = hideNow;
 
 
 
-				TopToolbar.InvisibleMode    = hideNow;
-				BottomToolbar.InvisibleMode = hideNow;
 
+                FocusRect.Alpha = (float)!hideNow;
+                AnyKeys.StopRoute = hideNow;
 
+                istyles:WindowState.InputActive = !hideNow;
+            </Script>
 
+            <Script>
+                [DeclareTrigger(AnyKeys.Pressing)]
+                WindowState.KeysActive = true;
+                KeyIdleTimer.Stop();
+                KeyIdleTimer.Start();
+            </Script>
 
-				FocusRect.Alpha = (float)!hideNow;
-				AnyKeys.StopRoute = hideNow;
+            <Script>
+                [DeclareTrigger(KeyIdleTimer.Tick)]
+                WindowState.KeysActive = false;
+            </Script>
 
-				styles:WindowState.InputActive = !hideNow;
-			</Script>
 
-			<Script>
-				[DeclareTrigger(AnyKeys.Pressing)]
-				WindowState.KeysActive = true;
-				KeyIdleTimer.Stop();
-				KeyIdleTimer.Start();
-			</Script>
+            <Script>
+                SpaceKeyHandler.Command = TopToolbar.MenuCommand;
+            </Script>
 
-			<Script>
-				[DeclareTrigger(KeyIdleTimer.Tick)]
-				WindowState.KeysActive = false;
-			</Script>
 
+            <Script>
+                [DeclareTrigger(KeyHandlerHelp.Invoked)]
 
+                string helpPath = "Help\\" + isui:Shell.LoadString(&quot;IDS_ZUNECLIENT_LOCALE&quot;) + "\\LandingPage.htm";
+                isui:Shell.DefaultInstance.Execute(helpPath, null);
+            </Script>
 
 
-			<Script>
-				[DeclareTrigger(ShortcutPlayPause.Invoked)]
-				[DeclareTrigger(KeyHandlerPlayPause.Invoked)]
-				if (isui:TransportControls.Instance.Playing)
-				{
-					isui:TransportControls.Instance.Pause.Invoke();
-				}
-				else
-				{
-					isui:TransportControls.Instance.Play.Invoke();
-				}
-			</Script>
+            <Script>
+                [DeclareTrigger(FocusChangedUsingKeyboard.GainedFocus)]
+                [DeclareTrigger(ShowFocusRectF10.Invoked)]
+                [DeclareTrigger(ShowFocusRectApps.Invoked)]
+                FocusRect.Visible = true;
+            </Script>
 
 
-			<Script>
-				bool shouldBeVisible = isui:JumpInListManager.Instance.IsActive;
+            <Script>
+                if (!iris:Application.Window.Active)// || !isui:PopupManager.Instance.AnyDialogs)
+                {
+                    FocusRect.Visible = false;
+                }
+            </Script>
 
-				if (shouldBeVisible &amp;&amp; !JumpInList.Helper.IsVisible)
-				{
-					JumpInList.Helper.Show(JumpInList);
-				}
-				else if (!shouldBeVisible &amp;&amp; JumpInList.Helper.IsVisible)
-				{
-					JumpInList.Helper.Hide();
-				}
-			</Script>
+            <Script>
+                MainBackground.Visible = Shell.CurrentPage.ShowAppBackground;
+            </Script>
 
+            <Script>
+                MainBackground.Content = new Image(Shell.BackgroundImage, istyles:Styles.BackgroundMargins);
+            </Script>
 
-			<Script>
-				if (!JumpInList.Helper.IsVisible)
-				{
-				isui:JumpInListManager.Instance.Clear();
-				}
-			</Script>
+        </Scripts>
 
-			<Script>
-				SpaceKeyHandler.Command = TopToolbar.MenuCommand;
-			</Script>
+        <Content>
+            <Panel Layout="Anchor">
+                <Children>
 
-			<Script>
-				[DeclareTrigger(KeyHandlerToggleShuffle.Invoked)]
-				isui:TransportControls.Instance.Shuffling.NextValue(true);
-			</Script>
+                    <focus:FocusRect Name="FocusRect" Visible="false">
+                        <LayoutInput>
+                            <AnchorLayoutInput Left="Focus,0,-1" Right="Focus,1,1" Top="Focus,0,-1" Bottom="Focus,1,1" ContributesToHeight="false" ContributesToWidth="false"/>
+                        </LayoutInput>
+                    </focus:FocusRect>
 
-			<Script>
-				[DeclareTrigger(KeyHandlerToggleRepeat.Invoked)]
-				isui:TransportControls.Instance.Repeating.NextValue(true);
-			</Script>
+                    <nonclient:WindowResizeBorderLayer Name="ResizeBorders" Layout="Default"/>
 
-			<Script>
-				[DeclareTrigger(KeyHandlerToggleMute.Invoked)]
-				isui:TransportControls.Instance.Muted.NextValue(true);
-			</Script>
+                    <popuplayer:PopupLayer Name="PopupLayer" Layout="Default"/>
 
-			<Script>
-				[DeclareTrigger(KeyHandlerVolumeDown.Invoked)]
-				isui:TransportControls.Instance.Volume.Value = isui:TransportControls.Instance.Volume.Value - 10.0;
-			</Script>
 
-			<Script>
-				[DeclareTrigger(KeyHandlerVolumeUp.Invoked)]
-				isui:TransportControls.Instance.Volume.Value = isui:TransportControls.Instance.Volume.Value + 10.0;
-			</Script>
+                    <Graphic Name="Grabber" Content="{istyles:Styles.Grabber}" MaximumSize="9,6" Layout="Default">
+                        <LayoutInput>
+                            <AnchorLayoutInput Name="GrabberLayout" Bottom="Parent,1" Right="Parent,1,-1"/>
+                        </LayoutInput>
+                    </Graphic>
 
+                    <Graphic Name="EnergyBar" Content="{styles:Styles.EnergyBar}" MaximumSize="0,6" Layout="Default" Visible="true" Margins="1,0,0,0"/>
 
-			<Script>
-				[DeclareTrigger(KeyHandlerHelp.Invoked)]
 
-				string helpPath = "Help\\" + isui:Shell.LoadString(&quot;IDS_ZUNECLIENT_LOCALE&quot;) + "\LandingPage.htm";
-				isui:Shell.DefaultInstance.Execute(helpPath, null);
-			</Script>
+                    <Panel Layout="Anchor" Navigation="RememberFocus,ContainAll,WrapTabOrder" FocusOrder="0">
+                        <Children>
+                            <Panel Layout="Dock">
+                                <Children>
 
 
-			<Script>
-				[DeclareTrigger(FocusChangedUsingKeyboard.GainedFocus)]
-				[DeclareTrigger(ShowFocusRectF10.Invoked)]
-				[DeclareTrigger(ShowFocusRectApps.Invoked)]
-				FocusRect.Visible = true;
-			</Script>
+                                    <toptoolbar:TopToolbar Name="TopToolbar" Shell="{Shell}" FocusOrder="1">
+                                        <!--<LayoutInput>Top</LayoutInput>-->
+                                    </toptoolbar:TopToolbar>
 
 
-			<Script>
-				if (!iris:Application.Window.Active || !isui:PopupManager.Instance.AnyDialogs)
-				{
-					FocusRect.Visible = false;
-				}
-			</Script>
+                                    <!--<bottomtoolbar:BottomToolbar Name="BottomToolbar" Shell="{Shell}" FocusOrder="4">
+                                        <LayoutInput>Bottom</LayoutInput>
+                                    </bottomtoolbar:BottomToolbar>-->
+                                    <Panel>
+                                        <Children>
+                                            <Text WordWrap="true" Content="Bottom toolbar!" />
+                                        </Children>
+										<!--<LayoutInput>
+											<DockLayoutInput>Bottom</DockLayoutInput>
+										</LayoutInput>-->
+                                    </Panel>
 
-			<Script>
-				MainBackground.Visible = Shell.CurrentPage.ShowAppBackground;
-			</Script>
 
-			<Script>
-				MainBackground.Content = new Image(Shell.BackgroundImage, styles:Styles.BackgroundMargins);
-			</Script>
 
-		</Scripts>
+                                    <page:PageBase Name="ForegroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="2" Margins="{istyles:Styles.FrameMargins}">
+                                        <!--<LayoutInput>Client</LayoutInput>-->
+                                    </page:PageBase>
 
-		<Content>
-			<Panel Layout="Anchor">
-				<Children>
+                                </Children>
+                            </Panel>
 
-					<focus:FocusRect Name="FocusRect" Visible="false">
-						<LayoutInput>
-							<AnchorLayoutInput Left="Focus,0,-1" Right="Focus,1,1" Top="Focus,0,-1" Bottom="Focus,1,1" ContributesToHeight="false" ContributesToWidth="false"/>
-						</LayoutInput>
-					</focus:FocusRect>
 
-					<nonclient:WindowResizeBorderLayer Name="ResizeBorders" Layout="Fill"/>
+                            <page:PageBase Name="BackgroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="3" Layout="Default"/>
 
-					<popuplayer:PopupLayer Name="PopupLayer" Layout="Fill"/>
+                        </Children>
+                    </Panel>
 
+                    <Graphic
+                      Name="MainBackground"
+                      Layout="Default"
+                      ErrorImage="{istyles:Styles.DefaultBackgroundImage}">
 
-					<Graphic Name="Grabber" Content="{styles:Styles.Grabber}" MaximumSize="9,6" Layout="Fill">
-						<LayoutInput>
-							<AnchorLayoutInput Name="GrabberLayout" Bottom="Parent,1" Right="Parent,1,-1"/>
-						</LayoutInput>
-					</Graphic>
 
-					<Graphic Name="EnergyBar" Content="{styles:Styles.EnergyBar}" MaximumSize="0,6" Layout="Fill" Visible="true" Margins="1,0,0,0"/>
+                        <Animations>
+                            <Animation Animation="{ianim:Animations.MainBackgroundPageTransitionHide}"/>
+                        </Animations>
+                    </Graphic>
 
-
-					<Panel Layout="Anchor" Navigation="RememberFocus,ContainAll,WrapTabOrder" FocusOrder="0">
-						<Children>
-							<Panel Layout="Dock">
-								<Children>
-
-
-									<toptoolbar:TopToolbar Name="TopToolbar" Shell="{Shell}" FocusOrder="1">
-										<LayoutInput>
-											<DockLayoutInput Position="Top"/>
-										</LayoutInput>
-									</toptoolbar:TopToolbar>
-
-
-									<bottomtoolbar:BottomToolbar Name="BottomToolbar" Shell="{Shell}" FocusOrder="4">
-										<LayoutInput>
-											<DockLayoutInput Position="Bottom"/>
-										</LayoutInput>
-									</bottomtoolbar:BottomToolbar>
-
-
-
-									<page:PageBase Name="ForegroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="2" Margins="{styles:Styles.FrameMargins}">
-										<LayoutInput>
-											<DockLayoutInput Position="Client"/>
-										</LayoutInput>
-									</page:PageBase>
-
-								</Children>
-							</Panel>
-
-
-							<page:PageBase Name="BackgroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="3" Layout="Fill"/>
-
-						</Children>
-					</Panel>
-
-					<Graphic
-					  Name="MainBackground"
-					  Layout="Fill"
-					  ErrorImage="{styles:Styles.DefaultBackgroundImage}"
-            >
-
-
-						<Animations>
-							<Animation Animation="{animations:Animations.MainBackgroundPageTransitionHide}"/>
-						</Animations>
-					</Graphic>
-
-				</Children>
-			</Panel>
-		</Content>
-	</UI>
+                </Children>
+            </Panel>
+        </Content>
+    </UI>
 
 </UIX>
