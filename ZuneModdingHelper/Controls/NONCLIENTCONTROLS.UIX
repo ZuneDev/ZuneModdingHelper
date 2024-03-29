@@ -1,0 +1,339 @@
+<!-- Copyright (C) Microsoft Corporation. All rights reserved. -->
+<UIX xmlns="http://schemas.microsoft.com/2007/uix"
+  xmlns:iris="assembly://UIX/Microsoft.Iris"
+  xmlns:istyles="clr-res://IrisShell!Controls.Styles.uix"
+  xmlns:me="Me">
+
+  
+
+  <UI Name="WindowResizeBorderLayer">
+    <Scripts>
+      <Script>
+        istyles:WindowState.ResizeBorderInputActivity = UI.MouseFocus;
+      </Script>
+    </Scripts>
+
+    <Content>
+      <Panel Layout="Anchor">
+        <Children>
+
+           <me:WindowSizer Name="SizerNW" Mode="{me:WindowSizerModes.NW}">
+             <LayoutInput>
+               <AnchorLayoutInput Top="Parent,0" Left="Parent,0"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerNE" Mode="{me:WindowSizerModes.NE}">
+             <LayoutInput>
+               <AnchorLayoutInput Top="Parent,0" Right="Parent,1"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerSE" Mode="{me:WindowSizerModes.SE}">
+             <LayoutInput>
+               <AnchorLayoutInput Bottom="Parent,1" Right="Parent,1"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerSW" Mode="{me:WindowSizerModes.SW}">
+             <LayoutInput>
+               <AnchorLayoutInput Bottom="Parent,1" Left="Parent,0"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerN" Mode="{me:WindowSizerModes.N}">
+             <LayoutInput>
+               <AnchorLayoutInput Left="SizerNW,1" Right="SizerNE,0" Top="Parent,0"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerS" Mode="{me:WindowSizerModes.S}">
+             <LayoutInput>
+               <AnchorLayoutInput Left="SizerSW,1" Right="SizerSE,0" Bottom="Parent,1"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerE" Mode="{me:WindowSizerModes.E}">
+             <LayoutInput>
+               <AnchorLayoutInput Top="SizerNE,1" Bottom="SizerSE,0" Right="Parent,1"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+           <me:WindowSizer Name="SizerW" Mode="{me:WindowSizerModes.W}">
+             <LayoutInput>
+               <AnchorLayoutInput Top="SizerNW,1" Bottom="SizerSW,0" Left="Parent,0"/>
+             </LayoutInput>
+           </me:WindowSizer>
+
+        </Children>
+      </Panel>
+    </Content>
+  </UI>
+
+  
+
+  <Class Name="WindowSizerMode">
+    <Properties>
+      <Cursor  Name="Cursor" Cursor="$Required"/>
+      <Boolean Name="MoveN"  Boolean="false"/>
+      <Boolean Name="MoveS"  Boolean="false"/>
+      <Boolean Name="MoveE"  Boolean="false"/>
+      <Boolean Name="MoveW"  Boolean="false"/>
+    </Properties>
+  </Class>
+
+  <Class Name="WindowSizerModes" Shared="true">
+    <Properties>
+      <me:WindowSizerMode Name="N"  Cursor="{Cursor.SizeNS}"   MoveN="true" />
+      <me:WindowSizerMode Name="S"  Cursor="{Cursor.SizeNS}"   MoveS="true" />
+      <me:WindowSizerMode Name="E"  Cursor="{Cursor.SizeWE}"   MoveE="true" />
+      <me:WindowSizerMode Name="W"  Cursor="{Cursor.SizeWE}"   MoveW="true" />
+      <me:WindowSizerMode Name="NE" Cursor="{Cursor.SizeNESW}" MoveN="true" MoveE="true" />
+      <me:WindowSizerMode Name="SE" Cursor="{Cursor.SizeNWSE}" MoveS="true" MoveE="true" />
+      <me:WindowSizerMode Name="NW" Cursor="{Cursor.SizeNWSE}" MoveN="true" MoveW="true" />
+      <me:WindowSizerMode Name="SW" Cursor="{Cursor.SizeNESW}" MoveS="true" MoveW="true" />
+    </Properties>
+  </Class>
+
+  <UI Name="WindowSizer">
+
+    <Properties>
+      <Size Name="Size" Size="8,8"/>
+      <me:WindowSizerMode Name="Mode" WindowSizerMode="$Required"/>
+    </Properties>
+
+    <Locals>
+      <iris:WindowPosition Name="InitialPosition"/>
+      <iris:WindowSize Name="InitialSize"/>
+    </Locals>
+
+    <Input>
+      <DragHandler Name="Dragger" CancelOnEscape="true"/>
+    </Input>
+
+    <Scripts>
+
+      <Script>
+        [DeclareTrigger(iris:Application.Window.WindowState)]
+        [InitialEvaluate(true)]
+
+        
+        
+
+        if (iris:Application.Window.WindowState == iris:WindowState.Maximized)
+        {
+           UI.Cursor = Cursor.NotSpecified;
+           Dragger.DragCursor = Cursor.NotSpecified;
+        }
+        else
+        {
+           UI.Cursor = Mode.Cursor;
+           Dragger.DragCursor = Mode.Cursor;
+        }
+      </Script>
+
+      <Script>
+        [DeclareTrigger(Dragger.Started)]
+        
+        
+
+        InitialPosition = iris:Application.Window.Position;
+        InitialSize = iris:Application.Window.ClientSize;
+      </Script>
+
+      <Script>
+        [DeclareTrigger(Dragger.Canceled)]
+
+        
+        
+
+        iris:Application.Window.Position = InitialPosition;
+        iris:Application.Window.ClientSize = InitialSize;
+      </Script>
+
+      <!--May be LocalDragSize-->
+      <Script><![CDATA[
+        [DeclareTrigger(Dragger.ScreenDragSize)]
+
+        
+
+        if (iris:Application.Window.WindowState == iris:WindowState.Maximized)
+        {
+           return;
+        }
+
+        
+        
+
+        
+        
+        
+        
+        int cxMin = 734;
+        int cyMin = 500;
+
+        int dx = Dragger.ScreenDragSize.Width;
+        int dy = Dragger.ScreenDragSize.Height;
+        int x  = InitialPosition.X;
+        int y  = InitialPosition.Y;
+        int cx = InitialSize.Width;
+        int cy = InitialSize.Height;
+
+        
+        
+
+        if ( Mode.MoveN )
+        {
+           cy = cy - dy;
+           y  = y + dy;
+        }
+        else if ( Mode.MoveS )
+        {
+           cy = cy + dy;
+        }
+
+        
+        
+
+        if ( cy < cyMin )
+        {
+           cy = cyMin;
+
+           if ( Mode.MoveN )
+           {
+              y = (InitialPosition.Y + InitialSize.Height) - cyMin;
+           }
+        }
+
+        
+        
+
+        if ( Mode.MoveW )
+        {
+           cx = cx - dx;
+           x  = x + dx;
+        }
+        else if ( Mode.MoveE )
+        {
+           cx = cx + dx;
+        }
+
+        
+        
+
+        if ( cx < cxMin )
+        {
+           cx = cxMin;
+
+           if ( Mode.MoveW )
+           {
+              x = (InitialPosition.X + InitialSize.Width) - cxMin;
+           }
+        }
+
+        
+
+        iris:WindowSize currentSize = iris:Application.Window.ClientSize;
+
+        if ( cx != currentSize.Width || cy != currentSize.Height )
+        {
+           iris:Application.Window.ClientSize = new iris:WindowSize(cx,cy);
+        }
+
+        
+
+        iris:WindowPosition currentPosition  = iris:Application.Window.Position;
+
+        if ( x != currentPosition.X || y != currentPosition.Y )
+        {
+          iris:Application.Window.Position = new iris:WindowPosition(x,y);
+        }
+
+      ]]></Script>
+
+    </Scripts>
+
+    <Content>
+        <Panel Background="Transparent" Name="Block" MinimumSize="{Size}"/>
+    </Content>
+  </UI>
+
+  
+
+  <UI Name="WindowCaption">
+    <Locals>
+      <iris:WindowPosition Name="InitialPosition"/>
+    </Locals>
+
+    <Input>
+      <DragHandler Name="Dragger" CancelOnEscape="true"/>
+      <ClickHandler Name="Clicker" ClickCount="Double" ClickType="LeftMouse"/>
+    </Input>
+
+    <Scripts>
+
+      <Script>
+        istyles:WindowState.CaptionInputActivity = UI.MouseFocus;
+      </Script>
+
+      <Script>
+        [DeclareTrigger(Dragger.Started)]
+        
+
+        InitialPosition = iris:Application.Window.Position;
+      </Script>
+
+      <Script>
+        [DeclareTrigger(Clicker.Invoked)]
+
+        
+        
+
+        if ( iris:Application.Window.WindowState == iris:WindowState.Maximized )
+        {
+           iris:Application.Window.WindowState = iris:WindowState.Normal;
+        }
+        else
+        {
+           iris:Application.Window.WindowState = iris:WindowState.Maximized;
+        }
+      </Script>
+
+      <Script>
+        [DeclareTrigger(Dragger.Canceled)]
+
+        
+        
+
+        iris:Application.Window.Position = InitialPosition;
+      </Script>
+
+      <Script><![CDATA[
+        [DeclareTrigger(Dragger.ScreenDragSize)]
+
+        
+
+        if (iris:Application.Window.WindowState == iris:WindowState.Maximized)
+        {
+           return;
+        }
+
+        
+
+        iris:WindowPosition pos = new iris:WindowPosition(
+           InitialPosition.X + Dragger.ScreenDragSize.Width,
+           InitialPosition.Y + Dragger.ScreenDragSize.Height
+        );
+
+        iris:Application.Window.Position = pos;
+      ]]></Script>
+
+    </Scripts>
+
+    <Content>
+      <Panel Background="Transparent" Name="Block"/>
+    </Content>
+  </UI>
+
+</UIX>
+

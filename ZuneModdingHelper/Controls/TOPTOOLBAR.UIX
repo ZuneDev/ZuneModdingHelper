@@ -3,22 +3,22 @@
   xmlns:sys="assembly://mscorlib/System"
   xmlns:iris="assembly://UIX/Microsoft.Iris"
   xmlns:isui="assembly://IrisShell/IrisShell.UI"
-  xmlns:zcfg="assembly://ZuneDBApi/Microsoft.Zune.Configuration"
-  xmlns:zuneutil="assembly://ZuneShell/Microsoft.Zune.Util"
-  xmlns:zuneutilapi="assembly://ZuneDBApi/Microsoft.Zune.Util"
+  xmlns:istyles="clr-res://IrisShell!Controls.Styles.uix"
+  xmlns:ianim="clr-res://IrisShell!Controls.Animations.uix"
+  xmlns:images="clr-res://IrisShell!Controls.ImageStyle.uix"
+  xmlns:scroll="clr-res://IrisShell!Controls.ScrollBar.uix"
+  xmlns:animations="clr-res://IrisShell!Controls.Animations.uix"
+  xmlns:nonclient="clr-res://ZuneModdingHelper!Controls.NonClientControls.uix"
   xmlns:styles="res://UIXControls!Styles.uix"
   xmlns:style="res://UIXControls!Style.uix"
-  xmlns:menu="res://ZuneShellResources!ContextMenu.uix"
-  xmlns:images="res://UIXControls!ImageStyle.uix"
   xmlns:core="res://UIXControls!Controls.uix"
-  xmlns:nonclient="res://ZuneShellResources!NonClientControls.uix"
-  xmlns:anim="res://UIXControls!Animations.uix"
   xmlns:button="res://UIXControls!Button.uix"
-  xmlns:msgdata="res://ZuneShellResources!MessagingData.schema.xml"
-  xmlns:animations="res://UIXControls!Animations.uix"
-  xmlns:listcore="res://ZuneShellResources!ContentList.uix"
-  xmlns:scroll="res://UIXControls!ScrollBar.uix"
+  xmlns:listcore="res://UIXControls!ContentList.uix"
   xmlns:me="Me">
+
+  <!--
+  xmlns:menu="clr-res://IrisShell!Controls.ContextMenu.uix"
+  -->
 
   
   <UI Name="TopToolbar">
@@ -49,7 +49,7 @@
           <iris:Command Description="{isui:Shell.LoadString(&quot;IDS_FRAME_SIZE_TOOLTIP&quot;)}" Available="false" />
           <iris:Command Command="{MinimizeCommand}" />
           <iris:Command Command="{MaximizeCommand}" />
-          <menu:MenuDivider />
+          <!--<menu:MenuDivider />-->
           <iris:Command Command="{CloseCommand}" />
         </Options>
       </core:ContextMenu>
@@ -94,25 +94,25 @@
         if (Shell.CurrentFrame != null)
           TopPivot.Content = Shell.CurrentFrame.Experiences.Options;
       </Script>
-      <Script>
+      <!--<Script>
         if (Shell.CurrentExperience != null)
           BottomPivot.Content = Shell.CurrentExperience.Nodes.Options;
       </Script>
 
       <Script>
         BottomPivot.Visible = !Shell.PivotMismatch;
-      </Script>
+      </Script>-->
 
-      <Script>
+      <!--<Script>
         [DeclareTrigger(SettingsButtonModel.Invoked)]
         Page.InvokeSettings();
-      </Script>
+      </Script>-->
       
       
       <Script>
         Page = Shell.CurrentPage;
 
-        SearchBox.Visible = Page.ShowSearch;
+        //SearchBox.Visible = Page.ShowSearch;
         SettingsButton.Visible = Page.ShowSettings;
         SettingsSeparator.Visible = Page.ShowSettings;
         SignInSeparator.Visible = Page.ShowSettings;  
@@ -154,7 +154,7 @@
       </Script>
 
       <Script>
-        styles:WindowState.TopToolbarInputActivity = UI.DeepMouseFocus;
+        istyles:WindowState.TopToolbarInputActivity = UI.MouseFocus;
       </Script>
 
       <Script>
@@ -170,7 +170,7 @@
 
         SysMenu.LayoutInput = new PopupLayoutInput();
         SysMenu.LayoutInput.Placement = PlacementMode.MouseOrigin;
-        SysMenu.Helper.Show(SysMenu);
+        //SysMenu.Helper.Show(SysMenu);
       </Script>
 
       
@@ -181,7 +181,7 @@
         SysMenu.LayoutInput.Offset = new Point(0,2);
         SysMenu.LayoutInput.Placement = PlacementMode.Bottom;
         SysMenu.LayoutInput.PlacementTarget = Logo;
-        SysMenu.Helper.Show(SysMenu);
+        //SysMenu.Helper.Show(SysMenu);
       </Script>
 
       
@@ -220,7 +220,7 @@
               
               <me:Pivot Name="TopPivot"
                   FocusOrder="2"
-                  OverrideStyle="{styles:SharedStyles.TopPivot}"
+                  OverrideStyle="{istyles:SharedStyles.TopPivot}"
                   ItemAnimation="{null}">
                 <ListLayout>
                   <FlowLayout Orientation="Horizontal" Spacing="18,0"/>
@@ -232,21 +232,21 @@
               </me:Pivot>
 
               
-              <me:Pivot Name="BottomPivot"
+              <!--<me:Pivot Name="BottomPivot"
                   FocusOrder="1"
-                  OverrideStyle="{styles:SharedStyles.BottomPivot}"
+                  OverrideStyle="{istyles:SharedStyles.BottomPivot}"
                   ListItemType="{typeof(me:BottomPivotLabelListItem)}"
                   Margins="{me:Constants.OverlapMargins}">
                 <ListLayout>
                   <FlowLayout Orientation="Horizontal" Spacing="15,0"/>
                 </ListLayout>
-              </me:Pivot>
+              </me:Pivot>-->
 
             </Children>
           </Panel>
 
           
-          <me:SearchBox Name="SearchBox" Shell="{Shell}" FocusOrder="5">
+          <!--<me:SearchBox Name="SearchBox" Shell="{Shell}" FocusOrder="5">
             <LayoutInput>
               <FormLayoutInput Right="Parent,1,-55" Left="Parent,1,-239" Top="Parent,0,41" Bottom="Parent,0,67"/>
             </LayoutInput>
@@ -259,21 +259,21 @@
                 </Keyframes>
               </Animation>
             </Animations>
-          </me:SearchBox>
+          </me:SearchBox>-->
 
           <Panel Name="WindowControlContainer" Layout="HorizontalFlow">
             <LayoutInput>
               <FormLayoutInput Right="Parent,1" Top="Parent,0"/>
             </LayoutInput>
             <Children>
-              
-              <ColorFill Name="SignInSeparator" Content="{styles:SharedStyles.SettingsButtonStyle.Default.Color}" MinimumSize="1,9" Margins="0,15,10,0"/>
-              
-              
-              <core:Button Name="SettingsButton" OverrideStyle="{styles:SharedStyles.SettingsButtonStyle}"  Model="{SettingsButtonModel}" FocusOrder="4" Margins="0,12,10,0" />       
+
+                <Panel Name="SignInSeparator" Background="{istyles:SharedStyles.SettingsButtonStyle.Default.Color}" MinimumSize="1,9" Margins="0,15,10,0"/>
               
               
-              <ColorFill Name="SettingsSeparator" Content="{styles:SharedStyles.SettingsButtonStyle.Default.Color}" MinimumSize="1,9" Margins="0,15,7,0"/>
+              <core:Button Name="SettingsButton" OverrideStyle="{istyles:SharedStyles.SettingsButtonStyle}"  Model="{SettingsButtonModel}" FocusOrder="4" Margins="0,12,10,0" />       
+              
+              
+              <Panel Name="SettingsSeparator" Background="{istyles:SharedStyles.SettingsButtonStyle.Default.Color}" MinimumSize="1,9" Margins="0,15,7,0"/>
 
               
               <me:WindowControls 
@@ -288,7 +288,7 @@
 
           
           
-          <nonclient:WindowCaption Name="Caption" Layout="Fill" MaximumSize="0,70">
+          <nonclient:WindowCaption Name="Caption" Layout="Default" MaximumSize="0,70">
             <LayoutInput>
               <FormLayoutInput Left="Parent,0" Top="Parent,0"/>
             </LayoutInput>
@@ -314,9 +314,8 @@
       <Script>
         [DeclareTrigger(HelpCommand.Invoked)]
         
-        string helpPath = "Help\" + isui:Shell.LoadString(&quot;IDS_ZUNECLIENT_LOCALE&quot;) + "\LandingPage.htm";
+        string helpPath = "Help\\" + isui:Shell.LoadString(&quot;IDS_ZUNECLIENT_LOCALE&quot;) + "\\LandingPage.htm";
         isui:Shell.DefaultInstance.Execute(helpPath, null);
-        zuneutil:SQMLog.Log(zuneutilapi:SQMDataId.HelpClicks, 1);        
       </Script>
 
       <Script>
@@ -393,20 +392,19 @@
       <EditableTextData Name="SearchBoxModel" Value=""/>
     </Properties>
     
-    <Scripts>
+    <!--<Scripts>
       <Script>
         [DeclareTrigger(SearchButton.Invoked)]
         [DeclareTrigger(SearchBoxModel.Submitted)]
         if ( isui:Search.Instance.IsValidKeyword(SearchBoxModel.Value) )
         {
-          zuneutil:SQMLog.Log(zuneutilapi:SQMDataId.SearchExecuted, 1);
           isui:Search.Instance.Execute(SearchBoxModel.Value);
           Shell.SearchButton.Invoke();
         }
       </Script>
 
       <Script>
-        if (UI.DeepKeyFocus)
+        if (UI.DirectKeyFocus)
         {
           SearchBoxBackground.Content = styles:Styles.SearchBoxBackgroundImageActive;
         }
@@ -426,7 +424,7 @@
         [DeclareTrigger(isui:Search.Instance.SearchFocusHotkey.Invoked)]
         SearchEditBox.NavigateInto(); 
       </Script>
-    </Scripts>
+    </Scripts>-->
     
     <Content>
       <Panel Layout="Anchor">
@@ -471,7 +469,7 @@
       <EditableTextData Name="Model" EditableTextData="$Required"/>
 
       
-      <style:Style Name="Style" Style="{styles:SharedStyles.SearchEditBoxStyle}"/>
+      <style:Style Name="Style" Style="{istyles:SharedStyles.SearchEditBoxStyle}"/>
       <Color Name="TextFocusedColor" Color="{styles:Styles.EditTextFocusedForeground}"/>
       <Color Name="TextHighlightColor" Color="{styles:Styles.EditTextFocusedBackground}"/>
 
@@ -484,7 +482,7 @@
     <Scripts>
       <Script>
         <![CDATA[
-        Overlay.Visible = (!UI.DeepKeyFocus && String.IsNullOrEmpty(Model.Value));
+        Overlay.Visible = (!UI.DirectKeyFocus && String.IsNullOrEmpty(Model.Value));
         ]]>
       </Script>
     </Scripts>
@@ -520,7 +518,7 @@
           <core:Editbox Name="SearchEditBox" Model="{Model}" AccessibleDescription="{isui:Shell.LoadString(&quot;IDS_SEARCH_STARTER_TEXT&quot;)}"  Style="{Style}" TextFocusedColor="{TextFocusedColor}"
                 TextHighlightColor="{TextHighlightColor}" TilePadding="{TilePadding}" TileMinSize="{TileMinSize}"
                 TileMaxSize="{TileMaxSize}" BackgroundColor="{styles:Styles.SearchBoxBackground}"
-                BackgroundColorFocus="{styles:Styles.SearchBoxBackgroundActive}"/>
+                BackgroundColorFocus="{istyles:Styles.SearchBoxBackgroundActive}"/>
 
         </Children>
       </Panel>
@@ -534,7 +532,7 @@
     <Properties>
       <Type Name="ProviderType" Type="{typeof(button:CommandButtonProvider)}"/>
 
-      <TransformByAttributeAnimation Name="ItemAnimation" Attribute="Index" Delay="0.125" Source="{anim:Animations.PivotShowAnim}"/>
+      <TransformByAttributeAnimation Name="ItemAnimation" Attribute="Index" Delay="0.125" Source="{ianim:Animations.PivotShowAnim}"/>
       
       <Type Name="ScrollControlType" Type="{typeof(me:ScrollArrows)}"/>
       <AnchorLayoutInput Name="ScrollControlHorizontal"
@@ -562,10 +560,10 @@
       <Script> 
         
         
-        Scroller.Prefetch = 2.0; 
+        Scroller.Prefetch = 2;
       </Script>
       
-      <Script> 
+      <!--<Script> 
         [DeclareTrigger(ScrollData.CanScrollUp)]
         [DeclareTrigger(ScrollData.CanScrollDown)]
         
@@ -589,7 +587,7 @@
         [DeclareTrigger(SetFadeTimer.Tick)]
         Scroller.ShowNear = ScrollData.CanScrollUp; 
         Scroller.ShowFar = ScrollData.CanScrollDown; 
-      </Script>
+      </Script>-->
     </Scripts>
   </UI>
   
@@ -604,7 +602,7 @@
       <iris:Command Name="ScrollRightCommand"/>
     </Locals>
     
-    <Scripts>
+    <!--<Scripts>
       <Script>
         ScrollLeftCommand.Available = ScrollData.CanScrollUp;
         ScrollRightCommand.Available = ScrollData.CanScrollDown;
@@ -634,7 +632,7 @@
         [DeclareTrigger(ScrollRightCommand.Invoked)]
         ScrollData.ScrollDown();
       </Script>
-    </Scripts>
+    </Scripts>-->
     
     <Content>
       <Panel Layout="HorizontalFlow">
@@ -680,11 +678,11 @@
 
 
 
-  <UI Name="BottomPivotLabelListItem" Base="listcore:LabelListItemBase">
+  <!--<UI Name="BottomPivotLabelListItem" Base="listcore:LabelListItemBase">
     <Scripts>
       <Script>UI.FocusInterestTargetMargins = me:Constants.OverlapMargins;</Script>
     </Scripts>
-  </UI>
+  </UI>-->
 
   
   
