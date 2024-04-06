@@ -271,7 +271,7 @@
 
 
                                     <page:PageBase Name="ForegroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="2"
-												   Margins="{istyles:Styles.FrameMargins}" LayoutInput="{DockLayoutInput.Client}">
+                                                   Margins="{istyles:Styles.FrameMargins}" LayoutInput="{DockLayoutInput.Client}">
                                     </page:PageBase>
 
                                 </Children>

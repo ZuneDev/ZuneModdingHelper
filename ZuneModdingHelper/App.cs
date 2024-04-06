@@ -1,10 +1,12 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using IrisShell;
-using IrisShell.UI;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
+using ZuneModdingHelper.Services;
 
 namespace ZuneModdingHelper;
 
@@ -34,8 +36,6 @@ public class App : IrisAppBase
     {
         ConfigureAppCenter();
 
-        _ = new Shell();
-
         App app = new();
         return app.Run(args);
     }
@@ -58,6 +58,12 @@ public class App : IrisAppBase
         // Disable crash and event analytics when in debug
         AppCenter.SetEnabledAsync(false);
 #endif
+    }
+
+    protected override IServiceCollection ConfigureServices(IServiceCollection services)
+    {
+        return base.ConfigureServices(services)
+            .AddSingleton<IStringLocalizer>(new LocalizationService());
     }
 
     private void OnServiceProviderReady(object sender, IServiceProvider serviceProvider)
