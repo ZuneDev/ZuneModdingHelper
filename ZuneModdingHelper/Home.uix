@@ -256,27 +256,22 @@
                                 <Children>
 
 
-                                    <toptoolbar:TopToolbar Name="TopToolbar" Shell="{Shell}" FocusOrder="1">
-                                        <!--<LayoutInput>Top</LayoutInput>-->
-                                    </toptoolbar:TopToolbar>
+                                    <toptoolbar:TopToolbar Name="TopToolbar" Shell="{Shell}" LayoutInput="{DockLayoutInput.Top}" FocusOrder="1"/>
 
 
                                     <!--<bottomtoolbar:BottomToolbar Name="BottomToolbar" Shell="{Shell}" FocusOrder="4">
                                         <LayoutInput>Bottom</LayoutInput>
                                     </bottomtoolbar:BottomToolbar>-->
-                                    <Panel>
+                                    <Panel LayoutInput="{DockLayoutInput.Bottom}">
                                         <Children>
                                             <Text WordWrap="true" Content="Bottom toolbar!" />
                                         </Children>
-                                        <!--<LayoutInput>
-                                            <DockLayoutInput>Bottom</DockLayoutInput>
-                                        </LayoutInput>-->
                                     </Panel>
 
 
 
-                                    <page:PageBase Name="ForegroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="2" Margins="{istyles:Styles.FrameMargins}">
-                                        <!--<LayoutInput>Client</LayoutInput>-->
+                                    <page:PageBase Name="ForegroundUI" Shell="{Shell}" Page="{Shell.CurrentPage}" FocusOrder="2"
+												   Margins="{istyles:Styles.FrameMargins}" LayoutInput="{DockLayoutInput.Client}">
                                     </page:PageBase>
 
                                 </Children>
