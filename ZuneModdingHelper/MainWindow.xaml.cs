@@ -1,10 +1,10 @@
-﻿using ControlzEx.Theming;
-using Flurl.Http;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Newtonsoft.Json.Linq;
+using Octokit;
 using OwlCore.AbstractUI.Models;
 using Syroot.Windows.IO;
 using System;
@@ -30,6 +30,8 @@ namespace ZuneModdingHelper
             AnimateHide = true,
             AffirmativeButtonText = "OK"
         };
+
+        private readonly IGitHubClient? _gitHub = Ioc.Default.GetService<IGitHubClient>();
 
         public MainWindow()
         {
@@ -179,21 +181,26 @@ namespace ZuneModdingHelper
 
         private async void UpdatesButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_gitHub is null)
+                return;
+
             var checkDialog = await this.ShowProgressAsync("Checking for updates...", "Please wait.", settings: defaultMetroDialogSettings);
             checkDialog.SetIndeterminate();
 
             try
             {
                 // Get releases list from GitHub
-                List<JObject> releases = await "https://api.github.com/repos/ZuneDev/ZuneModdingHelper/releases"
-                    .WithHeader("User-Agent", App.Title.Replace(" ", "") + "/" + App.VersionStr)
-                    .GetJsonAsync<List<JObject>>();
-                JObject latest = releases[0];
-                string latestVerStr = latest["tag_name"].Value<string>();
-                if (!ReleaseVersion.TryParse(latestVerStr, out var latestVer) || App.Version >= latestVer)
+                // Why not use the `releases/latest` endpoint? Good question: https://github.com/octokit/octokit.net/issues/2916
+                var releases = await _gitHub.Repository.Release.GetAll("ZuneDev", "ZuneModdingHelper");
+                var latest = releases
+                    .Select(r => new { Release = r, Version = ReleaseVersion.Parse(r.TagName) })
+                    .OrderByDescending(t => t.Version)
+                    .ThenBy(t => t.Release.Prerelease)
+                    .First();
+
+                if (!ReleaseVersion.TryParse(latest.Release.TagName, out var latestVer) || App.Version >= latestVer)
                 {
                     // Already up-to-date
-
                     Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
                         { "UpdatesFound", bool.FalseString },
                     });
@@ -213,7 +220,7 @@ namespace ZuneModdingHelper
                     NegativeButtonText = "Later"
                 };
                 await checkDialog.CloseAsync();
-                var promptResult = await this.ShowMessageAsync("Update available", $"Release {latest["name"]} is available. Would you like to download it now?",
+                var promptResult = await this.ShowMessageAsync("Update available", $"Release {latest.Release.Name} is available. Would you like to download it now?",
                     MessageDialogStyle.AffirmativeAndNegative, promptSettings);
                 bool acceptedUpdate = promptResult == MessageDialogResult.Affirmative;
 
@@ -224,9 +231,8 @@ namespace ZuneModdingHelper
                     progDialog.SetIndeterminate();
 
                     // Download new version to AppData
-                    JObject asset = latest["assets"].ToObject<List<JObject>>()[0];
-                    string assetName = asset["name"].Value<string>();
-                    string downloadedFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), assetName);
+                    var asset = latest.Release.Assets[0];
+                    string downloadedFile = Path.Combine(Path.GetTempPath(), asset.Name);
                     if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
                     using (var client = new System.Net.WebClient())
                     {
@@ -236,13 +242,13 @@ namespace ZuneModdingHelper
                         };
 
                         progDialog.SetProgress(0);
-                        await client.DownloadFileTaskAsync(new Uri(asset["browser_download_url"].Value<string>()), downloadedFile);
+                        await client.DownloadFileTaskAsync(new Uri(asset.BrowserDownloadUrl), downloadedFile);
                     }
 
                     // Ask user to save file
                     Microsoft.Win32.SaveFileDialog saveFileDialog = new()
                     {
-                        FileName = assetName,
+                        FileName = asset.Name,
                         InitialDirectory = new KnownFolder(KnownFolderType.Downloads).Path
                     };
                     bool dialogResult = saveFileDialog.ShowDialog() ?? false;
@@ -252,6 +258,8 @@ namespace ZuneModdingHelper
                         File.Copy(downloadedFile, saveFileDialog.FileName, true);
                         await this.ShowMessageAsync("Update complete", "You may now exit this program and open the new version.", settings: defaultMetroDialogSettings);
                     }
+
+                    File.Delete(downloadedFile);
                 }
 
                 Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {

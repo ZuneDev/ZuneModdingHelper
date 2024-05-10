@@ -46,6 +46,10 @@ namespace ZuneModdingHelper
         private static void ConfigureServices()
         {
             ServiceCollection services = new();
+
+            Octokit.IGitHubClient github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(Title.Replace(" ", ""), VersionStr));
+            services.AddSingleton(github);
+
             Ioc.Default.ConfigureServices(services.BuildServiceProvider());
         }
     }
