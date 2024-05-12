@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
+using ZuneModdingHelper.Pages;
 
 namespace ZuneModdingHelper
 {
@@ -12,18 +14,23 @@ namespace ZuneModdingHelper
     public partial class AppWindow
     {
         private IntPtr _windowHandle;
-        private int _selectedPivotIdx = 0;
+        private int _selectedPivotIdx = -1;
+
+        private readonly Type[] _pages = [typeof(ModsPage), typeof(Border), typeof(Border)];
 
         public AppWindow()
         {
-            Loaded += AppWindow_Loaded;
             InitializeComponent();
+            Pivot.Loaded += Pivot_Loaded;
         }
 
-        private void AppWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Pivot_Loaded(object sender, RoutedEventArgs e)
         {
+            foreach (var item in Pivot.Children.OfType<ToggleButton>())
+                item.Checked += PivotButton_Checked;
+
             // Select MODS tab
-            var pivotItem = (ToggleButton)Pivot.Children[_selectedPivotIdx];
+            var pivotItem = (ToggleButton)Pivot.Children[0];
             pivotItem.IsChecked = true;
         }
 
@@ -59,12 +66,17 @@ namespace ZuneModdingHelper
             if (newIdx == _selectedPivotIdx)
                 return;
 
-            var pivotItem = (ToggleButton)Pivot.Children[_selectedPivotIdx];
-            pivotItem.IsChecked = false;
+            if (_selectedPivotIdx >= 0 && _selectedPivotIdx < Pivot.Children.Count)
+            {
+                var oldPivotItem = (ToggleButton)Pivot.Children[_selectedPivotIdx];
+                oldPivotItem.IsChecked = false;
+            }
 
             _selectedPivotIdx = newIdx;
-            pivotItem = (ToggleButton)Pivot.Children[_selectedPivotIdx];
-            pivotItem.IsChecked = true;
+            var newPivotItem = (ToggleButton)Pivot.Children[_selectedPivotIdx];
+            newPivotItem.IsChecked = true;
+
+            ContentFrame.Content = Activator.CreateInstance(_pages[_selectedPivotIdx]);
         }
     }
 }

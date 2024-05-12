@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:zmh="clr-namespace:ZuneModdingHelper"
         xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:b="clr-namespace:ZuneModdingHelper.Behaviors"
         mc:Ignorable="d"
         WindowStyle="None"
         Title="{x:Static zmh:App.Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen">
@@ -74,18 +76,31 @@
 
                     <StackPanel x:Name="Pivot" Grid.Row="1" VerticalAlignment="Bottom" Orientation="Horizontal">
                         <zmhc:TextButton Text="Mods" Grid.Column="0" Width="36"
-                                         Checked="PivotButton_Checked" Style="{StaticResource PivotButtonStyle}" />
+                                         Style="{StaticResource PivotButtonStyle}" />
                         <zmhc:TextButton Text="Settings" Grid.Column="1" Width="58" Margin="6,0,0,0"
-                                         Checked="PivotButton_Checked" Style="{StaticResource PivotButtonStyle}" />
+                                         Style="{StaticResource PivotButtonStyle}" />
                         <zmhc:TextButton Text="About" Grid.Column="2" Margin="6,0,0,0"
-                                         Checked="PivotButton_Checked" Style="{StaticResource PivotButtonStyle}" />
+                                         Style="{StaticResource PivotButtonStyle}" />
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <Border x:Name="ContentBorder" Grid.Row="2" Padding="8">
-                <!--<ContentControl x:Name="ContentFrame" />-->
-                <TextBlock>Howdy!</TextBlock>
+            <Border x:Name="ContentBorder" Grid.Row="2" Padding="36,16,36,36">
+                <ContentControl x:Name="ContentFrame">
+                    <ContentControl.RenderTransform>
+                        <TranslateTransform/>
+                    </ContentControl.RenderTransform>
+                    <b:ContentControlExtensions.ContentChangedAnimation>
+                        <Storyboard>
+                            <DoubleAnimation From="-32" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="RenderTransform.X">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation From="0" To="1.0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"/>
+                        </Storyboard>
+                    </b:ContentControlExtensions.ContentChangedAnimation>
+                </ContentControl>
             </Border>
         </Grid>
     </Border>
