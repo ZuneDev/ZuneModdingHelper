@@ -33,11 +33,11 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}"
+                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}" Click="MinimizeButton_Click"
                                  PathData="m 0.26355 1.58337 l 0.004006 0.532267 H 0.471855 H 1.91237 H 2.11667 L 2.11266 1.58337 Z m 1.64481 0 H 0.467849 Z"/>
-                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}"
+                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}" Click="MaximizeButton_Click"
                                  PathData="M 0 0 V 0.5302 V 1.85208 V 2.11563 H 0.26355 H 2.12183 H 2.38538 V 1.85208 V 0 Z M 0.26355 0.5302 H 2.12183 V 1.85208 H 0.26355 Z"/>
-                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}"
+                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}" Click="CloseButton_Click"
                                  PathData="M 0,0 0.8583455,0.8598959 0,1.7197917 h 0.3813721 l 0.6676595,-0.668693 0.6676595,0.668693 h 0.381372 L 1.2397176,0.8598959 2.0980631,0 H 1.7166911 L 1.0490316,0.6686931 0.3813721,0 Z"/>
             </StackPanel>
 
