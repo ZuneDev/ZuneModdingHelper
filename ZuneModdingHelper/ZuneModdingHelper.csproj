@@ -35,6 +35,7 @@
         <Resource Include="Assets\ZMH_Icons.ttf">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
+        <Resource Include="Assets\ZMH_Icon_32.png" />
     </ItemGroup>
 
 </Project>
