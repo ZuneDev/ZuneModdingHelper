@@ -11,7 +11,7 @@
                     <Border Background="Transparent" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Viewbox Margin="{TemplateBinding Padding}">
-                                <Path x:Name="Icon" Fill="#999999" Data="{TemplateBinding PathData}"/>
+                                <Path x:Name="Icon" Fill="#555" Data="{TemplateBinding PathData}"/>
                             </Viewbox>
                             <ContentPresenter
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -23,7 +23,7 @@
                             <Setter TargetName="Icon" Property="Fill" Value="Black"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Icon" Property="Fill" Value="#CCCCCC"/>
+                            <Setter TargetName="Icon" Property="Fill" Value="#CCC"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
