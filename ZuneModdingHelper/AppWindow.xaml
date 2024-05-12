@@ -1,0 +1,69 @@
+﻿<Window x:Class="ZuneModdingHelper.AppWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:zmh="clr-namespace:ZuneModdingHelper"
+        xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        Title="{x:Static zmh:App.Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="20" CornerRadius="0"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <Style x:Key="TitleBarButtonStyle" TargetType="zmhc:PathButton" BasedOn="{StaticResource DefaultPathButtonStyle}">
+            <Setter Property="Foreground" Value="{DynamicResource WindowTextBrush}"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Width" Value="32"/>
+        </Style>
+    </Window.Resources>
+
+    <Border>
+        <Grid x:Name="LayoutRoot">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="53"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}"
+                                 PathData="m 0.26355 1.58337 l 0.004006 0.532267 H 0.471855 H 1.91237 H 2.11667 L 2.11266 1.58337 Z m 1.64481 0 H 0.467849 Z"/>
+                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}"
+                                 PathData="M 0 0 V 0.5302 V 1.85208 V 2.11563 H 0.26355 H 2.12183 H 2.38538 V 1.85208 V 0 Z M 0.26355 0.5302 H 2.12183 V 1.85208 H 0.26355 Z"/>
+                <zmhc:PathButton Padding="12" Style="{StaticResource TitleBarButtonStyle}"
+                                 PathData="M 0,0 0.8583455,0.8598959 0,1.7197917 h 0.3813721 l 0.6676595,-0.668693 0.6676595,0.668693 h 0.381372 L 1.2397176,0.8598959 2.0980631,0 H 1.7166911 L 1.0490316,0.6686931 0.3813721,0 Z"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1">
+                <Border BorderThickness="15,0,0,0" Padding="5,0,0,0" BorderBrush="{StaticResource ZuneGradient}">
+                    <TextBlock Text="{x:Static zmh:App.Title}"
+                               Foreground="#3B3F42" FontSize="32" FontFamily="segoe zlc" />
+                </Border>
+
+                <StackPanel x:Name="BrandingStackPanel">
+                </StackPanel>
+            </Grid>
+
+            <!--<Border x:Name="LinksBorder" Style="{StaticResource NavLinksBorderStyle}" Grid.Row="2">
+                <StackPanel x:Name="LinksStackPanel" Style="{StaticResource LinksStackPanelStyle}">
+                    <Button Style="{StaticResource LinkStyle}" Content="HOME" />
+                    <Button Style="{StaticResource LinkStyle}" Content="CORE CONTROLS" />
+                    <Button Style="{StaticResource LinkStyle}" Content="SDK CONTROLS" IsEnabled="False" />
+                    <Button Style="{StaticResource LinkStyle}" Content="TOOLKIT CONTROLS" IsEnabled="False"/>
+                </StackPanel>
+            </Border>-->
+
+            <Border x:Name="ContentBorder" Style="{StaticResource NavContentBorderStyle}" Grid.Row="3">
+                <ContentControl x:Name="ContentFrame" Margin="0"/>
+            </Border>
+        </Grid>
+    </Border>
+
+</Window>
