@@ -60,7 +60,7 @@
                 </StackPanel>
             </Border>-->
 
-            <Border x:Name="ContentBorder" Style="{StaticResource NavContentBorderStyle}" Grid.Row="3">
+            <Border x:Name="ContentBorder" Grid.Row="3">
                 <ContentControl x:Name="ContentFrame" Margin="0"/>
             </Border>
         </Grid>

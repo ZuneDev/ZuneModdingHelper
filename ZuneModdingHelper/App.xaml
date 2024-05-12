@@ -12,12 +12,6 @@
                 --><!-- Theme setting --><!--
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Magenta.xaml" />-->
 
-                <ResourceDictionary Source="Skins/Brushes.xaml"/>
-                <ResourceDictionary Source="Skins/CoreStyles.xaml"/>
-                <ResourceDictionary Source="Skins/Fonts.xaml"/>
-                <ResourceDictionary Source="Skins/SDKStyles.xaml"/>
-                <ResourceDictionary Source="Skins/Styles.xaml"/>
-
                 <ResourceDictionary Source="Themes/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
