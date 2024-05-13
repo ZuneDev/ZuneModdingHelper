@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xaml.Behaviors;
+using OwlCore.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -51,7 +52,7 @@ namespace ZuneModdingHelper.Behaviors
                 }
                 items = itemsSub;
             }
-            foreach (var item in items)
+            foreach (var item in items.PruneNull())
             {
                 item.Opacity = 0;
             }
@@ -62,6 +63,8 @@ namespace ZuneModdingHelper.Behaviors
                 timer.Tick += (s, timerE) =>
                 {
                     var item = enumerator.Current;
+                    if (item is null) return;
+
                     item.BeginAnimation(ListBoxItem.OpacityProperty, Animation);
                     if (!enumerator.MoveNext())
                     {
