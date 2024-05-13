@@ -16,7 +16,7 @@ namespace ZuneModdingHelper
         private IntPtr _windowHandle;
         private int _selectedPivotIdx = -1;
 
-        private readonly Type[] _pages = [typeof(ModsPage), typeof(Border), typeof(Border)];
+        private readonly Type[] _pages = [typeof(ModsPage), typeof(SettingsPage), typeof(AboutPage)];
 
         public AppWindow()
         {
