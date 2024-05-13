@@ -12,7 +12,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <ListView x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
-          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListView.Resources>
             <Style x:Key="MetroButton" TargetType="Button" BasedOn="{StaticResource &#220;}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -45,16 +45,21 @@
                             <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" FontSize="16"/>
                             <Run Text=" By "/><Run Text="{Binding Author, Mode=OneWay}"/>
                         </TextBlock>
-                        <TextBlock Text="{Binding Description}" Grid.Row="1" FontSize="14" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Description}" Grid.Row="1"
+                                   FontSize="14" TextWrapping="Wrap"/>
 
                         <Button x:Name="ModResetButton" Grid.Column="1" Click="ModResetButton_Click" ToolTip="Reset"
-                                Style="{StaticResource MetroButton}">
-                            <mah:FontIcon Glyph="&#xE10E;" FontFamily="Segoe MDL2 Assets" Margin="4" />
+                                Style="{StaticResource OverlayButtonStyle}">
+                            <Viewbox Width="12" Height="12">
+                                <Path Fill="White" Data="F1 M 18.085938 3.085938 L 11.181641 10 L 18.085938 16.914062 L 16.914062 18.085938 L 10 11.181641 L 3.085938 18.085938 L 1.914062 16.914062 L 8.818359 10 L 1.914062 3.085938 L 3.085938 1.914062 L 10 8.818359 L 16.914062 1.914062 Z"/>
+                            </Viewbox>
                         </Button>
 
                         <Button x:Name="ModInstallButton" Grid.Column="2" Click="ModInstallButton_Click" ToolTip="Install"
-                                Style="{StaticResource MetroAccentButton}">
-                            <mah:FontIcon Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" Margin="4" />
+                                Style="{StaticResource OverlayButtonStyle}">
+                            <Viewbox Width="12" Height="12">
+                                <Path Fill="White" Data="F1 M 18.574219 1.914062 L 19.755859 3.085938 L 6.669922 16.181641 L 0.244141 9.755859 L 1.425781 8.574219 L 6.669922 13.818359 Z"/>
+                            </Viewbox>
                         </Button>
                     </Grid>
                 </Border>
