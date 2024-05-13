@@ -14,12 +14,12 @@
     <ListView x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
           ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListView.Resources>
-            <Style x:Key="MetroButton" TargetType="Button">
+            <Style x:Key="MetroButton" TargetType="Button" BasedOn="{StaticResource &#220;}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="8,0,0,0"/>
                 <Setter Property="Grid.RowSpan" Value="3"/>
             </Style>
-            <Style x:Key="MetroAccentButton" TargetType="Button">
+            <Style x:Key="MetroAccentButton" TargetType="Button" BasedOn="{StaticResource &#220;}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="8,0,0,0"/>
                 <Setter Property="Grid.RowSpan" Value="3"/>
@@ -28,7 +28,7 @@
 
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type core:Mod}">
-                <Border BorderThickness="0,0,0,0" Padding="8">
+                <Border BorderThickness="0" Padding="8">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
