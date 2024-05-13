@@ -8,13 +8,22 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel HorizontalAlignment="Left">
         <Border Padding="8">
-            <Button Content="About ZMH" Style="{StaticResource ActionButtonStyle}"
+            <Button Content="About Zune" Style="{StaticResource ActionButtonStyle}"
                     VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Border>
 
         <Border Padding="8" Background="Black">
             <Button Content="Buy" Style="{StaticResource ActionButtonPinkStyle}"
                 VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Border>
+
+        <Border Padding="8" Background="DarkGray">
+            <Button VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Style="{StaticResource OverlayButtonStyle}">
+                <Viewbox Width="12" Height="12">
+                    <Path Fill="White" Data="F1 M 18.574219 1.914062 L 19.755859 3.085938 L 6.669922 16.181641 L 0.244141 9.755859 L 1.425781 8.574219 L 6.669922 13.818359 Z"/>
+                </Viewbox>
+            </Button>
         </Border>
     </StackPanel>
 </UserControl>
