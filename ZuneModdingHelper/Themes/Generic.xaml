@@ -4,7 +4,7 @@
     xmlns:local="clr-namespace:ZuneModdingHelper">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="../Controls/PathButton.xaml"/>
-        <ResourceDictionary Source="../Controls/TextButton.xaml"/>
+        <ResourceDictionary Source="/Controls/PathButton.xaml"/>
+        <ResourceDictionary Source="/Controls/TextButton.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
