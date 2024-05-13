@@ -3,43 +3,45 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:core="clr-namespace:ZuneModCore;assembly=ZuneModCore"
              xmlns:b="clr-namespace:ZuneModdingHelper.Behaviors"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:ZuneModdingHelper.Pages"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="ZuneListViewItemContainerStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border x:Name="ItemBorder">
+                            <ContentPresenter/>
+                        </Border>
 
-    <ListView x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
-              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <ListView.Resources>
-            <Style x:Key="MetroButton" TargetType="Button" BasedOn="{StaticResource &#220;}">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="8,0,0,0"/>
-                <Setter Property="Grid.RowSpan" Value="3"/>
-            </Style>
-            <Style x:Key="MetroAccentButton" TargetType="Button" BasedOn="{StaticResource &#220;}">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="8,0,0,0"/>
-                <Setter Property="Grid.RowSpan" Value="3"/>
-            </Style>
-        </ListView.Resources>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#D8D8D8" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#E8E8E8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
+    <ListView ItemContainerStyle="{DynamicResource ZuneListViewItemContainerStyle}" Style="{DynamicResource ZuneListViewStyle}" x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}">
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type core:Mod}">
-                <Border BorderThickness="0" Padding="8">
-                    <Grid>
+                <Border x:Name="RootBorder" BorderThickness="0">
+                    <Grid Margin="8">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
 
                         <TextBlock TextTrimming="CharacterEllipsis">
                             <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" FontSize="16"/>
@@ -47,20 +49,6 @@
                         </TextBlock>
                         <TextBlock Text="{Binding Description}" Grid.Row="1"
                                    FontSize="14" TextWrapping="Wrap"/>
-
-                        <Button x:Name="ModResetButton" Grid.Column="1" Click="ModResetButton_Click" ToolTip="Reset"
-                                Style="{StaticResource OverlayButtonStyle}">
-                            <Viewbox Width="12" Height="12">
-                                <Path Fill="White" Data="F1 M 18.085938 3.085938 L 11.181641 10 L 18.085938 16.914062 L 16.914062 18.085938 L 10 11.181641 L 3.085938 18.085938 L 1.914062 16.914062 L 8.818359 10 L 1.914062 3.085938 L 3.085938 1.914062 L 10 8.818359 L 16.914062 1.914062 Z"/>
-                            </Viewbox>
-                        </Button>
-
-                        <Button x:Name="ModInstallButton" Grid.Column="2" Click="ModInstallButton_Click" ToolTip="Install"
-                                Style="{StaticResource OverlayButtonStyle}">
-                            <Viewbox Width="12" Height="12">
-                                <Path Fill="White" Data="F1 M 18.574219 1.914062 L 19.755859 3.085938 L 6.669922 16.181641 L 0.244141 9.755859 L 1.425781 8.574219 L 6.669922 13.818359 Z"/>
-                            </Viewbox>
-                        </Button>
                     </Grid>
                 </Border>
             </DataTemplate>
