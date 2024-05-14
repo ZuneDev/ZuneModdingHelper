@@ -4,26 +4,79 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ZuneModdingHelper.Pages"
+             xmlns:zmh="clr-namespace:ZuneModdingHelper"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel HorizontalAlignment="Left">
-        <Border Padding="8">
-            <Button Content="About Zune" Style="{StaticResource ActionButtonStyle}"
-                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        </Border>
+             d:DesignHeight="350" d:DesignWidth="750"
+             d:Background="White">
+    <UserControl.Resources>
+        <Style x:Key="AboutTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource ZuneTextBlock}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Foreground" Value="{StaticResource ZuneMediumTextBrush}"/>
+        </Style>
+        <Style x:Key="HeaderTextStyle" TargetType="Run">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+            <Setter Property="Foreground" Value="{StaticResource ZuneMediumTextBrush}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="TextDecorations" Value="None"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Foreground" Value="{StaticResource ZuneExtraLightTextBrush}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
 
-        <Border Padding="8" Background="Black">
-            <Button Content="Buy" Style="{StaticResource ActionButtonPinkStyle}"
-                VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        </Border>
-
-        <Border Padding="8" Background="DarkGray">
-            <Button VerticalAlignment="Center" HorizontalAlignment="Center"
-                    Style="{StaticResource OverlayButtonStyle}">
-                <Viewbox Width="12" Height="12">
-                    <Path Fill="White" Data="F1 M 18.574219 1.914062 L 19.755859 3.085938 L 6.669922 16.181641 L 0.244141 9.755859 L 1.425781 8.574219 L 6.669922 13.818359 Z"/>
-                </Viewbox>
-            </Button>
-        </Border>
-    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock Style="{StaticResource AboutTextBlockStyle}">
+                <Run Text="Version" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
+                <Run Text="{x:Static zmh:App.VersionStr}"/><LineBreak/>
+                <Hyperlink NavigateUri="{x:Static zmh:App.VersionUri}" RequestNavigate="Link_RequestNavigate">
+                    <Run Text="&#xE004;" FontFamily="{StaticResource ZMHIcons}"/>
+                    <Run Text="release notes"/>
+                </Hyperlink><LineBreak/>
+                <LineBreak/>
+            
+                <Run Text="Community" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
+                <Hyperlink NavigateUri="https://reddit.com/r/Zune" RequestNavigate="Link_RequestNavigate">
+                    <Run Text="&#xE001;" FontFamily="{StaticResource ZMHIcons}"/>
+                    <Run Text="join r/zune subreddit"/>
+                </Hyperlink><LineBreak/>
+                <Hyperlink NavigateUri="https://discord.zunes.me/" RequestNavigate="Link_RequestNavigate">
+                    <Run Text="&#xE002;" FontFamily="{StaticResource ZMHIcons}"/>
+                    <Run Text="join r/zune discord server"/>
+                </Hyperlink><LineBreak/>
+                <LineBreak/>
+            
+                <Run Text="Development" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
+                <Run Text="by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
+                <Run Text="Mods included with authors' permission."/><LineBreak/>
+                <LineBreak/>
+                
+                <Run Text="Contributors are not liable for any damages caused directly or indirectly by this tool or any of the mods it contains."/><LineBreak/>
+                <LineBreak/>
+                
+                <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper" RequestNavigate="Link_RequestNavigate">
+                    <Run Text="&#xE005;" FontFamily="{StaticResource ZMHIcons}"/>
+                    <Run Text="view source"/>
+                </Hyperlink><LineBreak/>
+                <Hyperlink NavigateUri="https://github.com/ZuneDev/ZuneModdingHelper/releases" RequestNavigate="Link_RequestNavigate">
+                    <Run Text="&#xE003;" FontFamily="{StaticResource ZMHIcons}"/>
+                    <Run Text="view releases"/>
+                </Hyperlink><LineBreak/>
+                <Hyperlink NavigateUri="{x:Static zmh:App.DonateUri}" RequestNavigate="Link_RequestNavigate">
+                    <Run Text="&#xE006;" FontFamily="{StaticResource ZMHIcons}"/>
+                    <Run Text="donate"/>
+                </Hyperlink><LineBreak/>
+            </TextBlock>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
