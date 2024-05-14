@@ -21,7 +21,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Label" Property="FontWeight" Value="ExtraBlack"/>
+                            <Setter TargetName="Label" Property="FontWeight" Value="Bold"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Label" Property="Foreground" Value="#CCC"/>

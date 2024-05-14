@@ -9,7 +9,7 @@
         xmlns:b="clr-namespace:ZuneModdingHelper.Behaviors"
         mc:Ignorable="d"
         WindowStyle="None"
-        Title="{x:Static zmh:App.Title}" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="{x:Static zmh:App.Title}" Height="475" Width="800" WindowStartupLocation="CenterScreen">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="52" CornerRadius="0"
@@ -25,9 +25,9 @@
             <Setter Property="Padding" Value="12"/>
         </Style>
         <Style x:Key="PivotButtonStyle" TargetType="zmhc:TextButton" BasedOn="{StaticResource DefaultTextButtonStyle}">
-            <Setter Property="FontFamily" Value="segoe zuc"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="AllowUncheck" Value="False"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
 
@@ -72,17 +72,33 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{x:Static zmh:App.Title}" Grid.RowSpan="2"
-                           Foreground="#3C3C3C" FontSize="28" FontFamily="segoe zlc" Margin="0,-6,0,0" />
+                <TextBlock Text="zune modding helper" Grid.RowSpan="2" Margin="0,-6,0,0"
+                           Foreground="{StaticResource ZuneMediumTextBrush}"
+                           FontSize="28" FontWeight="Light" />
 
-                <StackPanel x:Name="Pivot" Grid.Row="1" VerticalAlignment="Bottom" Orientation="Horizontal">
-                    <zmhc:TextButton Text="Mods" Grid.Column="0" Width="36"
+                <Grid x:Name="Pivot" Grid.Row="1" VerticalAlignment="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="74"/>
+                        <ColumnDefinition Width="42"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <zmhc:TextButton Text="MODS" Grid.Column="0"
                                      Style="{StaticResource PivotButtonStyle}" />
-                    <zmhc:TextButton Text="Settings" Grid.Column="1" Width="58" Margin="6,0,0,0"
+                    <zmhc:TextButton Text="SETTINGS" Grid.Column="1"
                                      Style="{StaticResource PivotButtonStyle}" />
-                    <zmhc:TextButton Text="About" Grid.Column="2" Margin="6,0,0,0"
+                    <zmhc:TextButton Text="ABOUT" Grid.Column="2"
                                      Style="{StaticResource PivotButtonStyle}" />
-                </StackPanel>
+
+                    <i:Interaction.Behaviors>
+                        <b:FadeAnimateItemsPanelBehavior Tick="0:0:0.05">
+                            <b:FadeAnimateItemsPanelBehavior.Animation>
+                                <DoubleAnimation From="0" To="1" Duration="0:0:0.3"/>
+                            </b:FadeAnimateItemsPanelBehavior.Animation>
+                        </b:FadeAnimateItemsPanelBehavior>
+                    </i:Interaction.Behaviors>
+                </Grid>
             </Grid>
         </Border>
 

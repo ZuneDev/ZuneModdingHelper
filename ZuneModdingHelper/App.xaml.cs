@@ -14,10 +14,12 @@ namespace ZuneModdingHelper
     {
         public const string Title = "Zune Modding Helper";
 
-        public static readonly ReleaseVersion Version = new(2021, 12, 30, 0, Phase.Alpha);
+        public static readonly ReleaseVersion Version = new(2024, 5, 15, 0, Phase.Debug);
         public static readonly string VersionStr = Version.ToString();
+        public static readonly System.Uri VersionUri = new($"https://github.com/ZuneDev/ZuneModdingHelper/releases/tag/{VersionStr}");
 
         public const string DonateLink = "http://josh.askharoun.com/donate";
+        public static readonly System.Uri DonateUri = new(DonateLink);
 
         protected override void OnStartup(StartupEventArgs e)
         {

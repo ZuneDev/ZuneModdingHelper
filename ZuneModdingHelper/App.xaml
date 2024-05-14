@@ -12,11 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
-
-            <LinearGradientBrush x:Key="ZuneGradient" EndPoint="0.5,1" StartPoint="0.5,0">
-                <GradientStop Color="#F10DA1" Offset="0"/>
-                <GradientStop Color="#E95214" Offset="1"/>
-            </LinearGradientBrush>
+            <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
