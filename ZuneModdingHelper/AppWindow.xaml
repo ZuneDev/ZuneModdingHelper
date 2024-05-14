@@ -102,7 +102,13 @@
             </Grid>
         </Border>
 
-        <Border x:Name="ContentBorder" Grid.Row="2" Padding="36,16,36,36">
+
+
+        <ProgressBar HorizontalAlignment="Stretch" IsIndeterminate="True"
+                     Grid.Row="2" VerticalAlignment="Top" Height="24"
+                     Style="{StaticResource ZPB}" Margin="8" Foreground="#88FFFFFF"/>
+
+        <Border x:Name="ContentBorder" Grid.Row="2" Padding="36,16,36,36" Visibility="Collapsed">
             <ContentControl x:Name="ContentFrame">
                 <ContentControl.RenderTransform>
                     <TranslateTransform/>

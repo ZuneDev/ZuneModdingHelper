@@ -236,4 +236,281 @@
         </Setter>
     </Style>
 
+    <!--<Style x:Key="ZuneProgressBarStyle" TargetType="ProgressBar">
+        
+    </Style>
+
+    <Style TargetType="ProgressBar" BasedOn="{StaticResource ZuneProgressBarStyle}"/>-->
+    <LinearGradientBrush x:Key="&#303;"
+                         EndPoint="0,1"
+                         StartPoint="0,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#B2FFFFFF"
+                          Offset="0"/>
+            <GradientStop Color="#8CFFFFFF"
+                          Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="&#304;"
+                         EndPoint="1,0"
+                         StartPoint="0,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#E9570C"
+                          Offset="0"/>
+            <!--<GradientStop Color="#C7C7C7"
+                          Offset="0.5"/>-->
+            <GradientStop Color="#F10EA1"
+                          Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="&#305;"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#80FFFFFF"
+                          Offset="0.05"/>
+            <GradientStop Color="#00FFFFFF"
+                          Offset="0.25"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="&#306;"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#50FFFFFF"
+                          Offset="0.5385"/>
+            <GradientStop Color="#00FFFFFF"
+                          Offset="0.5385"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="&#307;"
+                         StartPoint="0,0"
+                         EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#90FFFFFF"
+                          Offset="0.5385"/>
+            <GradientStop Color="#00FFFFFF"
+                          Offset="0.5385"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <RadialGradientBrush x:Key="&#308;"
+                         RadiusX="1"
+                         RadiusY="1"
+                         RelativeTransform="1,0,0,1,0.5,0.5">
+        <RadialGradientBrush.GradientStops>
+            <GradientStop Color="#60FFFFC4"
+                          Offset="0"/>
+            <GradientStop Color="#00FFFFC4"
+                          Offset="1"/>
+        </RadialGradientBrush.GradientStops>
+    </RadialGradientBrush>
+    <LinearGradientBrush x:Key="&#309;"
+                         StartPoint="0,1"
+                         EndPoint="0,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#60FFFFC4"
+                          Offset="0"/>
+            <GradientStop Color="#00FFFFC4"
+                          Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <RadialGradientBrush x:Key="&#310;"
+                         RadiusX="1"
+                         RadiusY="1"
+                         RelativeTransform="1,0,0,1,-0.5,0.5">
+        <RadialGradientBrush.GradientStops>
+            <GradientStop Color="#60FFFFC4"
+                          Offset="0"/>
+            <GradientStop Color="#00FFFFC4"
+                          Offset="1"/>
+        </RadialGradientBrush.GradientStops>
+    </RadialGradientBrush>
+
+    <LinearGradientBrush x:Key="&#311;"
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#0C000000"
+                          Offset="0"/>
+            <GradientStop Color="#20000000"
+                          Offset="0.3"/>
+            <GradientStop Color="#00000000"
+                          Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="&#312;"
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#00000000"
+                          Offset="0"/>
+            <GradientStop Color="#20000000"
+                          Offset="0.7"/>
+            <GradientStop Color="#0C000000"
+                          Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="&#313;" 
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#00FFFFFF"
+                          Offset="0"/>
+            <GradientStop Color="#60FFFFFF"
+                          Offset="0.4"/>
+            <GradientStop Color="#60FFFFFF"
+                          Offset="0.6"/>
+            <GradientStop Color="#00FFFFFF"
+                          Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <Style x:Key="ZPB"
+           TargetType="{x:Type ProgressBar}">
+        <Setter Property="Foreground"
+                Value="#01D328"/>
+        <Setter Property="Background"
+                Value="{StaticResource &#304;}"/>
+        <Setter Property="BorderBrush"
+                Value="{StaticResource &#303;}"/>
+        <Setter Property="BorderThickness"
+                Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                    <Grid Name="TemplateRoot"
+                          SnapsToDevicePixels="true">
+                        <!--Background -->
+                        <Rectangle Fill="{TemplateBinding Background}"
+                                   RadiusX="2"
+                                   RadiusY="2"/>
+                        <!--Glassy Highlight -->
+                        <Border Background="{StaticResource &#306;}"
+                                Margin="1"
+                                CornerRadius="2"/>
+                        <!--Edges and Top Highlight -->
+                        <Border BorderBrush="#80FFFFFF"
+                                Background="{StaticResource &#305;}"
+                                BorderThickness="1,0,1,1"
+                                Margin="1"/>
+                        <Rectangle Name="PART_Track"
+                                   Margin="1"/>
+
+                        <!--Indicator -->
+                        <Decorator x:Name="PART_Indicator"
+                                   HorizontalAlignment="Left"
+                                   Margin="1">
+                            <Grid Name="Foreground">
+                                <!-- Indicator Background -->
+                                <Rectangle x:Name="Indicator"
+                                           Fill="{TemplateBinding Foreground}"/>
+                                <!-- Animated Background -->
+                                <Grid x:Name="Animation" ClipToBounds="true">
+                                    <!-- Animated White glow -->
+                                    <Rectangle x:Name="PART_GlowRect" Width="100" 
+                                                Fill="{StaticResource &#313;}"
+                                                Margin="-100,0,0,0"
+                                                HorizontalAlignment="Left">
+                                    </Rectangle>
+                                </Grid>
+                                <Grid x:Name="Overlay">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition MaxWidth="15"/>
+                                        <ColumnDefinition Width="0.1*"/>
+                                        <ColumnDefinition MaxWidth="15"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <!--Dark Edges -->
+                                    <Rectangle x:Name="LeftDark"
+                                               Grid.RowSpan="2"
+                                               Fill="{StaticResource &#311;}"
+                                               RadiusX="1"
+                                               RadiusY="1"
+                                               Margin="1,1,0,1"/>
+                                    <Rectangle x:Name="RightDark"
+                                               Grid.RowSpan="2"
+                                               Grid.Column="2"
+                                               RadiusX="1"
+                                               RadiusY="1"
+                                               Fill="{StaticResource &#312;}"
+                                               Margin="0,1,1,1"/>
+                                    <!--Lighting Effect -->
+                                    <Rectangle x:Name="LeftLight"
+                                               Grid.Column="0"
+                                               Grid.Row="2"
+                                               Fill="{StaticResource &#308;}"/>
+                                    <Rectangle x:Name="CenterLight"
+                                               Grid.Column="1"
+                                               Grid.Row="2"
+                                               Fill="{StaticResource &#309;}"/>
+                                    <Rectangle x:Name="RightLight"
+                                               Grid.Column="2"
+                                               Grid.Row="2"
+                                               Fill="{StaticResource &#310;}"/>
+                                    <!--Glassy Highlight -->
+                                    <Border x:Name="Highlight1"
+                                            Grid.RowSpan="2"
+                                            Grid.ColumnSpan="3"
+                                            Background="{StaticResource &#307;}"/>
+                                    <Border x:Name="Highlight2"
+                                            Grid.RowSpan="2" 
+                                            Grid.ColumnSpan="3"
+                                            Background="{StaticResource &#305;}"/>
+                                </Grid>
+                            </Grid>
+                        </Decorator>
+
+                        <Border BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="2"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Orientation"
+                                 Value="Vertical">
+                            <Setter TargetName="TemplateRoot"
+                                    Property="LayoutTransform">
+                                <Setter.Value>
+                                    <RotateTransform Angle="-90"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <Trigger Property="IsIndeterminate"
+                                 Value="true">
+                            <!-- Hide the indicator and just use the AnimatedBackground -->
+                            <Setter TargetName="LeftDark"
+                                    Property="Visibility"
+                                    Value="Collapsed"/>
+                            <Setter TargetName="RightDark"
+                                    Property="Visibility"
+                                    Value="Collapsed"/>
+                            <Setter TargetName="LeftLight"
+                                    Property="Visibility"
+                                    Value="Collapsed"/>
+                            <Setter TargetName="CenterLight"
+                                    Property="Visibility"
+                                    Value="Collapsed"/>
+                            <Setter TargetName="RightLight"
+                                    Property="Visibility"
+                                    Value="Collapsed"/>
+                            <Setter TargetName="Indicator"
+                                    Property="Visibility"
+                                    Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsIndeterminate"
+                                 Value="false">
+                            <Setter TargetName="Animation"
+                                    Property="Background"
+                                    Value="#80B5FFA9"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
