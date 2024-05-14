@@ -76,3 +76,41 @@ public class FadeAnimateItemsBehavior : Behavior<ItemsControl>
         }
     }
 }
+
+public class FadeAnimateItemsPanelBehavior : Behavior<Panel>
+{
+    public DoubleAnimation Animation { get; set; }
+    public TimeSpan Tick { get; set; }
+
+    protected override void OnAttached()
+    {
+        base.OnAttached();
+        AssociatedObject.Loaded += AssociatedObject_Loaded;
+    }
+
+    void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
+    {
+        var items = AssociatedObject.Children.OfType<UIElement>().PruneNull();
+
+        foreach (var item in items)
+            item.Opacity = 0;
+
+        var enumerator = items.GetEnumerator();
+        if (enumerator.MoveNext())
+        {
+            DispatcherTimer timer = new() { Interval = Tick };
+            timer.Tick += (s, timerE) =>
+            {
+                var item = enumerator.Current;
+                if (item is null) return;
+
+                item.BeginAnimation(UIElement.OpacityProperty, Animation);
+                if (!enumerator.MoveNext())
+                {
+                    timer.Stop();
+                }
+            };
+            timer.Start();
+        }
+    }
+}

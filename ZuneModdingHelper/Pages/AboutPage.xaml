@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ZuneModdingHelper.Pages"
              xmlns:zmh="clr-namespace:ZuneModdingHelper"
+             xmlns:b="clr-namespace:ZuneModdingHelper.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="750"
              d:Background="White">
@@ -43,8 +45,9 @@
                     <Run Text="&#xE004;" FontFamily="{StaticResource ZMHIcons}"/>
                     <Run Text="release notes"/>
                 </Hyperlink><LineBreak/>
-                <LineBreak/>
+            </TextBlock>
             
+            <TextBlock Style="{StaticResource AboutTextBlockStyle}">
                 <Run Text="Community" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
                 <Hyperlink NavigateUri="https://reddit.com/r/Zune" RequestNavigate="Link_RequestNavigate">
                     <Run Text="&#xE001;" FontFamily="{StaticResource ZMHIcons}"/>
@@ -54,8 +57,9 @@
                     <Run Text="&#xE002;" FontFamily="{StaticResource ZMHIcons}"/>
                     <Run Text="join r/zune discord server"/>
                 </Hyperlink><LineBreak/>
-                <LineBreak/>
-            
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource AboutTextBlockStyle}">
                 <Run Text="Development" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
                 <Run Text="by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
                 <Run Text="Mods included with authors' permission."/><LineBreak/>
@@ -75,8 +79,16 @@
                 <Hyperlink NavigateUri="{x:Static zmh:App.DonateUri}" RequestNavigate="Link_RequestNavigate">
                     <Run Text="&#xE006;" FontFamily="{StaticResource ZMHIcons}"/>
                     <Run Text="donate"/>
-                </Hyperlink><LineBreak/>
+                </Hyperlink>
             </TextBlock>
+
+            <i:Interaction.Behaviors>
+                <b:FadeAnimateItemsPanelBehavior Tick="0:0:0.05">
+                    <b:FadeAnimateItemsPanelBehavior.Animation>
+                        <DoubleAnimation From="0" To="1" Duration="0:0:0.3"/>
+                    </b:FadeAnimateItemsPanelBehavior.Animation>
+                </b:FadeAnimateItemsPanelBehavior>
+            </i:Interaction.Behaviors>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
