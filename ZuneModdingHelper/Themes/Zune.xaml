@@ -45,16 +45,15 @@
             </LinearGradientBrush>
         </Style.Resources>
 
-        <Setter Property="FontFamily" Value="segoe zuc"/>
-        <Setter Property="FontWeight" Value="ExtraBlack"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="10"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Border" BorderThickness="1.5"
                             Background="{StaticResource NormalBackgroundBrush}"
                             BorderBrush="{StaticResource NormalBorderBrush}"
-                            Padding="8,2" CornerRadius="4">
+                            Padding="12,0" CornerRadius="4">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                         <VisualStateManager.VisualStateGroups>

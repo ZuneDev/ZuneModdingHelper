@@ -32,7 +32,8 @@
         </Style>
     </UserControl.Resources>
 
-    <ListView ItemContainerStyle="{DynamicResource ZuneListViewItemContainerStyle}" Style="{DynamicResource ZuneListViewStyle}" x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
+    <ListView ItemContainerStyle="{StaticResource ZuneListViewItemContainerStyle}" Style="{DynamicResource ZuneListViewStyle}"
+              x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}">
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type core:Mod}">
@@ -52,9 +53,11 @@
                         <!--<TextBlock Text="&#xE73E;" Foreground="#646464"
                                    FontSize="16" FontFamily="{StaticResource SegoeMDL2}"
                                    VerticalAlignment="Center" HorizontalAlignment="Right" />-->
-                        <Image Source="D:\Repos\ZuneDev\ZuneShell.dll\ZuneShell\Resources\RCDATA\ATTENTION.PNG"
+                        <!--<Image Source="D:\Repos\ZuneDev\ZuneShell.dll\ZuneShell\Resources\RCDATA\ATTENTION.PNG"
                                Width="17" Height="18" SnapsToDevicePixels="True"
-                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>-->
+                        <Button Content="APPLY" HorizontalAlignment="Right"
+                                Style="{StaticResource ActionButtonStyle}"/>
 
                         <TextBlock Text="{Binding Description}" Grid.Row="1" Foreground="{StaticResource ZuneLightTextBrush}"
                                    FontSize="14" TextWrapping="Wrap"/>

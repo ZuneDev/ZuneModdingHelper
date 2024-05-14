@@ -80,7 +80,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="36"/>
                         <ColumnDefinition Width="74"/>
-                        <ColumnDefinition Width="42"/>
+                        <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     
