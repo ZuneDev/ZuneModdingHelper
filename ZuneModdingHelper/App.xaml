@@ -11,6 +11,9 @@
                 <ResourceDictionary Source="/PresentationFramework.Aero2;component/themes/aero2.normalcolor.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style TargetType="ProgressBar" BasedOn="{StaticResource ZuneProgressBarStyle}"/>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource ZuneTextBlock}"/>
+
             <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
             <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
         </ResourceDictionary>

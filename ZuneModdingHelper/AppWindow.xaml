@@ -65,7 +65,7 @@
             <Path Fill="White" Data="M12.545,23.727C12.545,26.086 10.631,28 8.273,28C5.914,28 4,26.086 4,23.727C4,21.369 5.914,19.455 8.273,19.455L13.965,13.762C13.591,12.754 13.435,11.64 13.554,10.478C13.878,7.322 16.309,4.713 19.426,4.125C20.489,3.925 21.511,3.974 22.461,4.207C22.847,4.302 22.972,4.793 22.69,5.074L20.083,7.681C18.913,8.851 18.913,10.747 20.083,11.917C21.253,13.087 23.149,13.087 24.319,11.917L26.925,9.31C27.207,9.029 27.697,9.154 27.792,9.54C28.026,10.489 28.075,11.51 27.875,12.573C27.288,15.691 24.68,18.122 21.524,18.446C20.361,18.565 19.246,18.409 18.238,18.035L12.545,23.727ZM8.273,20.955C6.742,20.955 5.5,22.197 5.5,23.727C5.5,25.258 6.742,26.5 8.273,26.5C9.803,26.5 11.045,25.258 11.045,23.727C11.045,22.197 9.803,20.955 8.273,20.955ZM26.462,11.895L25.379,12.978C23.624,14.733 20.778,14.733 19.022,12.978C17.267,11.222 17.267,8.376 19.022,6.621L20.105,5.538C19.972,5.554 19.839,5.574 19.704,5.599C17.234,6.065 15.303,8.129 15.047,10.631C14.672,14.282 17.72,17.329 21.371,16.954C23.872,16.697 25.936,14.766 26.401,12.295C26.426,12.161 26.446,12.028 26.462,11.895Z"/>
         </Border>
 
-        <Border Grid.Row="1" BorderThickness="16,0,0,0" Padding="20,0,0,0" BorderBrush="{StaticResource ZuneGradient}">
+        <Border Grid.Row="1" BorderThickness="16,0,0,0" Padding="20,0,0,0" BorderBrush="{StaticResource ZuneVerticalGradient}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -83,7 +83,7 @@
                         <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
+
                     <zmhc:TextButton Text="MODS" Grid.Column="0"
                                      Style="{StaticResource PivotButtonStyle}" />
                     <zmhc:TextButton Text="SETTINGS" Grid.Column="1"
@@ -102,13 +102,7 @@
             </Grid>
         </Border>
 
-
-
-        <ProgressBar HorizontalAlignment="Stretch" IsIndeterminate="True"
-                     Grid.Row="2" VerticalAlignment="Top" Height="24"
-                     Style="{StaticResource ZPB}" Margin="8" Foreground="#88FFFFFF"/>
-
-        <Border x:Name="ContentBorder" Grid.Row="2" Padding="36,16,36,36" Visibility="Collapsed">
+        <Border x:Name="ContentBorder" Grid.Row="2" Padding="36,16,36,36">
             <ContentControl x:Name="ContentFrame">
                 <ContentControl.RenderTransform>
                     <TranslateTransform/>
