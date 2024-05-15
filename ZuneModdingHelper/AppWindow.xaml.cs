@@ -38,6 +38,7 @@ namespace ZuneModdingHelper
         {
             base.OnSourceInitialized(e);
             _windowHandle = new WindowInteropHelper(this).EnsureHandle();
+            ContentEntranceAnimation.Begin(ContentFrame);
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e) => SetWindowState(WindowState.Minimized);

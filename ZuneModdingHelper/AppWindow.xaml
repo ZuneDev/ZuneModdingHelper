@@ -108,7 +108,7 @@
                     <TranslateTransform/>
                 </ContentControl.RenderTransform>
                 <b:ContentControlExtensions.ContentChangedAnimation>
-                    <Storyboard>
+                    <Storyboard x:Name="ContentEntranceAnimation">
                         <DoubleAnimation From="-32" To="0" Duration="0:0:0.5" Storyboard.TargetProperty="RenderTransform.X">
                             <DoubleAnimation.EasingFunction>
                                 <QuadraticEase EasingMode="EaseOut"/>
