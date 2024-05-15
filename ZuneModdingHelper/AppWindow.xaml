@@ -119,6 +119,8 @@
                 </b:ContentControlExtensions.ContentChangedAnimation>
             </ContentControl>
         </Border>
+
+        <ContentControl x:Name="DialogPresenter" Grid.RowSpan="3" Visibility="Collapsed" />
     </Grid>
 
 </Window>

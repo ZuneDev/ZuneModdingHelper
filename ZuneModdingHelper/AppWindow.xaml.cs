@@ -1,9 +1,12 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
+using ZuneModdingHelper.Controls;
+using ZuneModdingHelper.Messages;
 using ZuneModdingHelper.Pages;
 
 namespace ZuneModdingHelper
@@ -11,7 +14,7 @@ namespace ZuneModdingHelper
     /// <summary>
     /// Interaction logic for AppWindow.xaml
     /// </summary>
-    public partial class AppWindow
+    public partial class AppWindow : IRecipient<ShowDialogMessage>, IRecipient<CloseDialogMessage>
     {
         private IntPtr _windowHandle;
         private int _selectedPivotIdx = -1;
@@ -22,6 +25,9 @@ namespace ZuneModdingHelper
         {
             InitializeComponent();
             Pivot.Loaded += Pivot_Loaded;
+
+            WeakReferenceMessenger.Default.Register<ShowDialogMessage>(this);
+            WeakReferenceMessenger.Default.Register<CloseDialogMessage>(this);
         }
 
         private void Pivot_Loaded(object sender, RoutedEventArgs e)
@@ -78,6 +84,21 @@ namespace ZuneModdingHelper
             newPivotItem.IsChecked = true;
 
             ContentFrame.Content = Activator.CreateInstance(_pages[_selectedPivotIdx]);
+        }
+
+        void IRecipient<ShowDialogMessage>.Receive(ShowDialogMessage message)
+        {
+            DialogPresenter.Content = new ZuneLightDialog
+            {
+                ViewModel = message.ViewModel
+            };
+            DialogPresenter.Visibility = Visibility.Visible;
+        }
+
+        void IRecipient<CloseDialogMessage>.Receive(CloseDialogMessage message)
+        {
+            DialogPresenter.Visibility = Visibility.Collapsed;
+            DialogPresenter.Content = null;
         }
     }
 }

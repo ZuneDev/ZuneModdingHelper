@@ -35,9 +35,9 @@
                             <!--<Image Source="D:\Repos\ZuneDev\ZuneShell.dll\ZuneShell\Resources\RCDATA\ATTENTION.PNG"
                                    Width="17" Height="18" SnapsToDevicePixels="True"
                                    VerticalAlignment="Center" HorizontalAlignment="Right"/>-->
-                            <Button Content="RESET" Margin="0,0,8,0"
+                            <Button Content="RESET" Margin="0,0,8,0" Click="ResetButton_Click"
                                     Style="{StaticResource ActionButtonStyle}"/>
-                            <Button Content="APPLY"
+                            <Button Content="APPLY" Click="ApplyButton_Click"
                                     Style="{StaticResource ActionButtonStyle}"/>
                         </StackPanel>
 

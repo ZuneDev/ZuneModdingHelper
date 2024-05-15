@@ -1,5 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using System.Windows.Controls;
 using ZuneModCore;
+using ZuneModdingHelper.Messages;
 
 namespace ZuneModdingHelper.Pages
 {
@@ -12,6 +14,22 @@ namespace ZuneModdingHelper.Pages
         {
             InitializeComponent();
             ModList.ItemsSource = Mod.AvailableMods;
+        }
+
+        private void ResetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new DialogViewModel
+            {
+                Title = "RESET"
+            }));
+        }
+
+        private void ApplyButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new DialogViewModel
+            {
+                Title = "APPLY"
+            }));
         }
     }
 }

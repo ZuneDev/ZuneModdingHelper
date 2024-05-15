@@ -1,0 +1,57 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Themes/Zune.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- TODO: Convert to UserControl -->
+    <Style TargetType="zmhc:ZuneLightDialog">
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="zmhc:ZuneLightDialog">
+                    <Border Background="#AFFFFFFF">
+                        <Border MaxHeight="408" MaxWidth="530" Padding="32">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#F0F0F0" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Rectangle Height="5" Width="109" Margin="0,-16,0,0"
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                                           Fill="{StaticResource ZuneHorizontalGradientAlt}"/>
+                                <TextBlock Text="WINDOWS LIVE ID" FontSize="28" Margin="0,-10,0,0"
+                                           Foreground="{StaticResource ZuneMediumTextBrush}"/>
+
+                                <ContentPresenter Grid.Row="1"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                                <Button Content="CANCEL" Grid.Row="2" HorizontalAlignment="Right"
+                                        FontSize="12" Height="24"
+                                        Style="{StaticResource ActionButtonStyle}"/>
+                            </Grid>
+
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Opacity="0.45" BlurRadius="8"
+                                                  Direction="0" ShadowDepth="0"/>
+                            </Border.Effect>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
