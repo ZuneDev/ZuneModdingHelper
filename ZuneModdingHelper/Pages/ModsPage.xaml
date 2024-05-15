@@ -50,14 +50,16 @@
                                                    Foreground="{StaticResource ZuneMediumTextBrush}"/>
                         </TextBlock>
 
-                        <!--<TextBlock Text="&#xE73E;" Foreground="#646464"
-                                   FontSize="16" FontFamily="{StaticResource SegoeMDL2}"
-                                   VerticalAlignment="Center" HorizontalAlignment="Right" />-->
-                        <!--<Image Source="D:\Repos\ZuneDev\ZuneShell.dll\ZuneShell\Resources\RCDATA\ATTENTION.PNG"
-                               Width="17" Height="18" SnapsToDevicePixels="True"
-                               VerticalAlignment="Center" HorizontalAlignment="Right"/>-->
-                        <Button Content="APPLY" HorizontalAlignment="Right"
-                                Style="{StaticResource ActionButtonStyle}"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <!--<TextBlock Text="&#xE73E;" Foreground="#646464"
+                                       FontSize="16" FontFamily="{StaticResource SegoeMDL2}"
+                                       VerticalAlignment="Center" HorizontalAlignment="Right" />-->
+                            <!--<Image Source="D:\Repos\ZuneDev\ZuneShell.dll\ZuneShell\Resources\RCDATA\ATTENTION.PNG"
+                                   Width="17" Height="18" SnapsToDevicePixels="True"
+                                   VerticalAlignment="Center" HorizontalAlignment="Right"/>-->
+                            <Button Content="RESET" Margin="0,0,8,0" Style="{StaticResource ActionButtonStyle}"/>
+                            <Button Content="APPLY" Style="{StaticResource ActionButtonStyle}"/>
+                        </StackPanel>
 
                         <TextBlock Text="{Binding Description}" Grid.Row="1" Foreground="{StaticResource ZuneLightTextBrush}"
                                    FontSize="14" TextWrapping="Wrap"/>
