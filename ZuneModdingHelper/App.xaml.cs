@@ -1,8 +1,5 @@
 ﻿using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ZuneModdingHelper
@@ -24,16 +21,6 @@ namespace ZuneModdingHelper
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            // Set up App Center analytics
-            AppCenter.SetCountryCode(System.Globalization.RegionInfo.CurrentRegion.TwoLetterISORegionName);
-            AppCenter.Start("24903c19-b3d9-4ab5-b445-b981ca647125", typeof(Analytics), typeof(Crashes));
-
-#if DEBUG
-            // Disable crash and event analytics when in debug
-            AppCenter.SetEnabledAsync(false);
-#endif
-
             ConfigureServices();
         }
 

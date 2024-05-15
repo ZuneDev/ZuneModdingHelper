@@ -2,13 +2,11 @@
 using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.AppCenter.Analytics;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Octokit;
 using OwlCore.AbstractUI.Models;
 using Syroot.Windows.IO;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -99,21 +97,12 @@ namespace ZuneModdingHelper
             string applyResult = await mod.Apply();
             if (applyResult != null)
             {
-                Analytics.TrackEvent("Failed to apply mod", new Dictionary<string, string> {
-                    { "ModID", mod.Id },
-                    { "ErrorMessage", applyResult }
-                });
-
                 await progDialog.CloseAsync();
                 await this.ShowMessageAsync($"Failed to apply '{mod.Title}'", applyResult, settings: defaultMetroDialogSettings);
 
                 return;
             }
             progDialog.SetProgress(++numCompleted);
-
-            Analytics.TrackEvent("Applied mod", new Dictionary<string, string> {
-                { "ModID", mod.Id },
-            });
 
             await progDialog.CloseAsync();
             await this.ShowMessageAsync("Completed", $"Installed '{mod.Title}'", settings: defaultMetroDialogSettings);
@@ -146,21 +135,12 @@ namespace ZuneModdingHelper
                 string resetResult = await mod.Reset();
                 if (resetResult != null)
                 {
-                    Analytics.TrackEvent("Failed to reset mod", new Dictionary<string, string> {
-                        { "ModID", mod.Id },
-                        { "ErrorMessage", resetResult }
-                    });
-
                     await progDialog.CloseAsync();
                     await this.ShowMessageAsync("Completed", $"Failed to reset '{mod.Title}':\r\n{resetResult}", settings: defaultMetroDialogSettings);
                     return;
                 }
 
                 progDialog.SetProgress(++numCompleted);
-
-                Analytics.TrackEvent("Reset mod", new Dictionary<string, string> {
-                    { "ModID", mod.Id },
-                });
 
                 await progDialog.CloseAsync();
                 await this.ShowMessageAsync("Completed", $"Successfully reset '{mod.Title}'", settings: defaultMetroDialogSettings);
@@ -200,11 +180,6 @@ namespace ZuneModdingHelper
 
                 if (!ReleaseVersion.TryParse(latest.Release.TagName, out var latestVer) || App.Version >= latestVer)
                 {
-                    // Already up-to-date
-                    Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
-                        { "UpdatesFound", bool.FalseString },
-                    });
-
                     await checkDialog.CloseAsync();
                     await this.ShowMessageAsync("No updates available", "You're already using the latest version.", settings: defaultMetroDialogSettings);
                     return;
@@ -261,11 +236,6 @@ namespace ZuneModdingHelper
 
                     File.Delete(downloadedFile);
                 }
-
-                Analytics.TrackEvent("Checked for updates", new Dictionary<string, string> {
-                    { "UpdatesFound", bool.TrueString },
-                    { "Accepted", acceptedUpdate.ToString() },
-                });
             }
             catch
             {
