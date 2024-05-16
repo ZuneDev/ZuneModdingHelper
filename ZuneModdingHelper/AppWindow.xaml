@@ -29,6 +29,11 @@
             <Setter Property="AllowUncheck" Value="False"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
+
+        <Storyboard x:Key="DialogExitAnimation" x:Name="DialogExitAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="1.0" To="0.0" Duration="0:0:0.25" />
+        </Storyboard>
     </Window.Resources>
 
     <Grid x:Name="LayoutRoot">
@@ -120,7 +125,7 @@
             </ContentControl>
         </Border>
 
-        <ContentControl x:Name="DialogPresenter" Grid.RowSpan="3" Visibility="Collapsed" />
+        <ContentControl x:Name="DialogPresenter" Grid.RowSpan="3" IsHitTestVisible="False"/>
     </Grid>
 
 </Window>

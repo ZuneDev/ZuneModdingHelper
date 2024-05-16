@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 using ZuneModdingHelper.Controls;
 using ZuneModdingHelper.Messages;
 using ZuneModdingHelper.Pages;
@@ -18,13 +19,17 @@ namespace ZuneModdingHelper
     {
         private IntPtr _windowHandle;
         private int _selectedPivotIdx = -1;
+        private int _lastClosedDialog = 0;
 
         private readonly Type[] _pages = [typeof(ModsPage), typeof(SettingsPage), typeof(AboutPage)];
+        private readonly Storyboard _dialogExitAnimation;
 
         public AppWindow()
         {
             InitializeComponent();
             Pivot.Loaded += Pivot_Loaded;
+
+            _dialogExitAnimation = (Storyboard)Resources["DialogExitAnimation"];
 
             WeakReferenceMessenger.Default.Register<ShowDialogMessage>(this);
             WeakReferenceMessenger.Default.Register<CloseDialogMessage>(this);
@@ -92,12 +97,27 @@ namespace ZuneModdingHelper
             {
                 ViewModel = message.ViewModel
             };
-            DialogPresenter.Visibility = Visibility.Visible;
+
+            DialogPresenter.IsHitTestVisible = true;
         }
 
         void IRecipient<CloseDialogMessage>.Receive(CloseDialogMessage message)
         {
-            DialogPresenter.Visibility = Visibility.Collapsed;
+            DialogPresenter.IsHitTestVisible = false;
+
+            _dialogExitAnimation.Completed += DialogExitAnimation_Completed;
+
+            _lastClosedDialog = DialogPresenter.Content.GetHashCode();
+            (DialogPresenter.Content as FrameworkElement)?.BeginStoryboard(_dialogExitAnimation);
+        }
+
+        private void DialogExitAnimation_Completed(object sender, EventArgs e)
+        {
+            _dialogExitAnimation.Completed -= DialogExitAnimation_Completed;
+
+            if (_lastClosedDialog != DialogPresenter.Content?.GetHashCode())
+                return;
+
             DialogPresenter.Content = null;
         }
     }
