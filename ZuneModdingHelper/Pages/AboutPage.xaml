@@ -44,9 +44,12 @@
                 <Hyperlink NavigateUri="{x:Static zmh:App.VersionUri}" RequestNavigate="Link_RequestNavigate">
                     <Run Text="&#xE004;" FontFamily="{StaticResource ZMHIcons}"/>
                     <Run Text="release notes"/>
-                </Hyperlink><LineBreak/>
+                </Hyperlink>
             </TextBlock>
-            
+            <Button Content="CHECK FOR UPDATES" Click="UpdateCheckButton_Click"
+                    Margin="0,8,0,12" Padding="8,0" HorizontalAlignment="Left"
+                    Style="{StaticResource ActionButtonStyle}"/>
+
             <TextBlock Style="{StaticResource AboutTextBlockStyle}">
                 <Run Text="Community" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
                 <Hyperlink NavigateUri="https://reddit.com/r/Zune" RequestNavigate="Link_RequestNavigate">
