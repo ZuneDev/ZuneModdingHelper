@@ -36,7 +36,11 @@ namespace ZuneModdingHelper.Controls
 
             if (vm is ProgressDialogViewModel)
             {
-                var progressBar = new ProgressBar();
+                var progressBar = new ProgressBar
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Width = double.NaN,
+                };
 
                 Binding progValueBinding = new()
                 {

@@ -13,8 +13,8 @@
     </d:UserControl.DataContext>
 
     <Border Background="#AFFFFFFF">
-        <Border MaxHeight="400" MaxWidth="528" Padding="32" SnapsToDevicePixels="True"
-                VerticalAlignment="Center">
+        <Border MaxHeight="400" MaxWidth="528"
+                Padding="32" VerticalAlignment="Center">
             <Border.Background>
                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                     <GradientStop Color="#FFFFFF" Offset="0"/>
@@ -32,11 +32,11 @@
                 <Rectangle Height="5" Width="109" Margin="0,-16,0,0"
                            VerticalAlignment="Top" HorizontalAlignment="Left"
                            Fill="{StaticResource ZuneHorizontalGradientAlt}"/>
-                <TextBlock Text="{Binding Title}" d:Text="WINDOWS LIVE ID" FontSize="28" Margin="0,-10,0,0"
+                <TextBlock Text="{Binding Title}" d:Text="WINDOWS LIVE ID" FontSize="28" Margin="0,-10,0,12"
                            Foreground="{StaticResource ZuneMediumTextBrush}"/>
 
                 <StackPanel Grid.Row="1">
-                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,0,12"
+                    <TextBlock Text="{Binding Description}" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,12"
                                Foreground="{StaticResource ZuneLightTextBrush}"/>
                     <ContentControl x:Name="InnerPresenter" />
                 </StackPanel>
