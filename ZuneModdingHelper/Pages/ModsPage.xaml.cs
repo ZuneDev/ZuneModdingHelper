@@ -25,7 +25,7 @@ namespace ZuneModdingHelper.Pages
             {
                 Title = "RESET MOD",
                 Description = $"Preparing to reset '{mod.Title}'...",
-                ShowPrimaryButton = false,
+                ShowAffirmativeButton = false,
             }));
         }
 

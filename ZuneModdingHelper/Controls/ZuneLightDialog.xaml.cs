@@ -60,6 +60,15 @@ namespace ZuneModdingHelper.Controls
                 };
                 progressBar.SetBinding(ProgressBar.IsIndeterminateProperty, progIndetBinding);
 
+                Binding maxValueBinding = new()
+                {
+                    Source = vm,
+                    Path = new PropertyPath(nameof(ProgressDialogViewModel.Maximum)),
+                    Mode = BindingMode.OneWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
+                progressBar.SetBinding(ProgressBar.MaximumProperty, maxValueBinding);
+
                 dialog.InnerPresenter.Content = progressBar;
             }
         }
