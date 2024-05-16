@@ -15,7 +15,7 @@ public partial class DialogViewModel : ObservableObject
     private string _description;
 
     [ObservableProperty]
-    private bool _showPrimaryButton;
+    private bool _showPrimaryButton = true;
 
     [ObservableProperty]
     private int? _height;
@@ -27,5 +27,5 @@ public partial class ProgressDialogViewModel : DialogViewModel
     private double _progress;
 
     [ObservableProperty]
-    private bool _isIndeterminate;
+    private bool _isIndeterminate = true;
 }

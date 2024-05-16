@@ -24,8 +24,8 @@ namespace ZuneModdingHelper.Pages
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new ProgressDialogViewModel
             {
                 Title = "RESET MOD",
-                IsIndeterminate = true,
                 Description = $"Preparing to reset '{mod.Title}'...",
+                ShowPrimaryButton = false,
             }));
         }
 
