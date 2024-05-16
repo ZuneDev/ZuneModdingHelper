@@ -2,20 +2,24 @@
 using System.Windows.Controls;
 using ZuneModdingHelper.Messages;
 
-namespace ZuneModdingHelper.Controls;
-
-public class ZuneLightDialog : ContentControl
+namespace ZuneModdingHelper.Controls
 {
-    static ZuneLightDialog()
+    /// <summary>
+    /// Interaction logic for ZuneLightDialog.xaml
+    /// </summary>
+    public partial class ZuneLightDialog : UserControl
     {
-        DefaultStyleKeyProperty.OverrideMetadata(typeof(ZuneLightDialog), new FrameworkPropertyMetadata(typeof(ZuneLightDialog)));
-    }
+        public ZuneLightDialog()
+        {
+            InitializeComponent();
+        }
 
-    public DialogViewModel ViewModel
-    {
-        get => (DialogViewModel)GetValue(DialogViewModelProperty);
-        set => SetValue(DialogViewModelProperty, value);
+        public DialogViewModel ViewModel
+        {
+            get => (DialogViewModel)GetValue(DialogViewModelProperty);
+            set => SetValue(DialogViewModelProperty, value);
+        }
+        public static readonly DependencyProperty DialogViewModelProperty = DependencyProperty.Register(
+            nameof(ViewModel), typeof(DialogViewModel), typeof(ZuneLightDialog), new PropertyMetadata(null));
     }
-    public static readonly DependencyProperty DialogViewModelProperty = DependencyProperty.Register(
-        nameof(ViewModel), typeof(DialogViewModel), typeof(ZuneLightDialog), new PropertyMetadata(null));
 }
