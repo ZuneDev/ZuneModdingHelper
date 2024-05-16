@@ -13,14 +13,19 @@
     </d:UserControl.DataContext>
 
     <Border Background="#AFFFFFFF">
-        <Border MaxHeight="400" MaxWidth="528"
-                Padding="32" VerticalAlignment="Center">
+        <Border x:Name="DialogBorder" MaxHeight="400" MaxWidth="528"
+                Padding="32" VerticalAlignment="Center"
+                RenderTransformOrigin="0.5,0.5">
             <Border.Background>
                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                     <GradientStop Color="#FFFFFF" Offset="0"/>
                     <GradientStop Color="#F0F0F0" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
+            
+            <Border.RenderTransform>
+                <ScaleTransform />
+            </Border.RenderTransform>
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -51,6 +56,29 @@
                                   Direction="0" ShadowDepth="0"/>
             </Border.Effect>
         </Border>
+
+        <Border.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard x:Name="DialogEntranceAnimation">
+                        <DoubleAnimation From="0.9" To="1.0" Duration="0:0:0.25"
+                                         Storyboard.TargetName="DialogBorder" Storyboard.TargetProperty="RenderTransform.ScaleX">
+                            <DoubleAnimation.EasingFunction>
+                                <BackEase EasingMode="EaseOut" Amplitude="0.5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <DoubleAnimation From="0.9" To="1.0" Duration="0:0:0.25"
+                                         Storyboard.TargetName="DialogBorder" Storyboard.TargetProperty="RenderTransform.ScaleY">
+                            <DoubleAnimation.EasingFunction>
+                                <BackEase EasingMode="EaseOut" Amplitude="0.5" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        
+                        <DoubleAnimation From="0" To="1.0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
     </Border>
 
 </UserControl>
