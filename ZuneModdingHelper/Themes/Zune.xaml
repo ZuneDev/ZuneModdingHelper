@@ -67,13 +67,14 @@
         <Setter Property="Foreground" Value="{StaticResource ZuneMediumTextBrush}"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Padding" Value="12,0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Border" BorderThickness="1.5"
                             Background="{StaticResource NormalBackgroundBrush}"
                             BorderBrush="{StaticResource NormalBorderBrush}"
-                            Padding="12,0" CornerRadius="4">
+                            Padding="{TemplateBinding Padding}" CornerRadius="4">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                         <VisualStateManager.VisualStateGroups>
