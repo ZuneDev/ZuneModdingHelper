@@ -4,19 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ZuneModdingHelper.Controls"
+             xmlns:zmhm="clr-namespace:ZuneModdingHelper.Messages"
              VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Themes/Zune.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+    <d:UserControl.DataContext>
+        <zmhm:DialogViewModel/>
+    </d:UserControl.DataContext>
 
     <Border Background="#AFFFFFFF">
-        <Border MaxHeight="408" MaxWidth="530" Padding="32">
+        <Border MaxHeight="400" MaxWidth="528" Padding="32" SnapsToDevicePixels="True"
+                VerticalAlignment="Center">
             <Border.Background>
                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                     <GradientStop Color="#FFFFFF" Offset="0"/>
@@ -34,15 +32,17 @@
                 <Rectangle Height="5" Width="109" Margin="0,-16,0,0"
                            VerticalAlignment="Top" HorizontalAlignment="Left"
                            Fill="{StaticResource ZuneHorizontalGradientAlt}"/>
-                <TextBlock Text="{Binding ViewModel.Title}" d:Text="WINDOWS LIVE ID" FontSize="28" Margin="0,-10,0,0"
+                <TextBlock Text="{Binding Title}" d:Text="WINDOWS LIVE ID" FontSize="28" Margin="0,-10,0,0"
                            Foreground="{StaticResource ZuneMediumTextBrush}"/>
 
-                <ContentControl Grid.Row="1" Content="TEst"
-                                HorizontalAlignment="{Binding HorizontalContentAlignment}" 
-                                VerticalAlignment="{Binding VerticalContentAlignment}" />
+                <StackPanel Grid.Row="1">
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,0,12"
+                               Foreground="{StaticResource ZuneLightTextBrush}"/>
+                    <ContentControl x:Name="InnerPresenter" />
+                </StackPanel>
 
-                <Button Content="CANCEL" Grid.Row="2" HorizontalAlignment="Right"
-                        FontSize="12" Height="24"
+                <Button Content="OK" Grid.Row="2" HorizontalAlignment="Right"
+                        FontSize="12" Height="24" Visibility="{Binding ShowPrimaryButton, Converter={StaticResource BoolToVis}}"
                         Style="{StaticResource ActionButtonStyle}"/>
             </Grid>
 

@@ -6,6 +6,5 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Controls/PathButton.xaml"/>
         <ResourceDictionary Source="/Controls/TextButton.xaml"/>
-        <ResourceDictionary Source="/Controls/ZuneLightDialog.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

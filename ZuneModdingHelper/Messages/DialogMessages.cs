@@ -13,10 +13,19 @@ public partial class DialogViewModel : ObservableObject
 
     [ObservableProperty]
     private string _description;
+
+    [ObservableProperty]
+    private bool _showPrimaryButton;
+
+    [ObservableProperty]
+    private int? _height;
 }
 
 public partial class ProgressDialogViewModel : DialogViewModel
 {
     [ObservableProperty]
     private double _progress;
+
+    [ObservableProperty]
+    private bool _isIndeterminate;
 }

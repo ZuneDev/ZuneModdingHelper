@@ -16,6 +16,8 @@
 
             <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
             <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

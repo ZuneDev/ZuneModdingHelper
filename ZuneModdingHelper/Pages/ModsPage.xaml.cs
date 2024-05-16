@@ -18,9 +18,14 @@ namespace ZuneModdingHelper.Pages
 
         private void ResetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new DialogViewModel
+            if (!TryGetModFromControl(sender, out var mod))
+                return;
+
+            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new ProgressDialogViewModel
             {
-                Title = "RESET"
+                Title = "RESETTING MOD",
+                IsIndeterminate = true,
+                Description = $"Preparing to reset '{mod.Title}'...",
             }));
         }
 
@@ -30,6 +35,12 @@ namespace ZuneModdingHelper.Pages
             {
                 Title = "APPLY"
             }));
+        }
+
+        private static bool TryGetModFromControl(object sender, out Mod mod)
+        {
+            mod = (sender as System.Windows.FrameworkElement)?.DataContext as Mod;
+            return mod is not null;
         }
     }
 }
