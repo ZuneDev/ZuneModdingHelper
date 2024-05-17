@@ -1,7 +1,5 @@
-﻿using MahApps.Metro.Controls;
-using OwlCore.AbstractUI.Models;
+﻿using OwlCore.AbstractUI.Models;
 using OwlCore.AbstractUI.ViewModels;
-using OwlCore.Wpf.AbstractUI.Controls;
 using System.Windows;
 
 namespace ZuneModdingHelper
@@ -9,7 +7,7 @@ namespace ZuneModdingHelper
     /// <summary>
     /// Interaction logic for AbstractUIGroupDialog.xaml
     /// </summary>
-    public partial class AbstractUIGroupDialog : MetroWindow
+    public partial class AbstractUIGroupDialog : Window
     {
         public AbstractUIGroupDialog(AbstractUICollectionViewModel viewModel)
         {
