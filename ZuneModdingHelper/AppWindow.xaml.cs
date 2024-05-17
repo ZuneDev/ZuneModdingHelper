@@ -1,11 +1,15 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using ZuneModCore;
 using ZuneModdingHelper.Controls;
 using ZuneModdingHelper.Messages;
 using ZuneModdingHelper.Pages;
@@ -27,12 +31,27 @@ namespace ZuneModdingHelper
         public AppWindow()
         {
             InitializeComponent();
+            Loaded += Window_Loaded;
             Pivot.Loaded += Pivot_Loaded;
 
             _dialogExitAnimation = (Storyboard)Resources["DialogExitAnimation"];
 
             WeakReferenceMessenger.Default.Register<ShowDialogMessage>(this);
             WeakReferenceMessenger.Default.Register<CloseDialogMessage>(this);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Show a warning if Zune is running
+            Process[] procs = Process.GetProcessesByName("Zune");
+            string zuneExePath = System.IO.Path.Combine(Mod.DefaultZuneInstallDir, "Zune.exe");
+            if (procs.Length > 0 && procs.Any(p => p.MainModule.FileName == zuneExePath))
+            {
+                WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
+                {
+                    Description = "The Zune software is currently running. You may run into issues applying or resetting mods.",
+                }));
+            }
         }
 
         private void Pivot_Loaded(object sender, RoutedEventArgs e)
@@ -88,7 +107,7 @@ namespace ZuneModdingHelper
             var newPivotItem = (ToggleButton)Pivot.Children[_selectedPivotIdx];
             newPivotItem.IsChecked = true;
 
-            ContentFrame.Content = Activator.CreateInstance(_pages[_selectedPivotIdx]);
+            ContentFrame.Content = ActivatorUtilities.CreateInstance(Ioc.Default, _pages[_selectedPivotIdx]);
         }
 
         void IRecipient<ShowDialogMessage>.Receive(ShowDialogMessage message)
