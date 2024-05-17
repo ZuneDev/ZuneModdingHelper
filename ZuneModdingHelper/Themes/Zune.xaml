@@ -674,25 +674,25 @@
                                         <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsMouseOver}" Value="true" />
                                         <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsPressed}" Value="true" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{StaticResource PressedScrollButtonBrush}" />
+                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{DynamicResource PressedScrollButtonBrush}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ElementName=PART_LineRightButton, Path=IsMouseOver}" Value="true" />
                                         <Condition Binding="{Binding ElementName=PART_LineRightButton, Path=IsPressed}" Value="false" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{StaticResource HoverScrollButtonBrush}" />
+                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{DynamicResource HoverScrollButtonBrush}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
                                         <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsMouseOver}" Value="true" />
                                         <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsPressed}" Value="false" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{StaticResource HoverScrollButtonBrush}" />
+                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{DynamicResource HoverScrollButtonBrush}" />
                                 </MultiDataTrigger>
                                 <Trigger Property="IsEnabled" Value="false">
-                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{StaticResource DisabledScrollButtonBrush}" />
-                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{StaticResource DisabledScrollButtonBrush}" />
+                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{DynamicResource DisabledScrollButtonBrush}" />
+                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{DynamicResource DisabledScrollButtonBrush}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
