@@ -50,7 +50,8 @@ namespace ZuneModCore.Mods
                 new AbstractBoolean("SubscriptionFreeTracks", "Subscription Free Tracks"),
                 new AbstractBoolean("Videos", "Videos"),
             };
-            optionsUi.Title = "Select features:";
+            optionsUi.Title = "select features";
+            optionsUi.Subtitle = "CHOOSE WHICH ZUNE FEATURES YOU WISH TO ENABLE.";
             return optionsUi;
         }
 

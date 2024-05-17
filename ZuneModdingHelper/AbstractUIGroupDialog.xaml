@@ -6,9 +6,8 @@
         xmlns:local="clr-namespace:ZuneModdingHelper"
         xmlns:absui="clr-namespace:OwlCore.Wpf.AbstractUI.Controls;assembly=OwlCore.Wpf"
         mc:Ignorable="d"
-        Title="Options" Height="450" Width="800"
-        WindowStartupLocation="CenterOwner"
-        WindowStyle="ToolWindow"
+        Title="Options" Height="475" Width="800"
+        WindowStartupLocation="CenterScreen"
         Foreground="White">
     <Window.Resources>
         <ResourceDictionary>
