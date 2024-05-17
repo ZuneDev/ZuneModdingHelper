@@ -9,17 +9,29 @@
         Title="Options" Height="450" Width="800"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Background="Black"
-        Foreground="White">
+        Background="Black" Foreground="White">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/OwlCore.Wpf;component/AbstractUI/Themes/AbstractUIGroupPresenterStyle.xaml" />
+                <ResourceDictionary Source="/Themes/Zune.Dark.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="AbstractUICollectionTitleStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="FontWeight" Value="Light"/>
+            </Style>
+
+            <Style x:Key="AbstractUICollectionSubtitleStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="DemiBold"/>
+                <Setter Property="Margin" Value="0,8"/>
+                <Setter Property="Foreground" Value="{StaticResource ZunePinkBrush}"/>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid x:Name="OptionsUIGrid" Grid.RowSpan="2">
+    <Grid x:Name="OptionsUIGrid" Grid.RowSpan="2" Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -30,7 +42,7 @@
                                             TemplateSelector="{StaticResource GroupTemplateSelector}"/>
         </ScrollViewer>
 
-        <Border Grid.Row="1" BorderThickness="0,1,0,0"><!--BorderBrush="{StaticResource MahApps.Brushes.Control.Border}"-->
+        <Border Grid.Row="1" Margin="0,8,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -40,7 +52,7 @@
 
                 <Grid.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource ActionButtonPinkStyle}">
-                        <Setter Property="Margin" Value="0,12,14,12"/>
+                        <Setter Property="Margin" Value="14,0,0,0"/>
                         <Setter Property="Padding" Value="2"/>
                         <Setter Property="MinWidth" Value="72"/>
                         <Setter Property="MinHeight" Value="24"/>
