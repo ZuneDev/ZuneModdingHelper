@@ -45,8 +45,8 @@
                            Foreground="{StaticResource ZuneMediumTextBrush}"/>
 
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                    <TextBlock Text="{Binding Description}" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,12"
-                               Foreground="{StaticResource ZuneLightTextBrush}"/>
+                    <local:SelectableTextBlock Text="{Binding Description}" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,12"
+                                               Foreground="{StaticResource ZuneLightTextBrush}"/>
                     <ContentControl x:Name="InnerPresenter" />
                 </StackPanel>
 
