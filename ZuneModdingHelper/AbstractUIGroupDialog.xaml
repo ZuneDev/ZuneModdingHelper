@@ -9,7 +9,7 @@
         Title="Options" Height="450" Width="800"
         WindowStartupLocation="CenterOwner"
         WindowStyle="ToolWindow"
-        Background="Black" Foreground="White">
+        Foreground="White">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,6 +30,11 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
+
+    <Window.Background>
+        <ImageBrush Stretch="UniformToFill" Viewbox="0,0,0.5,0.5" AlignmentY="Bottom" Opacity="0.5"
+                    ImageSource="pack://application:,,,/ZuneModdingHelper;component/Assets/DarkBackground.png" />
+    </Window.Background>
 
     <Grid x:Name="OptionsUIGrid" Grid.RowSpan="2" Margin="12">
         <Grid.RowDefinitions>

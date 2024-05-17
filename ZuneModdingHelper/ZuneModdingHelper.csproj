@@ -30,6 +30,7 @@
 
     <ItemGroup>
         <Resource Include="Assets\Candystripe.png" />
+        <Resource Include="Assets\DarkBackground.png" />
         <Resource Include="Assets\ZMH_Icons.ttf">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Resource>
