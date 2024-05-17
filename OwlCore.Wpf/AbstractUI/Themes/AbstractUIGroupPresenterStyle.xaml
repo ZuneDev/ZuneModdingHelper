@@ -64,13 +64,24 @@
         </controls:AbstractUIGroupItemTemplateSelector.ElementGroupTemplate>
     </controls:AbstractUIGroupItemTemplateSelector>
 
+    <Style x:Key="AbstractUICollectionTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="30"/>
+    </Style>
+
+    <Style x:Key="AbstractUICollectionSubtitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+
     <DataTemplate x:Key="DefaultAbstractUICollectionTemplate" DataType="abstractUIVm:AbstractUICollectionViewModel">
         <StackPanel Margin="10,20">
 
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="30" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" 
+            <TextBlock Text="{Binding Title, Mode=OneWay}" Style="{DynamicResource AbstractUICollectionTitleStyle}"
+                       ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" 
                        Visibility="{Binding Path=Title, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}, Mode=OneWay}"/>
 
-            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="18" FontWeight="Light" Opacity="0.5"
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" Style="{DynamicResource AbstractUICollectionSubtitleStyle}"
                        Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
 
             <ItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
