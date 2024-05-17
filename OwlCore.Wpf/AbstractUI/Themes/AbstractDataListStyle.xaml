@@ -17,7 +17,9 @@
     <convertvis:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     <convertvis:NotNullOrEmptyToVisibilityConverter x:Key="NotNullOrEmptyToVisibilityConverter"/>
     <converters:SelectionChangedEventArgsToClickedItemConverter x:Key="SelectionChangedEventArgsToClickedItemConverter" />
-    
+
+    <SolidColorBrush x:Key="AbstractDataListItemBorderBrush" Color="Gray" />
+
     <DataTemplate x:Key="DefaultAbstractDataListListTemplate" DataType="abstractUI:AbstractDataListViewModel">
         <ListView x:Name="PrimaryListView" ItemsSource="{Binding Items}" SelectionMode="Single" Margin="10">
             <behaviors:Interaction.Triggers>
@@ -102,7 +104,9 @@
     </DataTemplate>
 
     <DataTemplate x:Key="DefaultAbstractDataListGridTemplate" DataType="abstractUI:AbstractDataListViewModel">
-        <ListView SelectionMode="Single" ItemsSource="{Binding Items}">
+        <ListView SelectionMode="Single" ItemsSource="{Binding Items}"
+                  Background="Transparent" Foreground="{DynamicResource ZuneMediumTextBrush}"
+                  BorderThickness="0">
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="SelectionChanged">
                     <behaviors:InvokeCommandAction Command="{Binding ItemTappedCommand}" EventArgsConverter="{StaticResource SelectionChangedEventArgsToClickedItemConverter}" />
@@ -140,7 +144,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <Border BorderBrush="White" BorderThickness="1">
+                        <Border BorderBrush="{DynamicResource AbstractDataListItemBorderBrush}" BorderThickness="1">
                             <Grid Height="150" Width="150" Grid.ColumnSpan="2">
                                 <TextBlock Text="{Binding IconCode}" FontFamily="Segoe MDL2 Assets" FontSize="34"
                                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -165,8 +169,8 @@
                         </Border>
 
                         <TextBlock x:Name="SubtitleTextBlock" Grid.Row="2"  Grid.ColumnSpan="2"
-                                       Text="{Binding Subtitle}"
-                                       FontSize="12" FontWeight="Light" Opacity="0.5" TextTrimming="CharacterEllipsis" />
+                                   Text="{Binding Subtitle}"
+                                   FontSize="12" FontWeight="Light" Opacity="0.5" TextTrimming="CharacterEllipsis" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

@@ -5,8 +5,18 @@
 
     <core:Double x:Key="DefaultAbstractUITitleFontSize">24</core:Double>
 
-    <core:Double x:Key="DefaultAbstractUISubtitleFontSize">16</core:Double>
+    <core:Double x:Key="DefaultAbstractUISubtitleFontSize">18</core:Double>
     <FontWeight x:Key="DefaultAbstractUISubtitleFontWeight">Light</FontWeight>
     <core:Double x:Key="DefaultAbstractUISubtitleOpacity">0.5</core:Double>
+
+    <Style x:Key="AbstractUICollectionTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{DynamicResource DefaultAbstractUITitleFontSize}"/>
+    </Style>
+
+    <Style x:Key="AbstractUICollectionSubtitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource DefaultAbstractUISubtitleFontSize}"/>
+        <Setter Property="FontWeight" Value="{StaticResource DefaultAbstractUISubtitleFontWeight}"/>
+        <Setter Property="Opacity" Value="{StaticResource DefaultAbstractUISubtitleOpacity}"/>
+    </Style>
 
 </ResourceDictionary>
