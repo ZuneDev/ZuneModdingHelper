@@ -488,6 +488,7 @@
     <SolidColorBrush x:Key="PressedScrollButtonBrush" Color="#A7A7A7" /> <!-- TODO: Get actual color -->
     <SolidColorBrush x:Key="DisabledScrollButtonBrush" Color="#555555" /> <!-- TODO: Get actual color -->
     <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">13</sys:Double>
+    <sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarHeightKey}">13</sys:Double>
 
     <Style x:Key="ZuneThumbStyle" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -611,7 +612,7 @@
                 <Setter Property="MinWidth" Value="0"/>
                 <Setter Property="Height" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}"/>
                 <Setter Property="MinHeight" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}"/>
-                <Setter Property="BorderThickness" Value="0,1" />
+                <Setter Property="BorderThickness" Value="0,0,0,1" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -633,7 +634,7 @@
                                     <Path x:Name="ArrowLeft"
                                           Data="M 4 5 c 0 0 -0 -5 -0 -5 c 0 0 -3.5 2.5 -3.5 2.5 c 0 0 3.5 2.5 3.5 2.5 z"
                                           Stretch="Uniform"
-                                          Margin="3"
+                                          Margin="1"
                                           Fill="{DynamicResource NormalScrollButtonBrush}" />
                                 </RepeatButton>
                                 <Track x:Name="PART_Track"
@@ -646,7 +647,7 @@
                                         <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ZuneTransparentRepeatButtonStyle}"/>
                                     </Track.IncreaseRepeatButton>
                                     <Track.Thumb>
-                                        <Thumb Style="{StaticResource ZuneThumbStyle}" />
+                                        <Thumb Height="9" Style="{StaticResource ZuneThumbStyle}" />
                                     </Track.Thumb>
                                 </Track>
                                 <RepeatButton x:Name="PART_LineRightButton"
@@ -657,7 +658,7 @@
                                     <Path x:Name="ArrowRight"
                                           Data="M 0 5 c 0 0 0 -5 0 -5 c 0 0 3.5 2.5 3.5 2.5 c 0 0 -3.5 2.5 -3.5 2.5 z"
                                           Stretch="Uniform"
-                                          Margin="3"
+                                          Margin="1"
                                           Fill="{DynamicResource NormalScrollButtonBrush}" />
                                 </RepeatButton>
                             </Grid>
