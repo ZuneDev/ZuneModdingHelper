@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls">
+                    xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <Color x:Key="ZunePink">#F10DA1</Color>
     <Color x:Key="ZuneOrange">#E95214</Color>
 
@@ -343,6 +344,362 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+
+    <!-- CheckBox -->
+    
+    <LinearGradientBrush x:Key="NormalCheckBoxBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#E5E5E5" Offset="0"/>
+        <GradientStop Color="#FFFFFF" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="NormalCheckBoxBorderBrush" Color="#7F7F7F" />
+    <SolidColorBrush x:Key="NormalCheckBoxCheckBrush" Color="#666666" />
+
+    <LinearGradientBrush x:Key="HoverCheckBoxBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#E5E5E5" Offset="0"/>
+        <GradientStop Color="#FDFDFD" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="HoverCheckBoxBorderBrush" Color="#333333" />
+    <SolidColorBrush x:Key="HoverCheckBoxCheckBrush" Color="#000000" />
+
+    <SolidColorBrush x:Key="DisabledCheckBoxBackgroundBrush" Color="#FFE6E6E6" />
+    <SolidColorBrush x:Key="DisabledCheckBoxBorderBrush" Color="#FFBCBCBC" />
+    <SolidColorBrush x:Key="DisabledCheckBoxCheckBrush" Color="#FF707070" />
+
+    <Style x:Key="ZuneCheckBoxStyle" TargetType="CheckBox">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource &#221;}"/>
+        <Setter Property="Background" Value="{DynamicResource NormalCheckBoxBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource NormalCheckBoxBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ZuneMediumTextBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid x:Name="templateRoot" SnapsToDevicePixels="True" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="checkBoxBorder" 
+                                Width="13" Height="13" Margin="1" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}">
+                            <Grid x:Name="markGrid">
+                                <Path x:Name="optionMark" Opacity="0" Stretch="None" Fill="{DynamicResource NormalCheckBoxCheckBrush}"
+                                      Data="M 8,2 V 3 H 7 V 4 H 6 V 5 H 5 V 6 H 4 V 5 H 2 V 7 H 3 V 8 H 4 V 9 H 5 V 8 H 6 V 7 H 7 V 6 H 8 V 5 H 9 V 4 h 1 V 2 Z"/>
+                                <Rectangle x:Name="indeterminateMark" Margin="2" Opacity="0" Fill="{DynamicResource NormalCheckBoxCheckBrush}" />
+                            </Grid>
+                        </Border>
+                        <ContentPresenter x:Name="contentPresenter" 
+                                          RecognizesAccessKey="True" 
+                                          Grid.Column="1" 
+                                          Margin="{TemplateBinding Padding}" 
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                          Focusable="False"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasContent" Value="true">
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource &#238;}"/>
+                            <Setter Property="Padding" Value="4,-1,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" Value="{DynamicResource HoverCheckBoxBackgroundBrush}" TargetName="checkBoxBorder" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource HoverCheckBoxBorderBrush}" TargetName="checkBoxBorder" />
+                            <Setter Property="Fill" Value="{DynamicResource HoverCheckBoxCheckBrush}" TargetName="optionMark" />
+                            <Setter Property="Fill" Value="{DynamicResource HoverCheckBoxCheckBrush}" TargetName="indeterminateMark" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" Value="{DynamicResource DisabledCheckBoxBackgroundBrush}" TargetName="checkBoxBorder" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource DisabledCheckBoxBorderBrush}" TargetName="checkBoxBorder" />
+                            <Setter Property="Fill" Value="{DynamicResource DisabledCheckBoxCheckBrush}" TargetName="optionMark" />
+                            <Setter Property="Fill" Value="{DynamicResource DisabledCheckBoxCheckBrush}" TargetName="indeterminateMark" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter Property="Opacity" Value="1" TargetName="optionMark" />
+                            <Setter Property="Opacity" Value="0" TargetName="indeterminateMark" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter Property="Opacity" Value="0" TargetName="optionMark" />
+                            <Setter Property="Opacity" Value="1" TargetName="indeterminateMark" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    
+    <!-- RepeatButton -->
+    <Style x:Key="ZuneRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource &#221;}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Focusable" Value="false"/>
+        <Setter Property="IsTabStop" Value="false"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Border x:Name="border"
+                            BorderThickness="1"
+                            SnapsToDevicePixels="true"
+                            Background="Transparent"
+                            BorderBrush="Transparent">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="{TemplateBinding Padding}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Focusable="False" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- RepeatButton Transparent -->
+    <Style x:Key="ZuneTransparentRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Focusable" Value="false"/>
+        <Setter Property="IsTabStop" Value="false"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <Rectangle Fill="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- Thumb & ScrollBar -->
+    <SolidColorBrush x:Key="NormalScrollBrush" Color="#B9B9B9" />
+    <SolidColorBrush x:Key="NormalScrollButtonBrush" Color="#858585" />
+    <SolidColorBrush x:Key="HoverScrollBrush" Color="#474747" /> <!-- TODO: Get actual color -->
+    <SolidColorBrush x:Key="HoverScrollButtonBrush" Color="Black" /> <!-- TODO: Get actual color -->
+    <SolidColorBrush x:Key="PressedScrollButtonBrush" Color="#A7A7A7" /> <!-- TODO: Get actual color -->
+    <SolidColorBrush x:Key="DisabledScrollButtonBrush" Color="#555555" /> <!-- TODO: Get actual color -->
+    <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">13</sys:Double>
+
+    <Style x:Key="ZuneThumbStyle" TargetType="{x:Type Thumb}">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="IsTabStop" Value="false"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Rectangle x:Name="rectangle"
+                               SnapsToDevicePixels="True"
+                               Fill="{DynamicResource NormalScrollBrush}"
+                               Height="{TemplateBinding Height}"
+                               Width="{TemplateBinding Width}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="rectangle" Property="Fill" Value="{DynamicResource HoverScrollBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    
+    <Style x:Key="ZuneScrollBarStyle" TargetType="{x:Type ScrollBar}">
+        <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource NormalScrollBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="BorderThickness" Value="0,0,1,0" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}"/>
+        <Setter Property="MinWidth" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                    <Grid x:Name="Bg" SnapsToDevicePixels="true">
+                        <Grid.RowDefinitions>
+                            <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                            <RowDefinition Height="0.00001*"/>
+                            <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                        </Grid.RowDefinitions>
+                        <Border
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Grid.Row="1"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" />
+                        <RepeatButton x:Name="PART_LineUpButton"
+                                      Command="{x:Static ScrollBar.LineUpCommand}"
+                                      IsEnabled="{TemplateBinding IsMouseOver}"
+                                      Style="{StaticResource ZuneRepeatButtonStyle}">
+                            <Path x:Name="ArrowTop"
+                                  Data="M 0 4 c 0 0 5 0 5 0 c 0 0 -2.5 -3.5 -2.5 -3.5 c 0 0 -2.5 3.5 -2.5 3.5 z"
+                                  Stretch="Uniform" Margin="1"
+                                  Fill="{DynamicResource NormalScrollButtonBrush}" />
+                        </RepeatButton>
+                        <Track x:Name="PART_Track"
+                               IsDirectionReversed="true"
+                               IsEnabled="{TemplateBinding IsMouseOver}"
+                               Grid.Row="1">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ZuneTransparentRepeatButtonStyle}"/>
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ZuneTransparentRepeatButtonStyle}"/>
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Width="9" Style="{StaticResource ZuneThumbStyle}" />
+                            </Track.Thumb>
+                        </Track>
+                        <RepeatButton x:Name="PART_LineDownButton"
+                                      Command="{x:Static ScrollBar.LineDownCommand}"
+                                      IsEnabled="{TemplateBinding IsMouseOver}"
+                                      Grid.Row="2"
+                                      Style="{StaticResource ZuneRepeatButtonStyle}">
+                            <Path x:Name="ArrowBottom"
+                                  Data="M 5 0 c 0 0 -5 0 -5 0 c 0 0 2.5 3.5 2.5 3.5 c 0 0 2.5 -3.5 2.5 -3.5 z"
+                                  Stretch="Uniform" Margin="1"
+                                  Fill="{DynamicResource NormalScrollButtonBrush}" />
+                        </RepeatButton>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=PART_LineDownButton, Path=IsMouseOver}" Value="true" />
+                                <Condition Binding="{Binding ElementName=PART_LineDownButton, Path=IsPressed}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="ArrowBottom" Property="Fill" Value="{DynamicResource PressedScrollButtonBrush}" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=PART_LineUpButton, Path=IsMouseOver}" Value="true" />
+                                <Condition Binding="{Binding ElementName=PART_LineUpButton, Path=IsPressed}" Value="true" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="ArrowTop" Property="Fill" Value="{DynamicResource PressedScrollButtonBrush}" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=PART_LineDownButton, Path=IsMouseOver}" Value="true" />
+                                <Condition Binding="{Binding ElementName=PART_LineDownButton, Path=IsPressed}" Value="false" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="ArrowBottom" Property="Fill" Value="{DynamicResource PressedScrollButtonBrush}" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=PART_LineUpButton, Path=IsMouseOver}" Value="true" />
+                                <Condition Binding="{Binding ElementName=PART_LineUpButton, Path=IsPressed}" Value="false" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="ArrowTop" Property="Fill" Value="{DynamicResource HoverScrollButtonBrush}" />
+                        </MultiDataTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="ArrowTop" Property="Fill" Value="{DynamicResource DisabledScrollButtonBrush}" />
+                            <Setter TargetName="ArrowBottom" Property="Fill" Value="{DynamicResource DisabledScrollButtonBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="Width" Value="Auto"/>
+                <Setter Property="MinWidth" Value="0"/>
+                <Setter Property="Height" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}"/>
+                <Setter Property="MinHeight" Value="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarHeightKey}}"/>
+                <Setter Property="BorderThickness" Value="0,1" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ScrollBar}">
+                            <Grid x:Name="Bg" SnapsToDevicePixels="true">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}"/>
+                                    <ColumnDefinition Width="0.00001*"/>
+                                    <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}"/>
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Grid.Column="1"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}" />
+                                <RepeatButton x:Name="PART_LineLeftButton"
+                                              Command="{x:Static ScrollBar.LineLeftCommand}"
+                                              IsEnabled="{TemplateBinding IsMouseOver}"
+                                              Style="{StaticResource ZuneRepeatButtonStyle}">
+                                    <Path x:Name="ArrowLeft"
+                                          Data="M 4 5 c 0 0 -0 -5 -0 -5 c 0 0 -3.5 2.5 -3.5 2.5 c 0 0 3.5 2.5 3.5 2.5 z"
+                                          Stretch="Uniform"
+                                          Margin="3"
+                                          Fill="{DynamicResource NormalScrollButtonBrush}" />
+                                </RepeatButton>
+                                <Track x:Name="PART_Track"
+                                       Grid.Column="1"
+                                       IsEnabled="{TemplateBinding IsMouseOver}">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ZuneTransparentRepeatButtonStyle}"/>
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ZuneTransparentRepeatButtonStyle}"/>
+                                    </Track.IncreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Style="{StaticResource ZuneThumbStyle}" />
+                                    </Track.Thumb>
+                                </Track>
+                                <RepeatButton x:Name="PART_LineRightButton"
+                                              Grid.Column="2"
+                                              Command="{x:Static ScrollBar.LineRightCommand}"
+                                              IsEnabled="{TemplateBinding IsMouseOver}"
+                                              Style="{StaticResource ZuneRepeatButtonStyle}">
+                                    <Path x:Name="ArrowRight"
+                                          Data="M 0 5 c 0 0 0 -5 0 -5 c 0 0 3.5 2.5 3.5 2.5 c 0 0 -3.5 2.5 -3.5 2.5 z"
+                                          Stretch="Uniform"
+                                          Margin="3"
+                                          Fill="{DynamicResource NormalScrollButtonBrush}" />
+                                </RepeatButton>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=PART_LineRightButton, Path=IsMouseOver}" Value="true" />
+                                        <Condition Binding="{Binding ElementName=PART_LineRightButton, Path=IsPressed}" Value="true" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{DynamicResource PressedScrollButtonBrush}" />
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsMouseOver}" Value="true" />
+                                        <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsPressed}" Value="true" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{StaticResource PressedScrollButtonBrush}" />
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=PART_LineRightButton, Path=IsMouseOver}" Value="true" />
+                                        <Condition Binding="{Binding ElementName=PART_LineRightButton, Path=IsPressed}" Value="false" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{StaticResource HoverScrollButtonBrush}" />
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsMouseOver}" Value="true" />
+                                        <Condition Binding="{Binding ElementName=PART_LineLeftButton, Path=IsPressed}" Value="false" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{StaticResource HoverScrollButtonBrush}" />
+                                </MultiDataTrigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter TargetName="ArrowLeft" Property="Fill" Value="{StaticResource DisabledScrollButtonBrush}" />
+                                    <Setter TargetName="ArrowRight" Property="Fill" Value="{StaticResource DisabledScrollButtonBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>
