@@ -145,9 +145,9 @@
             </LinearGradientBrush>
         </Style.Resources>
 
-        <Setter Property="FontFamily" Value="segoe zuc"/>
-        <Setter Property="FontWeight" Value="ExtraBlack"/>
-        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Padding" Value="12,0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -155,7 +155,7 @@
                             TextBlock.Foreground="White"
                             Background="{StaticResource NormalBackgroundBrush}"
                             BorderBrush="{StaticResource NormalBorderBrush}"
-                            Padding="8,2" CornerRadius="4">
+                            Padding="{TemplateBinding Padding}" CornerRadius="4">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                         <VisualStateManager.VisualStateGroups>
