@@ -22,7 +22,9 @@ namespace ZuneModCore
             typeof(MbidLocatorMod),
         }.AsReadOnly();
 
-        public static string ZuneInstallDir { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
+        public static string DefaultZuneInstallDir { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
+
+        public string ZuneInstallDir { get; set; } = DefaultZuneInstallDir;
 
         private static List<Mod>? _mods;
         public static IReadOnlyList<Mod> AvailableMods

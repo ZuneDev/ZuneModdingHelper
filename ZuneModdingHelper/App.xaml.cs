@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using ZuneModCore.Services;
+using ZuneModdingHelper.Services;
 
 namespace ZuneModdingHelper
 {
@@ -38,6 +40,9 @@ namespace ZuneModdingHelper
 
             Octokit.IGitHubClient github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(Title.Replace(" ", ""), VersionStr));
             services.AddSingleton(github);
+
+            services.AddSingleton<IModCoreConfig>(Settings.Default);
+            services.AddSingleton<OwlCore.ComponentModel.SettingsBase>(Settings.Default);
 
             Ioc.Default.ConfigureServices(services.BuildServiceProvider());
         }
