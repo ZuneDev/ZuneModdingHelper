@@ -42,7 +42,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
-        <ScrollViewer>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
             <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding}"
                                             TemplateSelector="{StaticResource GroupTemplateSelector}"/>
         </ScrollViewer>
