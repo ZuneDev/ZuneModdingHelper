@@ -1,54 +1,68 @@
-﻿using OwlCore.AbstractUI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading.Tasks;
-using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods
 {
     public class VideoSyncMod : Mod
     {
-        private readonly string WMVCORE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "WMVCORE.dll");
+        private const int ZUNEENCENG_WMVCORA_OFFSET = 0x161E;
 
         public override string Title => "Fix Video Sync";
 
         public override string Description =>
             "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer";
 
-        public override string Author => "ส็็็Codix#4833";
+        public override string Author => "sylvathemoth";
 
         public override string Id => nameof(VideoSyncMod);
 
         public override async Task<string?> Apply()
         {
-            // Make a backup of the original file
-            FileVersionInfo wmvDllVersionInfo = FileVersionInfo.GetVersionInfo(WMVCORE_PATH);
-            if (Version.Parse(wmvDllVersionInfo.ProductVersion!) != new Version(12, 0, 10586, 0))
-                File.Copy(WMVCORE_PATH, Path.Combine(StorageDirectory, "WMVCORE.original.dll"), true);
+            // Verify that ZuneEncEng.dll exists
+            FileInfo zeeDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneEncEng.dll"));
+            if (!zeeDllInfo.Exists)
+                return $"The file '{zeeDllInfo.FullName}' does not exist.";
 
-            // Get the working WMVCORE.dll
-            byte[] wmvDllAniv = ModResources.WMVCORE;
-
-            // Get the original WMVCORE.dll
-            FileInfo wmvDllInfo = new(WMVCORE_PATH);
+            // Make a backup if it doesn't already exist
+            FileInfo zeeDllBackupInfo = new(Path.Combine(StorageDirectory, "ZuneEncEng.original.dll"));
+            if (!zeeDllBackupInfo.Exists)
+                File.Copy(zeeDllInfo.FullName, zeeDllBackupInfo.FullName, true);
 
             try
             {
-                // Take ownership of DLL
-                TokenManipulator.TakeOwnership(wmvDllInfo);
+                // Verify that the DLL is from v4.8 (other versions not tested)
+                var zeeDllVersion = FileVersionInfo.GetVersionInfo(zeeDllInfo.FullName);
+                if (zeeDllVersion is null || zeeDllVersion.FileMajorPart != 4 || zeeDllVersion.FileMinorPart != 8)
+                    return "This mod has not been tested on versions earlier than 4.8.";
 
-                // Replace with pre-Anniversary Update WMVCORE.dll
-                await File.WriteAllBytesAsync(wmvDllInfo.FullName, wmvDllAniv);
+                // Open the file
+                using (FileStream zeeDll = zeeDllInfo.Open(FileMode.Open))
+                using (BinaryWriter zeeDllWriter = new(zeeDll))
+                {
+                    // Patch ZuneEncEng.dll to point to the local WMVCORE.DLL
+                    zeeDllWriter.Seek(ZUNEENCENG_WMVCORA_OFFSET, SeekOrigin.Begin);
+                    zeeDllWriter.Write((byte)'a');
+
+                    zeeDllWriter.Flush();
+                }
+
+                // Get the working WMVCORE.dll
+                byte[] wmvDllAniv = ModResources.WMVCORE;
+
+                // Copy the WMVCore files to the Zune directory.
+                // Only ZuneEncEng.dll searches in System32 first; all other dependent
+                // DLLs will search the Zune folder.
+                await File.WriteAllBytesAsync(Path.Combine(ZuneInstallDir, "wmvcora.dll"), wmvDllAniv);
+                await File.WriteAllBytesAsync(Path.Combine(ZuneInstallDir, "wmvcore.dll"), wmvDllAniv);
 
                 return null;
             }
             catch (IOException)
             {
-                return $"Unable to replace '{wmvDllInfo.FullName}'. Verify that Zune and Windows Media Player are not running and try again.";
+                return $"Unable to replace '{zeeDllInfo.FullName}'. Verify that the Zune software is not running and try again.";
             }
             catch (Exception ex)
             {
@@ -58,10 +72,15 @@ namespace ZuneModCore.Mods
 
         public override Task<string?> Reset()
         {
+            var zeeDllPath = Path.Combine(ZuneInstallDir, "ZuneEncEng.dll");
             try
             {
                 // Copy backup to application folder
-                File.Copy(Path.Combine(StorageDirectory, "WMVCORE.original.dll"), WMVCORE_PATH, true);
+                File.Copy(Path.Combine(StorageDirectory, "ZuneEncEng.original.dll"), zeeDllPath, true);
+
+                // Delete WMVCore files
+                File.Delete(Path.Combine(ZuneInstallDir, "wmvcora.dll"));
+                File.Delete(Path.Combine(ZuneInstallDir, "wmvcore.dll"));
 
                 return Task.FromResult<string?>(null);
             }
