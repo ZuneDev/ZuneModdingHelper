@@ -704,5 +704,65 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    
+    <!-- TextBox -->
+    <SolidColorBrush x:Key="NormalTextBoxBackgroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="NormalTextBoxForegroundBrush" Color="#000000" />
+    <SolidColorBrush x:Key="NormalTextBoxBorderBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="HoverTextBoxBorderBrush" Color="#CCCCCC" />
+    <SolidColorBrush x:Key="FocusedTextBoxBorderBrush" Color="#FA6EC9" />
+    
+    <Style x:Key="ZuneTextBoxBaseStyle" TargetType="{x:Type TextBoxBase}">
+        <Setter Property="Background" Value="{DynamicResource NormalTextBoxBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource NormalTextBoxBorderBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource NormalTextBoxForegroundBrush}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="AllowDrop" Value="true"/>
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="SelectionBrush" Value="{StaticResource ZunePinkBrush}" />
+        <Setter Property="SelectionTextBrush" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBoxBase}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                      Focusable="false" 
+                                      HorizontalScrollBarVisibility="Hidden" 
+                                      VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Opacity" Value="0.56"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource HoverTextBoxBorderBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="true">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource FocusedTextBoxBorderBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true" />
+                    <Condition Property="IsSelectionActive" Value="false" />
+                </MultiTrigger.Conditions>
+                <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                <Setter Property="SelectionTextBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}" />
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
 
 </ResourceDictionary>
