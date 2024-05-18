@@ -13,3 +13,6 @@ The Zune Modding Helper, or ZMH for short, is a portable tool for modifying the 
 - [.NET Desktop Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) or newer
 - 30 MB or more of available storage
 - Microsoft Zune software
+
+## Download
+- [GitHub Releases](https://github.com/ZuneDev/ZuneModdingHelper/releases)
