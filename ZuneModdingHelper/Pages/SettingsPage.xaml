@@ -7,8 +7,11 @@
              xmlns:zmhs="clr-namespace:ZuneModdingHelper.Services"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Unloaded="SettingsPage_Unloaded"
-             DataContext="{x:Static zmhs:Settings.Default}">
+             Unloaded="SettingsPage_Unloaded">
+    <d:UserControl.DataContext>
+        <local:SettingsViewModel/>
+    </d:UserControl.DataContext>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
             <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
@@ -16,8 +19,10 @@
             </TextBlock>
             <TextBlock Text="Choose the directory where the Zune software is installed." Margin="0,8"
                        Style="{StaticResource ZuneBodyTextBlockStyle}" />
-            <TextBox VerticalAlignment="Top"
-                     Text="{Binding ZuneInstallDir}"/>
+            <TextBox Text="{Binding Settings.ZuneInstallDir}"/>
+            <Button Content="LOCATE" HorizontalAlignment="Left" Margin="0,8,0,0"
+                    Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
+                    Click="LocateZuneButton_Click"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
