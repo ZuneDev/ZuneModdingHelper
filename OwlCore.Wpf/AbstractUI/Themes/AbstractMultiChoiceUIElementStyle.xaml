@@ -44,12 +44,12 @@
 
     <DataTemplate x:Key="DefaultAbstractMultipleChoiceTemplate" DataType="abstractUI:AbstractMultiChoiceUIElementViewModel">
         <StackPanel>
-            <TextBlock Text="{Binding Title}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText}" />
+            <TextBlock Text="{Binding Title}" ToolTipService.ToolTip="{Binding TooltipText}"
+                       Style="{DynamicResource AbstractUICollectionTitleStyle}" />
 
-            <TextBlock Text="{Binding Subtitle}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
-                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
-                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed}"/>
+            <TextBlock Text="{Binding Subtitle}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed}"
+                       Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <ContentControl Content="{Binding}" Margin="0,5,0,0">
                 <ContentControl.ContentTemplateSelector>

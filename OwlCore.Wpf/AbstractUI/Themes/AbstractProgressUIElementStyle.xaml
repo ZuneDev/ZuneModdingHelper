@@ -13,12 +13,12 @@
 
     <DataTemplate x:Key="DefaultAbstractProgressUIElementTemplate" DataType="abstractUI:AbstractProgressIndicatorViewModel">
         <StackPanel>
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+            <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionTitleStyle}" />
 
-            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
-                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
-                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <ProgressBar Value="{Binding Value, Mode=OneWay}" Minimum="{Binding Minimum, Mode=OneWay}" Maximum="{Binding Maximum, Mode=OneWay}" IsIndeterminate="{Binding IsIndeterminate, Mode=OneWay}"/>
         </StackPanel>

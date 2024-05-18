@@ -34,12 +34,12 @@
 
     <DataTemplate x:Key="DefaultAbstractButtonTemplate" DataType="abstractUI:AbstractButtonViewModel">
         <StackPanel>
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+            <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionTitleStyle}"/>
 
-            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
-                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
-                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <Button Style="{Binding Type, Converter={StaticResource ButtonStyleSelector}, Mode=OneWay}" Command="{Binding ClickCommand}">
                 <Grid>

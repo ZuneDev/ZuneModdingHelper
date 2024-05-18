@@ -13,12 +13,12 @@
 
     <DataTemplate x:Key="DefaultAbstractTextBoxTemplate" DataType="abstractUI:AbstractTextBoxViewModel">
         <StackPanel>
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+            <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionTitleStyle}" />
 
-            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
-                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
-                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Margin="0,5,0,0"

@@ -18,7 +18,11 @@
     <convertvis:NotNullOrEmptyToVisibilityConverter x:Key="NotNullOrEmptyToVisibilityConverter"/>
     <converters:SelectionChangedEventArgsToClickedItemConverter x:Key="SelectionChangedEventArgsToClickedItemConverter" />
 
-    <SolidColorBrush x:Key="AbstractDataListItemBorderBrush" Color="Gray" />
+    <Style x:Key="AbstractDataListGridItemBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <SolidColorBrush x:Key="AbstractDataListGridForegroundBrush" Color="Black" />
 
     <DataTemplate x:Key="DefaultAbstractDataListListTemplate" DataType="abstractUI:AbstractDataListViewModel">
         <ListView x:Name="PrimaryListView" ItemsSource="{Binding Items}" SelectionMode="Single" Margin="10">
@@ -93,10 +97,10 @@
                                    Visibility="{Binding Path=Title, TargetNullValue=Collapsed, Mode=OneWay}"/>
 
                         <TextBlock x:Name="SubtitleTextBlock" Grid.Column="2" Grid.Row="1"
-                                       VerticalAlignment="Center"
-                                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
-                                       Text="{Binding Subtitle, Mode=OneWay}"
-                                       FontSize="16" FontWeight="Light" Opacity="0.75" />
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
+                                   Text="{Binding Subtitle, Mode=OneWay}"
+                                   Style="{DynamicResource AbstractUICollectionSubtitleStyle}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -105,7 +109,7 @@
 
     <DataTemplate x:Key="DefaultAbstractDataListGridTemplate" DataType="abstractUI:AbstractDataListViewModel">
         <ListView SelectionMode="Single" ItemsSource="{Binding Items}"
-                  Background="Transparent" Foreground="{DynamicResource ZuneMediumTextBrush}"
+                  Background="Transparent" Foreground="{DynamicResource AbstractDataListGridForegroundBrush}"
                   BorderThickness="0">
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="SelectionChanged">
@@ -144,11 +148,12 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <Border BorderBrush="{DynamicResource AbstractDataListItemBorderBrush}" BorderThickness="1">
-                            <Grid Height="150" Width="150" Grid.ColumnSpan="2">
+                        <Border Style="{DynamicResource AbstractDataListGridItemBorderStyle}">
+                            <Grid Height="150" Width="150">
                                 <TextBlock Text="{Binding IconCode}" FontFamily="Segoe MDL2 Assets" FontSize="34"
                                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <TextBlock Visibility="{Binding IsAddItem, Converter={StaticResource BoolToVisibilityConverter}}" Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="34" />
+                                <TextBlock Visibility="{Binding IsAddItem, Converter={StaticResource BoolToVisibilityConverter}}"
+                                           Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="34" />
                                 <Image Source="{Binding ImageSource, Mode=OneWay}"/>
                             </Grid>
                         </Border>
@@ -168,9 +173,9 @@
                             </Button>
                         </Border>
 
-                        <TextBlock x:Name="SubtitleTextBlock" Grid.Row="2"  Grid.ColumnSpan="2"
-                                   Text="{Binding Subtitle}"
-                                   FontSize="12" FontWeight="Light" Opacity="0.5" TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="SubtitleTextBlock" Grid.Row="2" Grid.ColumnSpan="2"
+                                   Text="{Binding Subtitle}" Style="{DynamicResource AbstractUICollectionSubtitleStyle}"
+                                   TextTrimming="CharacterEllipsis" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -179,12 +184,12 @@
 
     <DataTemplate x:Key="DefaultAbstractDataListTemplate" DataType="abstractUI:AbstractDataListViewModel">
         <StackPanel>
-            <TextBlock Text="{Binding Title, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUITitleFontSize}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" />
+            <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Style="{DynamicResource AbstractUICollectionTitleStyle}" />
 
-            <TextBlock Text="{Binding Subtitle, Mode=OneWay}" FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
-                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
-                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}}"/>
+            <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
+                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}}"
+                       Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <ContentControl Content="{Binding}">
                 <ContentControl.ContentTemplateSelector>

@@ -14,14 +14,12 @@
     <DataTemplate x:Key="DefaultAbstractBooleanTemplate" DataType="abstractUI:AbstractBooleanViewModel">
         <StackPanel Margin="0,4,0,0">
             <TextBlock Text="{Binding Title, Mode=OneWay}"
-                       FontSize="{StaticResource DefaultAbstractUITitleFontSize}"
+                       Style="{DynamicResource AbstractUICollectionTitleStyle}"
                        ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
                        Visibility="{Binding Title, TargetNullValue=Collapsed, Mode=OneWay}" />
 
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
-                       FontSize="{StaticResource DefaultAbstractUISubtitleFontSize}"
-                       FontWeight="{StaticResource DefaultAbstractUISubtitleFontWeight}"
-                       Opacity="{StaticResource DefaultAbstractUISubtitleOpacity}"
+                       Style="{DynamicResource AbstractUICollectionSubtitleStyle}"
                        Visibility="{Binding Subtitle, TargetNullValue=Collapsed}"/>
 
             <CheckBox ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
