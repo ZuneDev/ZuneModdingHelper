@@ -715,8 +715,9 @@
     
     <Style x:Key="ZuneTextBoxBaseStyle" TargetType="{x:Type TextBoxBase}">
         <Setter Property="Background" Value="{DynamicResource NormalTextBoxBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource NormalTextBoxBorderBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource NormalTextBoxForegroundBrush}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource NormalTextBoxForegroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource NormalTextBoxBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1.5"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -744,10 +745,10 @@
                             <Setter TargetName="border" Property="Opacity" Value="0.56"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource HoverTextBoxBorderBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource HoverTextBoxBorderBrush}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="true">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource FocusedTextBoxBorderBrush}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource FocusedTextBoxBorderBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
