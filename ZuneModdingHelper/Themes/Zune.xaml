@@ -4,13 +4,15 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <Color x:Key="ZunePink">#F10DA1</Color>
     <Color x:Key="ZuneOrange">#E95214</Color>
-
     <Color x:Key="ZunePinkAlt">#EC0D91</Color>
     <Color x:Key="ZuneOrangeAlt">#F8A347</Color>
+    <Color x:Key="ZuneMediumTextColor">#3C3C3C</Color>
+    <Color x:Key="ZuneLightTextColor">#868686</Color>
+    <Color x:Key="ZuneExtraLightTextColor">#B4B4B4</Color>
 
-    <SolidColorBrush x:Key="ZuneMediumTextBrush" Color="#3C3C3C"/>
-    <SolidColorBrush x:Key="ZuneLightTextBrush" Color="#868686"/>
-    <SolidColorBrush x:Key="ZuneExtraLightTextBrush" Color="#B4B4B4"/>
+    <SolidColorBrush x:Key="ZuneMediumTextBrush" Color="{StaticResource ZuneMediumTextColor}"/>
+    <SolidColorBrush x:Key="ZuneLightTextBrush" Color="{StaticResource ZuneLightTextColor}"/>
+    <SolidColorBrush x:Key="ZuneExtraLightTextBrush" Color="{StaticResource ZuneExtraLightTextColor}"/>
     <SolidColorBrush x:Key="ZunePinkBrush" Color="{StaticResource ZunePink}"/>
     <SolidColorBrush x:Key="ZuneOrangeBrush" Color="{StaticResource ZuneOrange}"/>
 
@@ -511,7 +513,7 @@
         </Setter>
     </Style>
 
-    
+
     <Style x:Key="ZuneScrollBarStyle" TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
         <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>

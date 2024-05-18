@@ -16,6 +16,7 @@
             <Style TargetType="TextBlock" BasedOn="{StaticResource ZuneTextBlock}"/>
             <Style TargetType="CheckBox" BasedOn="{StaticResource ZuneCheckBoxStyle}"/>
             <Style TargetType="ScrollBar" BasedOn="{StaticResource ZuneScrollBarStyle}"/>
+            <Style TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}"/>
 
             <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
             <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
