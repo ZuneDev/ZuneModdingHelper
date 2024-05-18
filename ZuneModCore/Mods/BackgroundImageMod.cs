@@ -25,7 +25,8 @@ namespace ZuneModCore.Mods
             {
                 new AbstractTextBox("fileBox", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)),
             };
-            optionsUi.Title = "Select background image:";
+            optionsUi.Title = "select background";
+            optionsUi.Subtitle = "CHOOSE A BACKGROUND IMAGE OF YOUR CHOICE.";
             return optionsUi;
         }
 
@@ -82,6 +83,7 @@ namespace ZuneModCore.Mods
                         return $"Failed to locate image resources in Zune software.";
 
                     // Locate the image resource
+                    // TODO: Allow users to specify which background they want to replace
                     List<Resource> RCDATA = vi.Resources[resId];
                     int idx = RCDATA.FindIndex(r => r.Name.Name == "FRAMEBACKGROUND06.PNG");
                     if (idx < 0)

@@ -36,7 +36,8 @@ namespace ZuneModCore.Mods
                 new AbstractTextBox("folderBox", Environment.GetFolderPath(Environment.SpecialFolder.MyMusic)),
                 new AbstractBoolean("recursiveBox", "Search recursively")
             };
-            optionsUi.Title = "Select music folder:";
+            optionsUi.Title = "select music";
+            optionsUi.Subtitle = "CHOOSE YOUR MUSIC FOLDER.";
             return optionsUi;
         }
 
