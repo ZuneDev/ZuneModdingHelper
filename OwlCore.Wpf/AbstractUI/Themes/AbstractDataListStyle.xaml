@@ -185,10 +185,11 @@
     <DataTemplate x:Key="DefaultAbstractDataListTemplate" DataType="abstractUI:AbstractDataListViewModel">
         <StackPanel>
             <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Visibility="{Binding Title, Converter={StaticResource NotNullToVis}}"
                        Style="{DynamicResource AbstractUICollectionTitleStyle}" />
 
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}}"
+                       Visibility="{Binding Subtitle, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}}"
                        Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <ContentControl Content="{Binding}">

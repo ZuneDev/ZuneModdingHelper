@@ -4,7 +4,6 @@
     x:Class="OwlCore.Wpf.AbstractUI.Themes.AbstractButtonStyle"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:abstractUI="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore.AbstractUI"
-    xmlns:convertvis="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible"
     xmlns:controls="clr-namespace:OwlCore.Wpf.AbstractUI.Controls"
     xmlns:local="clr-namespace:OwlCore.Wpf.AbstractUI.Themes">
 
@@ -35,10 +34,11 @@
     <DataTemplate x:Key="DefaultAbstractButtonTemplate" DataType="abstractUI:AbstractButtonViewModel">
         <StackPanel>
             <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Visibility="{Binding Title, Converter={StaticResource NotNullToVis}}"
                        Style="{DynamicResource AbstractUICollectionTitleStyle}"/>
 
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
+                       Visibility="{Binding Path=Subtitle, Converter={StaticResource NotNullToVis}}"
                        Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <Button Style="{Binding Type, Converter={StaticResource ButtonStyleSelector}, Mode=OneWay}" Command="{Binding ClickCommand}">

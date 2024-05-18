@@ -4,7 +4,6 @@
     x:Class="OwlCore.Wpf.AbstractUI.Themes.AbstractBooleanStyle"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:abstractUI="clr-namespace:OwlCore.AbstractUI.ViewModels;assembly=OwlCore.AbstractUI"
-    xmlns:convertvis="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible"
     xmlns:controls="clr-namespace:OwlCore.Wpf.AbstractUI.Controls">
 
     <ResourceDictionary.MergedDictionaries>
@@ -16,11 +15,11 @@
             <TextBlock Text="{Binding Title, Mode=OneWay}"
                        Style="{DynamicResource AbstractUICollectionTitleStyle}"
                        ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
-                       Visibility="{Binding Title, TargetNullValue=Collapsed, Mode=OneWay}" />
+                       Visibility="{Binding Title, Converter={StaticResource NotNullToVis}}" />
 
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
                        Style="{DynamicResource AbstractUICollectionSubtitleStyle}"
-                       Visibility="{Binding Subtitle, TargetNullValue=Collapsed}"/>
+                       Visibility="{Binding Subtitle, Converter={StaticResource NotNullToVis}}"/>
 
             <CheckBox ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
                       Content="{Binding Label, Mode=OneWay}"

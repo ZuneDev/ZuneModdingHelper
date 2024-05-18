@@ -65,14 +65,13 @@
     </controls:AbstractUIGroupItemTemplateSelector>
 
     <DataTemplate x:Key="DefaultAbstractUICollectionTemplate" DataType="abstractUIVm:AbstractUICollectionViewModel">
-        <StackPanel Margin="10,20">
-
+        <StackPanel>
             <TextBlock Text="{Binding Title, Mode=OneWay}" Style="{DynamicResource AbstractUICollectionTitleStyle}"
                        ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}" 
-                       Visibility="{Binding Path=Title, Converter={StaticResource NotNullOrEmptyToVisibilityConverter}, Mode=OneWay}"/>
+                       Visibility="{Binding Title, Converter={StaticResource NotNullToVis}}"/>
 
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}" Style="{DynamicResource AbstractUICollectionSubtitleStyle}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"/>
+                       Visibility="{Binding Subtitle, Converter={StaticResource NotNullToVis}}"/>
 
             <ItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
                           ItemTemplateSelector="{StaticResource GroupTemplateSelector}" />

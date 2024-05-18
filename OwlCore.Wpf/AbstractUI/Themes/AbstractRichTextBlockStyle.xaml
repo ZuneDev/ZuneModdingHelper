@@ -12,10 +12,11 @@
     <DataTemplate x:Key="DefaultAbstractRichTextBlockTemplate" DataType="abstractUI:AbstractRichTextBlockViewModel">
         <StackPanel>
             <TextBlock Text="{Binding Title, Mode=OneWay}" ToolTipService.ToolTip="{Binding TooltipText, Mode=OneWay}"
+                       Visibility="{Binding Title, Converter={StaticResource NotNullToVis}}"
                        Style="{DynamicResource AbstractUICollectionTitleStyle}" />
 
             <TextBlock Text="{Binding Subtitle, Mode=OneWay}"
-                       Visibility="{Binding Path=Subtitle, TargetNullValue=Collapsed, Mode=OneWay}"
+                       Visibility="{Binding Path=Subtitle, Converter={StaticResource NotNullToVis}}"
                        Style="{DynamicResource AbstractUICollectionSubtitleStyle}" />
 
             <!-- TODO: Marddown text block for WPF? -->

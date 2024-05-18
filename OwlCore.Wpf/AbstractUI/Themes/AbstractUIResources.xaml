@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ocWCBV="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible">
 
     <Style x:Key="AbstractUICollectionTitleStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="24"/>
@@ -11,5 +12,7 @@
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="Opacity" Value="0.5"/>
     </Style>
+    
+    <ocWCBV:NotNullToVisibilityConverter x:Key="NotNullToVis" />
 
 </ResourceDictionary>
