@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ZuneModdingHelper"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ocWCBV="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible;assembly=OwlCore.Wpf"
              StartupUri="AppWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -23,6 +24,7 @@
             <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
 
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
+            <ocWCBV:NotNullToVisibilityConverter x:Key="NotNullToVis" />
 
             <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
             <sys:Boolean x:Key="TrueValue">True</sys:Boolean>

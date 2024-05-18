@@ -42,7 +42,8 @@
                            VerticalAlignment="Top" HorizontalAlignment="Left"
                            Fill="{StaticResource ZuneHorizontalGradientAlt}"/>
                 <TextBlock Text="{Binding Title}" d:Text="WINDOWS LIVE ID" FontSize="28" Margin="0,-10,0,12"
-                           Foreground="{StaticResource ZuneMediumTextBrush}"/>
+                           Foreground="{StaticResource ZuneMediumTextBrush}"
+                           Visibility="{Binding Title, Converter={StaticResource NotNullToVis}}"/>
 
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
                     <local:SelectableTextBlock Text="{Binding Description}" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,12"
