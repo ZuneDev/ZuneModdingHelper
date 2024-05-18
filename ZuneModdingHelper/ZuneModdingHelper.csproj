@@ -12,6 +12,7 @@
         <Platforms>x64;x86</Platforms>
         <LangVersion>latest</LangVersion>
         <ApplicationIcon>Assets\ZMH_Icon.ico</ApplicationIcon>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

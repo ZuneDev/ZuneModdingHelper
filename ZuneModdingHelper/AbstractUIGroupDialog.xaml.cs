@@ -1,6 +1,9 @@
 ﻿using OwlCore.AbstractUI.Models;
 using OwlCore.AbstractUI.ViewModels;
+using System.Runtime.InteropServices;
+using System;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace ZuneModdingHelper
 {
@@ -9,6 +12,25 @@ namespace ZuneModdingHelper
     /// </summary>
     public partial class AbstractUIGroupDialog : Window
     {
+        [LibraryImport("DwmApi")]
+        private static partial int DwmSetWindowAttribute(IntPtr hwnd, int attr, int[] attrValue, int attrSize);
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            // TODO: Move this entire control into a proper dialog.
+            var isAtLeastWin10 = Environment.OSVersion.Version > new Version(10, 0);
+            if (isAtLeastWin10)
+            {
+                var handle = new WindowInteropHelper(this).EnsureHandle();
+
+                if (DwmSetWindowAttribute(handle, 19, [1], 4) != 0)
+                    _ = DwmSetWindowAttribute(handle, 20, [1], 4);
+
+            }
+        }
+
         public AbstractUIGroupDialog(AbstractUICollectionViewModel viewModel)
         {
             ViewModel = viewModel;
