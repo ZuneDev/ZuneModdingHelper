@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
 
@@ -20,6 +21,9 @@ namespace ZuneModCore.Mods
         private const string WEBSERVICE_SUBTITLE_SUCCESS = "OK";
         private const string WEBSERVICE_SUBTITLE_UNREACHABLE = "Unreachable";
 
+        private readonly HttpClient _client = new();
+        private CancellationTokenSource _cts = new();
+
         public override string Id => nameof(WebservicesMod);
 
         public override string Title => "Community Webservices";
@@ -35,7 +39,7 @@ namespace ZuneModCore.Mods
             {
                 new AbstractTextBox("hostBox", string.Empty, "zune.net")
                 {
-                    Title = "Host",
+                    Title = "host",
                     TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
                 },
                 new AbstractDataList("hostsTest", new List<AbstractUIMetadata>()
@@ -54,13 +58,11 @@ namespace ZuneModCore.Mods
                     }
                 )
                 {
-                    Title = "Availability",
-                    Subtitle = "Tests availability of each known web service on the new host.",
+                    Subtitle = "TEST AVAILABILITY OF EACH KNOWN WEB SERVICE ON THE NEW HOST.".ToUpper(),
                     IsUserEditingEnabled = false,
                     PreferredDisplayMode = AbstractDataListPreferredDisplayMode.Grid,
                 }
             };
-            optionsUi.Title = string.Empty;
             return optionsUi;
         }
 
@@ -77,6 +79,8 @@ namespace ZuneModCore.Mods
 
         public override Task Init()
         {
+            _client.Timeout = TimeSpan.FromSeconds(3);
+
             AbstractTextBox newHostBox = (AbstractTextBox)OptionsUI![0];
             newHostBox.ValueChanged += OnHostChanged;
             newHostBox.Value = "zunes.me";
@@ -162,7 +166,7 @@ namespace ZuneModCore.Mods
                 setOverrideSuccess &= SetFeatureOverride("Videos", true);
                 if (setOverrideSuccess != true)
                 {
-                    return "Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune Software.";
+                    return "Unable to set feature overrides. The mod was successful, but you may not be able to see it in the Zune software.";
                 }
 
                 return null;
@@ -205,7 +209,7 @@ namespace ZuneModCore.Mods
                 setOverrideSuccess &= SetFeatureOverride("Videos", false);
                 if (setOverrideSuccess != true)
                 {
-                    return "Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune Software.";
+                    return "Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune software.";
                 }
 
                 return null;
@@ -222,6 +226,11 @@ namespace ZuneModCore.Mods
 
         async void OnHostChanged(object? sender, string newHost)
         {
+            await _cts.CancelAsync();
+            _client.CancelPendingRequests();
+
+            _cts = new();
+
             AbstractDataList list = (AbstractDataList)OptionsUI![1];
 
             // Reset all statuses
@@ -231,43 +240,21 @@ namespace ZuneModCore.Mods
                 metadata.Subtitle = WEBSERVICE_SUBTITLE_TESTING;
             }
 
-            // Update all statuses
+            // We want to update all the statuses, but we also need to be able
+            // to cancel it when the user enters a new host.
             foreach (AbstractUIMetadata metadata in list.Items)
-            {
-                string url = "http://" + (metadata.Id.Split('_')[1] + '.' + newHost).Replace("www.", string.Empty);
-                string? pingResult = await Ping(url);
-
-                if (pingResult == null)
-                {
-                    metadata.IconCode = WEBSERVICE_ICON_SUCCESS;
-                    metadata.Subtitle = WEBSERVICE_SUBTITLE_SUCCESS;
-                }
-                else if (pingResult != string.Empty)
-                {
-                    metadata.IconCode = WEBSERVICE_ICON_UNAVAILABLE;
-                    metadata.Subtitle = pingResult;
-                }
-                else
-                {
-                    metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
-                    metadata.Subtitle = WEBSERVICE_SUBTITLE_UNREACHABLE;
-                }
-            }
+                UpdateStatus(metadata, newHost, _cts.Token);
         }
 
-        private async Task<string?> Ping(string url)
+        private async Task<string?> Ping(string url, CancellationToken token = default)
         {
             try
             {
-                HttpWebRequest request = WebRequest.CreateHttp(url);
-                request.Timeout = 3000;
-                request.AllowAutoRedirect = true;
-                request.Method = "GET";
-
-                using var response = await request.GetResponseAsync();
+                var response = await _client.GetAsync(url, token);
+                response.EnsureSuccessStatusCode();
                 return null;
             }
-            catch (WebException webEx)
+            catch (HttpRequestException webEx)
             {
                 if (webEx.InnerException?.InnerException != null)
                     return webEx.InnerException.InnerException.Message;
@@ -276,6 +263,28 @@ namespace ZuneModCore.Mods
             catch (Exception ex)
             {
                 return ex?.Message ?? string.Empty;
+            }
+        }
+
+        private async Task UpdateStatus(AbstractUIMetadata metadata, string newHost, CancellationToken token = default)
+        {
+            string url = "http://" + (metadata.Id.Split('_')[1] + '.' + newHost).Replace("www.", string.Empty);
+            string? pingResult = await Ping(url, token);
+
+            if (pingResult == null)
+            {
+                metadata.IconCode = WEBSERVICE_ICON_SUCCESS;
+                metadata.Subtitle = WEBSERVICE_SUBTITLE_SUCCESS;
+            }
+            else if (pingResult != string.Empty)
+            {
+                metadata.IconCode = WEBSERVICE_ICON_UNAVAILABLE;
+                metadata.Subtitle = pingResult;
+            }
+            else
+            {
+                metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
+                metadata.Subtitle = WEBSERVICE_SUBTITLE_UNREACHABLE;
             }
         }
     }
