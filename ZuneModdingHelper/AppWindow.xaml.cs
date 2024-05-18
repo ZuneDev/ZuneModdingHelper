@@ -9,10 +9,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
-using ZuneModCore;
 using ZuneModdingHelper.Controls;
 using ZuneModdingHelper.Messages;
 using ZuneModdingHelper.Pages;
+using ZuneModdingHelper.Services;
 
 namespace ZuneModdingHelper
 {
@@ -27,6 +27,7 @@ namespace ZuneModdingHelper
 
         private readonly Type[] _pages = [typeof(ModsPage), typeof(SettingsPage), typeof(AboutPage)];
         private readonly Storyboard _dialogExitAnimation;
+        private readonly Settings _settings = Ioc.Default.GetRequiredService<Settings>();
 
         public AppWindow()
         {
@@ -40,11 +41,13 @@ namespace ZuneModdingHelper
             WeakReferenceMessenger.Default.Register<CloseDialogMessage>(this);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            await _settings.LoadAsync();
+
             // Show a warning if Zune is running
             Process[] procs = Process.GetProcessesByName("Zune");
-            string zuneExePath = System.IO.Path.Combine(Mod.DefaultZuneInstallDir, "Zune.exe");
+            string zuneExePath = System.IO.Path.Combine(_settings.ZuneInstallDir, "Zune.exe");
             if (procs.Length > 0 && procs.Any(p => p.MainModule.FileName == zuneExePath))
             {
                 WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()

@@ -4,9 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ZuneModdingHelper.Pages"
+             xmlns:zmhs="clr-namespace:ZuneModdingHelper.Services"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="SETTINGS" FontSize="50" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-    </Grid>
+             d:DesignHeight="450" d:DesignWidth="800"
+             Unloaded="SettingsPage_Unloaded"
+             DataContext="{x:Static zmhs:Settings.Default}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
+                <Run Text="Zune" Style="{StaticResource ZuneHeaderTextStyle}"/>
+            </TextBlock>
+            <TextBlock Text="Choose the directory where the Zune software is installed." Margin="0,8"
+                       Style="{StaticResource ZuneBodyTextBlockStyle}" />
+            <TextBox VerticalAlignment="Top"
+                     Text="{Binding ZuneInstallDir}"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

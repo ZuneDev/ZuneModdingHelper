@@ -42,7 +42,7 @@ namespace ZuneModdingHelper
             services.AddSingleton(github);
 
             services.AddSingleton<IModCoreConfig>(Settings.Default);
-            services.AddSingleton<OwlCore.ComponentModel.SettingsBase>(Settings.Default);
+            services.AddSingleton(Settings.Default);
 
             Ioc.Default.ConfigureServices(services.BuildServiceProvider());
         }

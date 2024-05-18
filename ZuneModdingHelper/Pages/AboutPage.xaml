@@ -11,16 +11,6 @@
              d:DesignHeight="350" d:DesignWidth="750"
              d:Background="White">
     <UserControl.Resources>
-        <Style x:Key="AboutTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource ZuneTextBlock}">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="Foreground" Value="{StaticResource ZuneMediumTextBrush}"/>
-        </Style>
-        <Style x:Key="HeaderTextStyle" TargetType="Run">
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
         <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
             <Setter Property="Foreground" Value="{StaticResource ZuneMediumTextBrush}"/>
             <Setter Property="FontSize" Value="14"/>
@@ -38,8 +28,8 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
-            <TextBlock Style="{StaticResource AboutTextBlockStyle}">
-                <Run Text="Version" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
+            <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
+                <Run Text="Version" Style="{StaticResource ZuneHeaderTextStyle}"/><LineBreak/>
                 <Run Text="{x:Static zmh:App.VersionStr}"/><LineBreak/>
                 <Hyperlink NavigateUri="{x:Static zmh:App.VersionUri}" RequestNavigate="Link_RequestNavigate">
                     <Run Text="&#xE004;" FontFamily="{StaticResource ZMHIcons}"/>
@@ -50,8 +40,8 @@
                     Margin="0,8,0,12" Padding="8,0" HorizontalAlignment="Left"
                     Style="{StaticResource ActionButtonStyle}"/>
 
-            <TextBlock Style="{StaticResource AboutTextBlockStyle}">
-                <Run Text="Community" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
+            <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
+                <Run Text="Community" Style="{StaticResource ZuneHeaderTextStyle}"/><LineBreak/>
                 <Hyperlink NavigateUri="https://reddit.com/r/Zune" RequestNavigate="Link_RequestNavigate">
                     <Run Text="&#xE001;" FontFamily="{StaticResource ZMHIcons}"/>
                     <Run Text="join r/zune subreddit"/>
@@ -62,8 +52,8 @@
                 </Hyperlink><LineBreak/>
             </TextBlock>
 
-            <TextBlock Style="{StaticResource AboutTextBlockStyle}">
-                <Run Text="Development" Style="{StaticResource HeaderTextStyle}"/><LineBreak/>
+            <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
+                <Run Text="Development" Style="{StaticResource ZuneHeaderTextStyle}"/><LineBreak/>
                 <Run Text="by Joshua &quot;Yoshi&quot; Askharoun." FontWeight="SemiBold"/>
                 <Run Text="Mods included with authors' permission."/><LineBreak/>
                 <LineBreak/>

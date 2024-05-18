@@ -40,6 +40,18 @@
         <Setter Property="Typography.StylisticSet1" Value="True"/>
     </Style>
 
+    <Style x:Key="ZuneBodyTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource ZuneTextBlock}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Foreground" Value="{StaticResource ZuneMediumTextBrush}"/>
+    </Style>
+    
+    <Style x:Key="ZuneHeaderTextStyle" TargetType="Run">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
     <Style x:Key="ActionButtonStyle" TargetType="Button">
         <Style.Resources>
             <!-- Border -->
