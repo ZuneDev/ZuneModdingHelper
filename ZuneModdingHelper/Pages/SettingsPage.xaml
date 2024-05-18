@@ -23,6 +23,12 @@
             <Button Content="LOCATE" HorizontalAlignment="Left" Margin="0,8,0,0"
                     Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
                     Click="LocateZuneButton_Click"/>
+
+            <TextBlock Text="Force close all Zune processes that may prevent mods from being applied. May cause data loss." Margin="0,12,0,0"
+                       Style="{StaticResource ZuneBodyTextBlockStyle}" />
+            <Button Content="KILL ALL" HorizontalAlignment="Left" Margin="0,8,0,0"
+                    Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
+                    Click="KillZuneButton_Click"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
