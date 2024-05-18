@@ -43,13 +43,11 @@ namespace ZuneModdingHelper.Pages
             mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
 
             // Stage 0: Initialize mod
-            progDialog.Title = ($"Installing '{mod.Title}'");
-            progDialog.Description = ("Preparing to install...");
             await mod.Init();
             ++progDialog.Progress;
 
             // Stage 1: Display AbstractUI for options
-            progDialog.Description = ("Awaiting options...");
+            progDialog.Description = $"Awaiting options for '{mod.Title}'...";
             if (mod.OptionsUI != null)
             {
                 var optionsDialog = new AbstractUIGroupDialog(mod.OptionsUI);
@@ -65,7 +63,7 @@ namespace ZuneModdingHelper.Pages
             ++progDialog.Progress;
 
             // Stage 2: Apply mod
-            progDialog.Description = ("Applying mod...");
+            progDialog.Description = $"Applying '{mod.Title}'...";
             string applyResult = await mod.Apply();
             if (applyResult != null)
             {
@@ -86,7 +84,7 @@ namespace ZuneModdingHelper.Pages
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
             {
                 Title = MOD_MANAGER_TITLE,
-                Description = $"Installed '{mod.Title}'",
+                Description = $"Successfully applied '{mod.Title}'",
             }));
         }
 
@@ -95,38 +93,53 @@ namespace ZuneModdingHelper.Pages
             if (!TryGetModFromControl(sender, out var mod))
                 return;
 
-            //var progDialog = await this.ShowProgressAsync("Getting ready...", "Preparing to reset mod", settings: defaultMetroDialogSettings);
-            //Mod.ZuneInstallDir = ZuneInstallDirBox.Text;
+            ProgressDialogViewModel progDialog = new()
+            {
+                Title = MOD_MANAGER_TITLE,
+                Description = $"Preparing to reset '{mod.Title}'...",
+                ShowAffirmativeButton = false,
+                IsIndeterminate = true,
+                Maximum = 2,
+            };
+            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(progDialog));
 
-            //progDialog.Maximum = 2;
-            //int numCompleted = 0;
+            mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
 
-            //progDialog.SetTitle("Resetting mod...");
-            //progDialog.SetMessage($"Setting up '{mod.Title}'");
-            //await mod.Init();
-            //progDialog.SetProgress(++numCompleted);
+            await mod.Init();
+            ++progDialog.Progress;
 
-            //// TODO: Implement AbstractUI display for reset options
-            ////if (mod.OptionsUI != null)
-            ////{
-            ////    var optionsDialog = new AbstractUIGroupDialog();
-            ////    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUICollectionViewModel(mod.OptionsUI);
-            ////    optionsDialog.ShowDialog();
-            ////}
-
-            //progDialog.SetMessage($"Resetting '{mod.Title}'");
-            //string resetResult = await mod.Reset();
-            //if (resetResult != null)
+            // TODO: Implement AbstractUI display for reset options
+            //if (mod.OptionsUI != null)
             //{
-            //    await progDialog.CloseAsync();
-            //    await this.ShowMessageAsync("Completed", $"Failed to reset '{mod.Title}':\r\n{resetResult}", settings: defaultMetroDialogSettings);
-            //    return;
+            //    var optionsDialog = new AbstractUIGroupDialog();
+            //    optionsDialog.OptionsUIPresenter.ViewModel = new AbstractUICollectionViewModel(mod.OptionsUI);
+            //    optionsDialog.ShowDialog();
             //}
 
-            //progDialog.SetProgress(++numCompleted);
+            progDialog.Description = $"Resetting '{mod.Title}'...";
+            string resetResult = await mod.Reset();
+            if (resetResult != null)
+            {
+                WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
 
-            //await progDialog.CloseAsync();
-            //await this.ShowMessageAsync("Completed", $"Successfully reset '{mod.Title}'", settings: defaultMetroDialogSettings);
+                DialogViewModel errorDialog = new()
+                {
+                    Title = MOD_MANAGER_TITLE,
+                    Description = $"Failed to reset '{mod.Title}'.\r\n{resetResult}",
+                };
+                WeakReferenceMessenger.Default.Send(new ShowDialogMessage(errorDialog));
+
+                return;
+            }
+
+            ++progDialog.Progress;
+
+            WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
+            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
+            {
+                Title = MOD_MANAGER_TITLE,
+                Description = $"Successfully reset '{mod.Title}'",
+            }));
         }
 
         private static bool TryGetModFromControl(object sender, out Mod mod)
