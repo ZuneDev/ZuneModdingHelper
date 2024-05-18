@@ -21,7 +21,7 @@ namespace ZuneModCore.Mods
         private const string WEBSERVICE_SUBTITLE_SUCCESS = "OK";
         private const string WEBSERVICE_SUBTITLE_UNREACHABLE = "Unreachable";
 
-        private readonly HttpClient _client = new();
+        private HttpClient _client;
         private CancellationTokenSource _cts = new();
 
         public override string Id => nameof(WebservicesMod);
@@ -79,7 +79,10 @@ namespace ZuneModCore.Mods
 
         public override Task Init()
         {
-            _client.Timeout = TimeSpan.FromSeconds(3);
+            _client = new()
+            {
+                Timeout = TimeSpan.FromSeconds(3)
+            };
 
             AbstractTextBox newHostBox = (AbstractTextBox)OptionsUI![0];
             newHostBox.ValueChanged += OnHostChanged;
