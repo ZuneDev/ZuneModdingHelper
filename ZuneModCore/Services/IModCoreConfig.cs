@@ -1,7 +1,6 @@
-﻿namespace ZuneModCore.Services
+﻿namespace ZuneModCore.Services;
+
+public interface IModCoreConfig
 {
-    public interface IModCoreConfig
-    {
-        string ZuneInstallDir { get; }
-    }
+    string ZuneInstallDir { get; }
 }
