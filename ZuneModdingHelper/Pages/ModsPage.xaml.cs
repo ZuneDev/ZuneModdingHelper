@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using OwlCore.AbstractUI.Models;
+using OwlCore.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using ZuneModCore;
@@ -43,7 +44,8 @@ namespace ZuneModdingHelper.Pages
             mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
 
             // Stage 0: Initialize mod
-            await mod.Init();
+            if (mod is IAsyncInit initMod)
+                await initMod.InitAsync();
             ++progDialog.Progress;
 
             // Stage 1: Display AbstractUI for options
@@ -105,7 +107,8 @@ namespace ZuneModdingHelper.Pages
 
             mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
 
-            await mod.Init();
+            if (mod is IAsyncInit initMod)
+                await initMod.InitAsync();
             ++progDialog.Progress;
 
             // TODO: Implement AbstractUI display for reset options

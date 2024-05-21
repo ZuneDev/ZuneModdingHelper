@@ -1,12 +1,14 @@
 ﻿using OwlCore.AbstractUI.Models;
+using OwlCore.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods;
 
-public class FeaturesOverrideMod : Mod
+public class FeaturesOverrideMod : Mod, IAsyncInit
 {
     private const string ZUNE_FEATURESOVERRIDE_REGKEY = RegEdit.ZUNE_REG_PATH + "FeaturesOverride";
 
@@ -57,8 +59,12 @@ public class FeaturesOverrideMod : Mod
 
     public override IReadOnlyList<Type>? DependentMods => null;
 
-    public override Task Init()
+    public bool IsInitialized { get; private set; }
+
+    public Task InitAsync(CancellationToken token = default)
     {
+        if (IsInitialized) return Task.CompletedTask;
+
         foreach (AbstractUIElement uiElem in OptionsUI!)
         {
             if (uiElem is AbstractBoolean boolElem)
@@ -68,6 +74,7 @@ public class FeaturesOverrideMod : Mod
             }
         }
 
+        IsInitialized = true;
         return Task.CompletedTask;
     }
 

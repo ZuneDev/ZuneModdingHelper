@@ -56,8 +56,6 @@ public abstract class Mod
 
     public virtual AbstractUICollection? GetDefaultOptionsUI() => null;
 
-    public virtual Task Init() => Task.CompletedTask;
-
     public abstract Task<string?> Apply();
 
     public abstract Task<string?> Reset();

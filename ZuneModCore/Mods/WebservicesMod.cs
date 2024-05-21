@@ -1,4 +1,5 @@
 ﻿using OwlCore.AbstractUI.Models;
+using OwlCore.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ using static ZuneModCore.Mods.FeaturesOverrideMod;
 
 namespace ZuneModCore.Mods;
 
-public class WebservicesMod : Mod
+public class WebservicesMod : Mod, IAsyncInit
 {
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
@@ -86,8 +87,13 @@ public class WebservicesMod : Mod
 
     public override IReadOnlyList<Type>? DependentMods => null;
 
-    public override Task Init()
+    public bool IsInitialized { get; private set; }
+
+    public Task InitAsync(CancellationToken token = default)
     {
+        if (IsInitialized)
+            return Task.CompletedTask;
+
         _client = new()
         {
             Timeout = TimeSpan.FromSeconds(3)
@@ -97,6 +103,7 @@ public class WebservicesMod : Mod
         newHostBox.ValueChanged += OnHostChanged;
         newHostBox.Value = "zunes.me";
 
+        IsInitialized = true;
         return Task.CompletedTask;
     }
 
