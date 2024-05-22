@@ -11,13 +11,11 @@ namespace ZuneModCore.Mods;
 
 public class BackgroundImageMod : Mod
 {
-    public override string Id => nameof(BackgroundImageMod);
+    private const string Description = "Replaces the \"Zero\" background with an image of your choice.";
 
-    public override string Title => "Background Image";
+    private const string Author = "Joshua \"Yoshi\" Askharoun";
 
-    public override string Description => "Replaces the \"Zero\" background with an image of your choice.";
-
-    public override string Author => "Joshua \"Yoshi\" Askharoun";
+    public override ModMetadata Metadata => new(nameof(BackgroundImageMod), "Background Image", Description, Author);
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

@@ -12,20 +12,17 @@ public class FeaturesOverrideMod : Mod, IAsyncInit
 {
     private const string ZUNE_FEATURESOVERRIDE_REGKEY = RegEdit.ZUNE_REG_PATH + "FeaturesOverride";
 
-    public override string Id => nameof(FeaturesOverrideMod);
-
-    public override string Title => "Features Override";
-
-    public override string Description => "Re-enables access to some features disabled by Microsoft, such as the Social and Marketplace tabs.\r\n" +
+    private const string Description = "Re-enables access to some features disabled by Microsoft, such as the Social and Marketplace tabs.\r\n" +
         "Does not restore functionality of those features, but shows them in the software.";
 
-    public override string Author => "Rafael Rivera";
+    private const string Author = "Rafael Rivera";
+
+    public override ModMetadata Metadata => new(nameof(FeaturesOverrideMod), "Features Override", Description, Author);
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
         AbstractUICollection optionsUi = new(nameof(FeaturesOverrideMod))
         {
-            // We don't know what some of these overrides do exactly, so hide them from the user.
             // The ID is the name of the registry key, the label is the display name
 
             new AbstractBoolean("Apps", "Apps"),

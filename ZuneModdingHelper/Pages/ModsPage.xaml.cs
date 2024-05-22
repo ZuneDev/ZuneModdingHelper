@@ -31,10 +31,11 @@ namespace ZuneModdingHelper.Pages
             if (!TryGetModFromControl(sender, out var mod))
                 return;
 
+            var modTitle = mod.Metadata.Title;
             ProgressDialogViewModel progDialog = new()
             {
                 Title = MOD_MANAGER_TITLE,
-                Description = $"Preparing to apply '{mod.Title}'...",
+                Description = $"Preparing to apply '{modTitle}'...",
                 ShowAffirmativeButton = false,
                 IsIndeterminate = true,
                 Maximum = 3,
@@ -49,11 +50,11 @@ namespace ZuneModdingHelper.Pages
             ++progDialog.Progress;
 
             // Stage 1: Display AbstractUI for options
-            progDialog.Description = $"Awaiting options for '{mod.Title}'...";
+            progDialog.Description = $"Awaiting options for '{modTitle}'...";
             if (mod.OptionsUI != null)
             {
                 var optionsDialog = new AbstractUIGroupDialog(mod.OptionsUI);
-                optionsDialog.Title = optionsDialog.Title + " | " + mod.Title;
+                optionsDialog.Title = optionsDialog.Title + " | " + modTitle;
                 bool? optionsResult = optionsDialog.ShowDialog();
                 if (!(optionsResult.HasValue && optionsResult.Value))
                 {
@@ -65,7 +66,7 @@ namespace ZuneModdingHelper.Pages
             ++progDialog.Progress;
 
             // Stage 2: Apply mod
-            progDialog.Description = $"Applying '{mod.Title}'...";
+            progDialog.Description = $"Applying '{modTitle}'...";
             string applyResult = await mod.Apply();
             if (applyResult != null)
             {
@@ -74,7 +75,7 @@ namespace ZuneModdingHelper.Pages
                 DialogViewModel errorDialog = new()
                 {
                     Title = MOD_MANAGER_TITLE,
-                    Description = $"Failed to apply '{mod.Title}'.\r\n{applyResult}",
+                    Description = $"Failed to apply '{modTitle}'.\r\n{applyResult}",
                 };
                 WeakReferenceMessenger.Default.Send(new ShowDialogMessage(errorDialog));
 
@@ -86,7 +87,7 @@ namespace ZuneModdingHelper.Pages
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
             {
                 Title = MOD_MANAGER_TITLE,
-                Description = $"Successfully applied '{mod.Title}'",
+                Description = $"Successfully applied '{modTitle}'",
             }));
         }
 
@@ -95,10 +96,11 @@ namespace ZuneModdingHelper.Pages
             if (!TryGetModFromControl(sender, out var mod))
                 return;
 
+            var modTitle = mod.Metadata.Title;
             ProgressDialogViewModel progDialog = new()
             {
                 Title = MOD_MANAGER_TITLE,
-                Description = $"Preparing to reset '{mod.Title}'...",
+                Description = $"Preparing to reset '{modTitle}'...",
                 ShowAffirmativeButton = false,
                 IsIndeterminate = true,
                 Maximum = 2,
@@ -119,7 +121,7 @@ namespace ZuneModdingHelper.Pages
             //    optionsDialog.ShowDialog();
             //}
 
-            progDialog.Description = $"Resetting '{mod.Title}'...";
+            progDialog.Description = $"Resetting '{modTitle}'...";
             string resetResult = await mod.Reset();
             if (resetResult != null)
             {
@@ -128,7 +130,7 @@ namespace ZuneModdingHelper.Pages
                 DialogViewModel errorDialog = new()
                 {
                     Title = MOD_MANAGER_TITLE,
-                    Description = $"Failed to reset '{mod.Title}'.\r\n{resetResult}",
+                    Description = $"Failed to reset '{modTitle}'.\r\n{resetResult}",
                 };
                 WeakReferenceMessenger.Default.Send(new ShowDialogMessage(errorDialog));
 
@@ -141,7 +143,7 @@ namespace ZuneModdingHelper.Pages
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
             {
                 Title = MOD_MANAGER_TITLE,
-                Description = $"Successfully reset '{mod.Title}'",
+                Description = $"Successfully reset '{modTitle}'",
             }));
         }
 

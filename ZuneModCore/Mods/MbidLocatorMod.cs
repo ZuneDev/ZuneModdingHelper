@@ -16,15 +16,13 @@ public class MbidLocatorMod : Mod
 
     private static readonly string[] KNOWN_EXTS = [".mp3", ".mp4", ".m4a", ".wav"];
 
-    public override string Id => nameof(MbidLocatorMod);
-
-    public override string Title => "MusicBrainz ID Locator";
-
-    public override string Description => "Puts MusicBrainz IDs added by MusicBrainz Picard where the Zune " +
+    private const string Description = "Puts MusicBrainz IDs added by MusicBrainz Picard where the Zune " +
         "software can use it to show additional information provided by Community Webservices.\r\n" +
         "Note that this will only have an effect if you have used MusicBrainz Picard on your music library.";
 
-    public override string Author => "Joshua \"Yoshi\" Askharoun";
+    private const string Author = "Joshua \"Yoshi\" Askharoun";
+
+    public override ModMetadata Metadata => new(nameof(MbidLocatorMod), "MusicBrainz ID Locator", Description, Author);
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

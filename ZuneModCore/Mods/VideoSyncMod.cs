@@ -10,14 +10,12 @@ public class VideoSyncMod : Mod
 {
     private const int ZUNEENCENG_WMVCORA_OFFSET = 0x161E;
 
-    public override string Title => "Fix Video Sync";
-
-    public override string Description =>
+    private const string Description =
         "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer";
 
-    public override string Author => "sylvathemoth";
+    private const string Author = "sylvathemoth";
 
-    public override string Id => nameof(VideoSyncMod);
+    public override ModMetadata Metadata => new(nameof(VideoSyncMod), "Fix Video Sync", Description, Author);
 
     public override async Task<string?> Apply()
     {

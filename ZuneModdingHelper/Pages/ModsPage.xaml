@@ -23,8 +23,8 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock TextTrimming="CharacterEllipsis">
-                            <Run Text="{Binding Title, Mode=OneWay}" FontWeight="SemiBold" FontSize="16"/>
-                            <Run Text=" By "/><Run Text="{Binding Author, Mode=OneWay}"
+                            <Run Text="{Binding Metadata.Title, Mode=OneWay}" FontWeight="SemiBold" FontSize="16"/>
+                            <Run Text=" By "/><Run Text="{Binding Metadata.Author, Mode=OneWay}"
                                                    Foreground="{StaticResource ZuneMediumTextBrush}"/>
                         </TextBlock>
 
@@ -41,7 +41,7 @@
                                     Style="{StaticResource ActionButtonStyle}"/>
                         </StackPanel>
 
-                        <TextBlock Text="{Binding Description}" Grid.Row="1" Foreground="{StaticResource ZuneLightTextBrush}"
+                        <TextBlock Text="{Binding Metadata.Description}" Grid.Row="1" Foreground="{StaticResource ZuneLightTextBrush}"
                                    FontSize="14" TextWrapping="Wrap"/>
                     </Grid>
                 </Border>

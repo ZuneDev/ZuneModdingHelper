@@ -27,32 +27,24 @@ public abstract class Mod
     public string ZuneInstallDir { get; set; } = DefaultZuneInstallDir;
 
     private static List<Mod>? _mods;
-    public static IReadOnlyList<Mod> AvailableMods
+    public static IReadOnlyList<Mod> GetAvailableMods()
     {
-        get
+        if (_mods is null)
         {
-            if (_mods is null)
+            _mods = new(AvailableModTypes.Count);
+            var services = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default;
+            foreach (var modType in AvailableModTypes)
             {
-                _mods = new(AvailableModTypes.Count);
-                var services = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default;
-                foreach (var modType in AvailableModTypes)
-                {
-                    var instance = ActivatorUtilities.CreateInstance(services, modType);
-                    if (instance is Mod mod)
-                        _mods.Add(mod);
-                }
+                var instance = ActivatorUtilities.CreateInstance(services, modType);
+                if (instance is Mod mod)
+                    _mods.Add(mod);
             }
-            return _mods;
         }
+
+        return _mods;
     }
 
-    public abstract string Id { get; }
-
-    public abstract string Title { get; }
-
-    public abstract string Description { get; }
-
-    public abstract string Author { get; }
+    public abstract ModMetadata Metadata { get; }
 
     public virtual AbstractUICollection? GetDefaultOptionsUI() => null;
 
@@ -74,7 +66,7 @@ public abstract class Mod
     {
         get
         {
-            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ZuneModCore", Id);
+            string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ZuneModCore", Metadata.Id);
             // Create the directory just in case the consumer assumes the folder exists already
             Directory.CreateDirectory(dir);
             return dir;

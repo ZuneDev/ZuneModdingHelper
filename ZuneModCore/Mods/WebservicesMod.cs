@@ -34,14 +34,12 @@ public class WebservicesMod : Mod, IAsyncInit
     private HttpClient _client;
     private CancellationTokenSource _cts = new();
 
-    public override string Id => nameof(WebservicesMod);
-
-    public override string Title => "Community Webservices";
-
-    public override string Description => "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
+    private const string Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
         "to use the community's recreation of Microsoft's Zune servers at zunes.me (instead of zune.net).";
 
-    public override string Author => "Joshua \"Yoshi\" Askharoun";
+    private const string Author = "Joshua \"Yoshi\" Askharoun";
+
+    public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices", Description, Author);
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
