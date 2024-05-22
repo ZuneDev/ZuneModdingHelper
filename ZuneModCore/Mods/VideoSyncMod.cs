@@ -15,7 +15,8 @@ public class VideoSyncMod : Mod
 
     private const string Author = "sylvathemoth";
 
-    public override ModMetadata Metadata => new(nameof(VideoSyncMod), "Fix Video Sync", Description, Author);
+    public override ModMetadata Metadata => new(nameof(VideoSyncMod), "Fix Video Sync",
+        Description, Author, new(2, 0));
 
     public override async Task<string?> Apply()
     {

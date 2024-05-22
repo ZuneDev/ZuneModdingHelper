@@ -15,7 +15,8 @@ public class BackgroundImageMod : Mod
 
     private const string Author = "Joshua \"Yoshi\" Askharoun";
 
-    public override ModMetadata Metadata => new(nameof(BackgroundImageMod), "Background Image", Description, Author);
+    public override ModMetadata Metadata => new(nameof(BackgroundImageMod), "Background Image",
+        Description, Author, new(1, 0));
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

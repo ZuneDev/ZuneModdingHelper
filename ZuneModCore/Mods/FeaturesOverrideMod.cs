@@ -17,7 +17,8 @@ public class FeaturesOverrideMod : Mod, IAsyncInit
 
     private const string Author = "Rafael Rivera";
 
-    public override ModMetadata Metadata => new(nameof(FeaturesOverrideMod), "Features Override", Description, Author);
+    public override ModMetadata Metadata => new(nameof(FeaturesOverrideMod), "Features Override",
+        Description, Author, new(1, 0));
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

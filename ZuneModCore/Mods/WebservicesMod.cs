@@ -39,7 +39,8 @@ public class WebservicesMod : Mod, IAsyncInit
 
     private const string Author = "Joshua \"Yoshi\" Askharoun";
 
-    public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices", Description, Author);
+    public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices",
+        Description, Author, new(1, 1));
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
