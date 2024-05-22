@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
 using OwlCore.AbstractUI.Models;
 using OwlCore.ComponentModel;
 using System.Windows;
@@ -23,15 +24,15 @@ namespace ZuneModdingHelper.Pages
             _modConfig = modConfig;
 
             InitializeComponent();
-            ModList.ItemsSource = ModManager.GetAvailableMods();
+            ModList.ItemsSource = ModManager.ModFactories;
         }
 
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!TryGetModFromControl(sender, out var mod))
+            if (!TryGetModFromControl(sender, out var modFactory))
                 return;
 
-            var modTitle = mod.Metadata.Title;
+            var modTitle = modFactory.Metadata.Title;
             ProgressDialogViewModel progDialog = new()
             {
                 Title = MOD_MANAGER_TITLE,
@@ -42,9 +43,9 @@ namespace ZuneModdingHelper.Pages
             };
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(progDialog));
 
-            mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
-
             // Stage 0: Initialize mod
+            var mod = modFactory.Create(Ioc.Default);
+            mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
             if (mod is IAsyncInit initMod)
                 await initMod.InitAsync();
             ++progDialog.Progress;
@@ -93,10 +94,10 @@ namespace ZuneModdingHelper.Pages
 
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!TryGetModFromControl(sender, out var mod))
+            if (!TryGetModFromControl(sender, out var modFactory))
                 return;
 
-            var modTitle = mod.Metadata.Title;
+            var modTitle = modFactory.Metadata.Title;
             ProgressDialogViewModel progDialog = new()
             {
                 Title = MOD_MANAGER_TITLE,
@@ -107,8 +108,8 @@ namespace ZuneModdingHelper.Pages
             };
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(progDialog));
 
+            var mod = modFactory.Create(Ioc.Default);
             mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
-
             if (mod is IAsyncInit initMod)
                 await initMod.InitAsync();
             ++progDialog.Progress;
@@ -147,10 +148,10 @@ namespace ZuneModdingHelper.Pages
             }));
         }
 
-        private static bool TryGetModFromControl(object sender, out Mod mod)
+        private static bool TryGetModFromControl(object sender, out IModFactory<Mod> modFactory)
         {
-            mod = (sender as FrameworkElement)?.DataContext as Mod;
-            return mod is not null;
+            modFactory = (sender as FrameworkElement)?.DataContext as IModFactory<Mod>;
+            return modFactory is not null;
         }
     }
 }

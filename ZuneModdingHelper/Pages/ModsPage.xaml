@@ -14,7 +14,7 @@
               x:Name="ModList" HorizontalContentAlignment="Stretch" BorderThickness="0"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}">
         <ListView.ItemTemplate>
-            <DataTemplate DataType="{x:Type core:Mod}">
+            <DataTemplate DataType="{x:Type core:IModFactory`1}">
                 <Border x:Name="RootBorder" BorderThickness="0">
                     <Grid Margin="8">
                         <Grid.RowDefinitions>
