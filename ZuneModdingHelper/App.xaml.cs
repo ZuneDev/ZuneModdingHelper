@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using ZuneModCore;
 using ZuneModCore.Services;
 using ZuneModdingHelper.Services;
 

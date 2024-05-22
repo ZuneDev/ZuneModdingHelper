@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using ZuneModCore;
 using ZuneModdingHelper.Messages;
 
 namespace ZuneModdingHelper.Pages
