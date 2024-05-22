@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace ZuneModCore.Mods;
 
-public class VideoSyncMod : Mod
+public class VideoSyncModFactory : DIModFactoryBase<VideoSyncMod>
 {
-    private const int ZUNEENCENG_WMVCORA_OFFSET = 0x161E;
-
     private const string Description =
         "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer";
 
@@ -17,6 +15,11 @@ public class VideoSyncMod : Mod
 
     public override ModMetadata Metadata => new(nameof(VideoSyncMod), "Fix Video Sync",
         Description, Author, new(2, 0));
+}
+
+public class VideoSyncMod(ModMetadata metadata) : Mod(metadata)
+{
+    private const int ZUNEENCENG_WMVCORA_OFFSET = 0x161E;
 
     public override async Task<string?> Apply()
     {

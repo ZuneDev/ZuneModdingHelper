@@ -1,50 +1,18 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OwlCore.AbstractUI.Models;
+﻿using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using ZuneModCore.Mods;
 
 namespace ZuneModCore;
 
-public abstract class Mod
+public abstract class Mod(ModMetadata metadata)
 {
-    /// <summary>
-    /// A list of all available mods
-    /// </summary>
-    public static readonly IReadOnlyList<Type> AvailableModTypes = new List<Type>
-    {
-        typeof(FeaturesOverrideMod),
-        typeof(VideoSyncMod),
-        typeof(WebservicesMod),
-        typeof(BackgroundImageMod),
-        typeof(MbidLocatorMod),
-    }.AsReadOnly();
-
     public static string DefaultZuneInstallDir { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
 
+    public ModMetadata Metadata { get; } = metadata;
+
     public string ZuneInstallDir { get; set; } = DefaultZuneInstallDir;
-
-    private static List<Mod>? _mods;
-    public static IReadOnlyList<Mod> GetAvailableMods()
-    {
-        if (_mods is null)
-        {
-            _mods = new(AvailableModTypes.Count);
-            var services = CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default;
-            foreach (var modType in AvailableModTypes)
-            {
-                var instance = ActivatorUtilities.CreateInstance(services, modType);
-                if (instance is Mod mod)
-                    _mods.Add(mod);
-            }
-        }
-
-        return _mods;
-    }
-
-    public abstract ModMetadata Metadata { get; }
 
     public virtual AbstractUICollection? GetDefaultOptionsUI() => null;
 

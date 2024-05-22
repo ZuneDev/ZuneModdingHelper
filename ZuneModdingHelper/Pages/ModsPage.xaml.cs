@@ -23,7 +23,7 @@ namespace ZuneModdingHelper.Pages
             _modConfig = modConfig;
 
             InitializeComponent();
-            ModList.ItemsSource = Mod.GetAvailableMods();
+            ModList.ItemsSource = ModManager.GetAvailableMods();
         }
 
         private async void ApplyButton_Click(object sender, RoutedEventArgs e)

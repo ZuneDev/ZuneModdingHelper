@@ -10,7 +10,19 @@ using static ZuneModCore.Mods.FeaturesOverrideMod;
 
 namespace ZuneModCore.Mods;
 
-public class WebservicesMod : Mod, IAsyncInit
+public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
+{
+
+    private const string Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
+        "to use the community's recreation of Microsoft's Zune servers at zunes.me (instead of zune.net).";
+
+    private const string Author = "Joshua \"Yoshi\" Askharoun";
+
+    public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices",
+        Description, Author, new(1, 1));
+}
+
+public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
 {
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
@@ -33,14 +45,6 @@ public class WebservicesMod : Mod, IAsyncInit
 
     private HttpClient _client;
     private CancellationTokenSource _cts = new();
-
-    private const string Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
-        "to use the community's recreation of Microsoft's Zune servers at zunes.me (instead of zune.net).";
-
-    private const string Author = "Joshua \"Yoshi\" Askharoun";
-
-    public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices",
-        Description, Author, new(1, 1));
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

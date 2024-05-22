@@ -9,7 +9,7 @@ using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods;
 
-public class BackgroundImageMod : Mod
+public class BackgroundImageModFactory : DIModFactoryBase<BackgroundImageMod>
 {
     private const string Description = "Replaces the \"Zero\" background with an image of your choice.";
 
@@ -17,7 +17,10 @@ public class BackgroundImageMod : Mod
 
     public override ModMetadata Metadata => new(nameof(BackgroundImageMod), "Background Image",
         Description, Author, new(1, 0));
+}
 
+public class BackgroundImageMod(ModMetadata metadata) : Mod(metadata)
+{
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
         AbstractUICollection optionsUi = new(nameof(BackgroundImageMod))

@@ -8,9 +8,8 @@ using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods;
 
-public class FeaturesOverrideMod : Mod, IAsyncInit
+public class FeaturesOverrideModFactory : DIModFactoryBase<FeaturesOverrideMod>
 {
-    private const string ZUNE_FEATURESOVERRIDE_REGKEY = RegEdit.ZUNE_REG_PATH + "FeaturesOverride";
 
     private const string Description = "Re-enables access to some features disabled by Microsoft, such as the Social and Marketplace tabs.\r\n" +
         "Does not restore functionality of those features, but shows them in the software.";
@@ -19,6 +18,11 @@ public class FeaturesOverrideMod : Mod, IAsyncInit
 
     public override ModMetadata Metadata => new(nameof(FeaturesOverrideMod), "Features Override",
         Description, Author, new(1, 0));
+}
+
+public class FeaturesOverrideMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
+{
+    private const string ZUNE_FEATURESOVERRIDE_REGKEY = RegEdit.ZUNE_REG_PATH + "FeaturesOverride";
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

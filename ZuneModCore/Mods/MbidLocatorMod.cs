@@ -7,15 +7,8 @@ using System.Threading.Tasks;
 
 namespace ZuneModCore.Mods;
 
-public class MbidLocatorMod : Mod
+public class MbidLocatorModFactory : DIModFactoryBase<MbidLocatorMod>
 {
-    public const string ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME = "ZuneAlbumArtistMediaID";
-    public const string ZUNE_ALBUM_MEDIA_ID_NAME = "ZuneAlbumMediaID";
-    public const string ZUNE_MEDIA_ID_NAME = "ZuneMediaID";
-    public const string ZUNE_COLLECTION_ID_NAME = "ZuneCollectionID";
-
-    private static readonly string[] KNOWN_EXTS = [".mp3", ".mp4", ".m4a", ".wav"];
-
     private const string Description = "Puts MusicBrainz IDs added by MusicBrainz Picard where the Zune " +
         "software can use it to show additional information provided by Community Webservices.\r\n" +
         "Note that this will only have an effect if you have used MusicBrainz Picard on your music library.";
@@ -24,6 +17,16 @@ public class MbidLocatorMod : Mod
 
     public override ModMetadata Metadata => new(nameof(MbidLocatorMod), "MusicBrainz ID Locator",
         Description, Author, new(1, 0));
+}
+
+public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
+{
+    public const string ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME = "ZuneAlbumArtistMediaID";
+    public const string ZUNE_ALBUM_MEDIA_ID_NAME = "ZuneAlbumMediaID";
+    public const string ZUNE_MEDIA_ID_NAME = "ZuneMediaID";
+    public const string ZUNE_COLLECTION_ID_NAME = "ZuneCollectionID";
+
+    private static readonly string[] KNOWN_EXTS = [".mp3", ".mp4", ".m4a", ".wav"];
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
