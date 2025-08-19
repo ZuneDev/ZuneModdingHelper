@@ -45,13 +45,26 @@ namespace ZuneModdingHelper
         {
             await _settings.LoadAsync();
 
+            // Show a warning if Zune isn't found. Usually happens if Zune isn't installed,
+            // is installed in an unusual directory, or the user is running ZMH 32-bit
+            // on a 64-bit system.
+            string zuneExePath = System.IO.Path.Combine(_settings.ZuneInstallDir, "Zune.exe");
+            if (!System.IO.File.Exists(zuneExePath))
+            {
+                WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
+                {
+                    Title = "WARNING",
+                    Description = "The Zune software could not be found. Please go to settings to locate it, to avoid issues applying or resetting mods.",
+                }));
+            }
+
             // Show a warning if Zune is running
             Process[] procs = Process.GetProcessesByName("Zune");
-            string zuneExePath = System.IO.Path.Combine(_settings.ZuneInstallDir, "Zune.exe");
             if (procs.Length > 0 && procs.Any(p => p.MainModule.FileName == zuneExePath))
             {
                 WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
                 {
+                    Title = "WARNING",
                     Description = "The Zune software is currently running. You may run into issues applying or resetting mods.",
                 }));
             }
