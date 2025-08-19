@@ -128,6 +128,20 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
 
         try
         {
+            // Get and validate replacement host
+            string oldHost = "zune.net";
+            string newHost = ((AbstractTextBox)OptionsUI![0]).Value;
+            if (newHost.Length != oldHost.Length)
+            {
+                return $"The new host (\"{newHost}\") must have the same length as \"{oldHost}\".";
+            }
+
+            var ping = await new System.Net.NetworkInformation.Ping().SendPingAsync(newHost);
+            if (ping.Status != System.Net.NetworkInformation.IPStatus.Success)
+            {
+                return $"Failed to reach \"{newHost}\". Ping status: {ping.Status}";
+            }
+
             // Open the file
             using FileStream zsDll = zsDllInfo.Open(FileMode.Open);
             using BinaryWriter zsDllWriter = new(zsDll);
@@ -139,19 +153,6 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
             {
                 return "This mod has not been tested on versions earlier than 4.8.";
-            }
-
-            // Get and validate replacement host
-            string oldHost = "zune.net";
-            string newHost = ((AbstractTextBox)OptionsUI![0]).Value;
-            if (newHost.Length != oldHost.Length)
-            {
-                return $"The new host (\"{newHost}\") must have the same length as \"{oldHost}\".";
-            }
-            var ping = await new System.Net.NetworkInformation.Ping().SendPingAsync(newHost);
-            if (ping.Status != System.Net.NetworkInformation.IPStatus.Success)
-            {
-                return $"Failed to reach \"{newHost}\". Ping status: {ping.Status}";
             }
 
             // Read URL block as string
@@ -167,7 +168,6 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             catch { }
 
             // Patch ZuneServices.dll to use the new host instead of zune.net
-            endpointBlock = endpointBlock.Replace("resources." + oldHost, "www.zuneupdate.com");    // Use zuneupdate.com until resources.zunes.me is online
             endpointBlock = endpointBlock.Replace(oldHost, newHost);
             byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
             if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
@@ -176,7 +176,6 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             }
             zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
             zsDllWriter.Write(endpointBytes);
-
 
             // Enable all feature overrides affected by new servers
             bool setOverrideSuccess = true;
@@ -191,6 +190,10 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         catch (IOException)
         {
             return $"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.";
+        }
+        catch (System.Net.NetworkInformation.PingException pingEx)
+        {
+            return $"Failed to reach new host. {pingEx.InnerException?.Message ?? pingEx.Message}";
         }
         catch (Exception ex)
         {
