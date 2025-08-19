@@ -35,6 +35,8 @@ namespace ZuneModdingHelper
             });
         }
 
+        public static void OpenDonationLink() => OpenInBrowser(DonateLink);
+
         private static void ConfigureServices()
         {
             ServiceCollection services = new();

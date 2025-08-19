@@ -156,9 +156,6 @@ namespace ZuneModdingHelper
             DialogPresenter.Content = null;
         }
 
-        private void TileButton_Click(object sender, RoutedEventArgs e)
-        {
-            App.OpenInBrowser(App.DonateLink);
-        }
+        private void TileButton_Click(object sender, RoutedEventArgs e) => App.OpenDonationLink();
     }
 }
