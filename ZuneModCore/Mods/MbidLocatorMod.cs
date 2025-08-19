@@ -133,7 +133,7 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
                     TagLib.Id3v2.PrivateFrame albumArtistFrame = new(ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME)
                     {
-                        PrivateData = new(new Guid(tag.MusicBrainzReleaseArtistId).ToByteArray())
+                        PrivateData = new(EncodeMbidTag(tag.MusicBrainzReleaseArtistId))
                     };
                     id3v2.AddFrame(albumArtistFrame);
                 }
@@ -145,7 +145,7 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
                     TagLib.Id3v2.PrivateFrame albumFrame = new(ZUNE_ALBUM_MEDIA_ID_NAME)
                     {
-                        PrivateData = new(new Guid(tag.MusicBrainzReleaseId).ToByteArray())
+                        PrivateData = new(EncodeMbidTag(tag.MusicBrainzReleaseId))
                     };
                     id3v2.AddFrame(albumFrame);
                 }
@@ -157,7 +157,7 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
                     TagLib.Id3v2.PrivateFrame trackFrame = new(ZUNE_MEDIA_ID_NAME)
                     {
-                        PrivateData = new(new Guid(tag.MusicBrainzTrackId).ToByteArray())
+                        PrivateData = new(EncodeMbidTag(tag.MusicBrainzTrackId))
                     };
                     id3v2.AddFrame(trackFrame);
                 }
@@ -165,5 +165,14 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
         }
 
         tfile.Save();
+    }
+
+    private static byte[] EncodeMbidTag(string mbidTag)
+    {
+        // MBID tags may have more than one ID in them.
+        // So far, I've only seen forward slashes used as delimiters,
+        // but we might as well cover all the bases.
+        mbidTag = mbidTag.Split(['/', '\\', ',', ';']).First();
+        return new Guid(mbidTag).ToByteArray();
     }
 }
