@@ -38,6 +38,7 @@
             </TextBlock>
             <Button Content="CHECK FOR UPDATES" Click="UpdateCheckButton_Click"
                     Margin="0,8,0,12" Padding="8,0" HorizontalAlignment="Left"
+                    IsEnabled="{Binding EnableCheckForUpdates}"
                     Style="{StaticResource ActionButtonStyle}"/>
 
             <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">

@@ -1,16 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Octokit;
 using Syroot.Windows.IO;
 using System;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using ZuneModCore;
 using ZuneModdingHelper.Messages;
+using ZuneModdingHelper.Services;
 
 namespace ZuneModdingHelper.Pages
 {
@@ -21,14 +18,17 @@ namespace ZuneModdingHelper.Pages
     {
         const string UPDATES_DIALOG_TITLE = "UPDATES";
 
-        private readonly IGitHubClient? _gitHub = Ioc.Default.GetService<IGitHubClient>();
-        private ReleaseAsset _latestAsset;
+        private readonly IUpdateService? _updateService = Ioc.Default.GetService<IUpdateService>();
+        private UpdateAvailableInfo _updateInfo;
         private string _downloadedUpdatePath;
 
         public AboutPage()
         {
+            DataContext = this;
             InitializeComponent();
         }
+
+        public bool EnableCheckForUpdates => _updateService is not null;
 
         private void Link_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
@@ -38,7 +38,7 @@ namespace ZuneModdingHelper.Pages
 
         private async void UpdateCheckButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (_gitHub is null)
+            if (_updateService is null)
                 return;
 
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new ProgressDialogViewModel
@@ -51,16 +51,8 @@ namespace ZuneModdingHelper.Pages
 
             try
             {
-                // Get releases list from GitHub
-                // Why not use the `releases/latest` endpoint? Good question: https://github.com/octokit/octokit.net/issues/2916
-                var releases = await _gitHub.Repository.Release.GetAll("ZuneDev", "ZuneModdingHelper");
-                var latest = releases
-                    .Select(r => new { Release = r, Version = ReleaseVersion.Parse(r.TagName) })
-                    .OrderByDescending(t => t.Version)
-                    .ThenBy(t => t.Release.Prerelease)
-                    .First();
-
-                if (ReleaseVersion.TryParse(latest.Release.TagName, out var latestVer) || App.Version >= latestVer)
+                _updateInfo = await _updateService.FetchAvailableUpdate();
+                if (_updateInfo is null)
                 {
                     WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
                     WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new DialogViewModel
@@ -73,13 +65,12 @@ namespace ZuneModdingHelper.Pages
                 }
 
                 // Newer version available, prompt user to download
-                _latestAsset = latest.Release.Assets[0];
 
                 WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
                 WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new DialogViewModel
                 {
                     Title = UPDATES_DIALOG_TITLE,
-                    Description = $"Release {latest.Release.Name} is available. Would you like to download it now?",
+                    Description = $"Release {_updateInfo.Name} is available. Would you like to download it now?",
                     AffirmativeText = "YES",
                     NegativeText = "NO",
                     ShowAffirmativeButton = true,
@@ -107,30 +98,14 @@ namespace ZuneModdingHelper.Pages
                 IsIndeterminate = true,
                 ShowAffirmativeButton = false,
                 ShowNegativeButton = false,
-                Maximum = 100,
+                Maximum = 1.0,
             };
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(prog));
-
-            // Download new version to AppData
-            string downloadedFile = Path.Combine(Path.GetTempPath(), _latestAsset.Name);
-            if (File.Exists(downloadedFile)) File.Delete(downloadedFile);
-            using (var client = new System.Net.WebClient())
-            {
-                client.DownloadProgressChanged += (object sender, System.Net.DownloadProgressChangedEventArgs e) =>
-                {
-                    // Update UI with download progress
-                    prog.Progress = e.ProgressPercentage;
-                };
-
-                prog.Progress = 0;
-                prog.IsIndeterminate = false;
-                await client.DownloadFileTaskAsync(new Uri(_latestAsset.BrowserDownloadUrl), downloadedFile);
-            }
 
             // Ask user to save file
             Microsoft.Win32.SaveFileDialog saveFileDialog = new()
             {
-                FileName = _latestAsset.Name,
+                FileName = _updateInfo.Name,
                 InitialDirectory = new KnownFolder(KnownFolderType.Downloads).Path
             };
             bool dialogResult = saveFileDialog.ShowDialog() ?? false;
@@ -139,12 +114,17 @@ namespace ZuneModdingHelper.Pages
             if (dialogResult)
             {
                 _downloadedUpdatePath = saveFileDialog.FileName;
-                File.Copy(downloadedFile, _downloadedUpdatePath, true);
+
+                // Download new version to requested folder with progress updates
+                Progress<double> progress = new(p => prog.Progress = p);
+                prog.Progress = 0;
+                prog.IsIndeterminate = false;
+                await _updateService.DownloadUpdate(_updateInfo, _downloadedUpdatePath, progress);
 
                 WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new DialogViewModel
                 {
                     Title = UPDATES_DIALOG_TITLE,
-                    Description = "Update downloaded. Would you like to install the new version?",
+                    Description = "Update downloaded. Would you like to launch the new version?",
                     AffirmativeText = "YES",
                     NegativeText = "NO",
                     ShowAffirmativeButton = true,
@@ -152,8 +132,6 @@ namespace ZuneModdingHelper.Pages
                     OnAction = new AsyncRelayCommand<bool>(OnLaunchUpdateDialogResult)
                 }));
             }
-
-            File.Delete(downloadedFile);
         }
 
         private async Task OnLaunchUpdateDialogResult(bool accepted)
