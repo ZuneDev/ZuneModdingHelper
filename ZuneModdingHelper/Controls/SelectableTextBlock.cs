@@ -24,7 +24,7 @@ public class SelectableTextBlock : TextBlock
         _startSelectPosition = GetPositionFromPoint(mouseDownPoint, true);
 
         // TODO: Is there any better way to allow text to be selected?
-        Clipboard.SetText(Text);
+        System.Windows.Forms.Clipboard.SetText(Text);
     }
 
     protected override void OnMouseUp(MouseButtonEventArgs e)
