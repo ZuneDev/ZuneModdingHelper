@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using OwlCore.AbstractUI.Models;
 using OwlCore.ComponentModel;
+using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using ZuneModCore;
 using ZuneModCore.Services;
 using ZuneModdingHelper.Messages;
+using ZuneModdingHelper.Services;
 
 namespace ZuneModdingHelper.Pages
 {
@@ -18,10 +22,12 @@ namespace ZuneModdingHelper.Pages
         private const string MOD_MANAGER_TITLE = "MOD MANAGER";
 
         private readonly IModCoreConfig _modConfig;
+        private readonly Settings _settings;
 
-        public ModsPage(IModCoreConfig modConfig)
+        public ModsPage(IModCoreConfig modConfig, Settings settings)
         {
             _modConfig = modConfig;
+            _settings = settings;
 
             InitializeComponent();
             ModList.ItemsSource = ModManager.ModFactories;
@@ -89,6 +95,7 @@ namespace ZuneModdingHelper.Pages
             {
                 Title = MOD_MANAGER_TITLE,
                 Description = $"Successfully applied '{modTitle}'",
+                OnAction = new AsyncRelayCommand<bool>(ShowDonationRequestDialog)
             }));
         }
 
@@ -152,6 +159,62 @@ namespace ZuneModdingHelper.Pages
         {
             modFactory = (sender as FrameworkElement)?.DataContext as IModFactory<Mod>;
             return modFactory is not null;
+        }
+
+        private async Task ShowDonationRequestDialog(bool _)
+        {
+            // Close success dialog
+            WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
+
+            // Don't bother users if they're offline or the site is inaccessible
+            try
+            {
+                var ping = new Ping();
+                var result = await ping.SendPingAsync(App.DonateUri.Host);
+                if (result.Status is not IPStatus.Success)
+                    return;
+            }
+            catch
+            {
+                return;
+            }
+
+            // Ask for donations every once in a while (but only when mod is successful)
+            if (_settings.NextDonationRequestTime is not null && _settings.NextDonationRequestTime <= System.DateTimeOffset.UtcNow)
+            {
+                // Set next request time
+                var nextRequestTime = _settings.NextDonationRequestTime.Value;
+                _settings.NextDonationRequestTime = _settings.DonationRequestInterval switch
+                {
+                    DonationRequestInterval.EveryMod => nextRequestTime,
+                    DonationRequestInterval.OneWeek => nextRequestTime.AddDays(7),
+                    DonationRequestInterval.TwoWeeks => nextRequestTime.AddMonths(14),
+                    DonationRequestInterval.OneMonth => nextRequestTime.AddMonths(1),
+                    DonationRequestInterval.ThreeMonths => nextRequestTime.AddMonths(3),
+                    DonationRequestInterval.SixMonths => nextRequestTime.AddMonths(6),
+                    DonationRequestInterval.OneYear => nextRequestTime.AddYears(1),
+                    _ => nextRequestTime.AddMonths(1),
+                };
+
+                // Show request dialog
+                WeakReferenceMessenger.Default.Send(new ShowDialogMessage(new()
+                {
+                    Title = "THANK YOU FOR USING ZMH",
+                    Description = $"{App.Title} is free software, but it still takes money and a lot of time to write, support, and distribute it.\r\n\r\n"
+                        + "If ZMH has been helpful for you, please consider supporting this and other ZuneDev projects with a donation to the author.",
+                    AffirmativeText = "DONATE",
+                    NegativeText = "REMIND ME LATER",
+                    ShowNegativeButton = true,
+                    OnAction = new AsyncRelayCommand<bool>(openDonation =>
+                    {
+                        if (openDonation)
+                            App.OpenDonationLink();
+
+                        WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
+                        return Task.CompletedTask;
+                    })
+                }));
+            }
         }
     }
 }

@@ -25,4 +25,27 @@ public class Settings(IModifiableFolder folder) : SettingsBase(folder, SystemTex
         get => GetSetting(() => Mod.DefaultZuneInstallDir);
         set => SetSetting(value);
     }
+
+    public DateTimeOffset? NextDonationRequestTime
+    {
+        get => GetSetting(() => DateTimeOffset.UtcNow);
+        set => SetSetting(value);
+    }
+
+    public DonationRequestInterval DonationRequestInterval
+    {
+        get => GetSetting(() => DonationRequestInterval.OneMonth);
+        set => SetSetting(value);
+    }
+}
+
+public enum DonationRequestInterval
+{
+    EveryMod,
+    OneWeek,
+    TwoWeeks,
+    OneMonth,
+    ThreeMonths,
+    SixMonths,
+    OneYear
 }
