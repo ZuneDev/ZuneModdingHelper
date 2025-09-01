@@ -782,23 +782,21 @@
     
     <!-- ComboBox -->
 
-    <LinearGradientBrush x:Key="NormalComboBoxBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush x:Key="ComboBoxNormalBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#F7F7F7" Offset="0"/>
         <GradientStop Color="#E0E0E0" Offset="1"/>
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="HoverComboBoxBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#EAEAEA" Offset="0"/>
-        <GradientStop Color="#FDFDFD" Offset="1"/>
+    <LinearGradientBrush x:Key="ComboBoxHoverBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FDFDFD" Offset="0"/>
+        <GradientStop Color="#EAEAEA" Offset="1"/>
     </LinearGradientBrush>
-    <LinearGradientBrush x:Key="DisabledComboBoxBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush x:Key="ComboBoxDisabledBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Color="#E5E5E5" Offset="0"/>
         <GradientStop Color="#D5D5D5" Offset="1"/>
     </LinearGradientBrush>
 
     <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="#e3e9ef" />
-    <SolidColorBrush x:Key="ComboBoxNormalBackgroundBrush" Color="#fff" />
     <SolidColorBrush x:Key="ComboBoxDisabledForegroundBrush" Color="#888" />
-    <SolidColorBrush x:Key="ComboBoxDisabledBackgroundBrush" Color="#eee" />
     <SolidColorBrush x:Key="ComboBoxDisabledBorderBrush" Color="#888" />
 
     <ControlTemplate x:Key="ZuneComboBoxToggleButton" TargetType="ToggleButton">
@@ -822,7 +820,7 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="UIElement.IsMouseOver" Value="True">
-                <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="WhiteSmoke"/>
+                <Setter Property="Panel.Background" TargetName="Border" Value="{StaticResource ComboBoxHoverBackgroundBrush}"/>
             </Trigger>
             <Trigger Property="ToggleButton.IsChecked" Value="True">
                 <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="WhiteSmoke"/>
