@@ -14,7 +14,7 @@ namespace ZuneModdingHelper
     {
         public const string Title = "Zune Modding Helper";
 
-        public static readonly ReleaseVersion Version = new(2024, 5, 18, 0, Phase.Alpha);
+        public static readonly ReleaseVersion Version = new(2025, 8, 20, 0, Phase.Alpha);
         public static readonly string VersionStr = Version.ToString();
         public static readonly System.Uri VersionUri = new($"https://github.com/ZuneDev/ZuneModdingHelper/releases/tag/{VersionStr}");
 
@@ -43,6 +43,8 @@ namespace ZuneModdingHelper
 
             Octokit.IGitHubClient github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(Title.Replace(" ", ""), VersionStr));
             services.AddSingleton(github);
+
+            services.AddSingleton<IUpdateService, GitHubReleasesUpdateService>();
 
             services.AddSingleton<IModCoreConfig>(Settings.Default);
             services.AddSingleton(Settings.Default);
