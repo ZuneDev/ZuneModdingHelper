@@ -40,7 +40,7 @@
             <TextBlock Margin="0,24,0,0" Style="{StaticResource ZuneBodyTextBlockStyle}">
                 <Run Text="General" Style="{StaticResource ZuneHeaderTextStyle}"/>
             </TextBlock>
-            <TextBlock Text="Choose how often to request donations." Margin="0,8"
+            <TextBlock Text="Choose how often the donation prompt is shown." Margin="0,8"
                        Style="{StaticResource ZuneBodyTextBlockStyle}" />
             <ComboBox SelectedValue="{Binding Settings.DonationRequestInterval}"
                       ItemsSource="{ocW:EnumValues Enum=zmhs:DonationRequestInterval}"
