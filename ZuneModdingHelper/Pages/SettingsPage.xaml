@@ -4,13 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ZuneModdingHelper.Pages"
+             xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls"
              xmlns:zmhs="clr-namespace:ZuneModdingHelper.Services"
+             xmlns:ocW="clr-namespace:OwlCore.Wpf;assembly=OwlCore.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             d:Background="White"
              Unloaded="SettingsPage_Unloaded">
     <d:UserControl.DataContext>
         <local:SettingsViewModel/>
     </d:UserControl.DataContext>
+
+    <UserControl.Resources>
+        <zmhc:DonationIntervalDescriptionConverter x:Key="DonReqIntv"/>
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
@@ -29,6 +36,21 @@
             <Button Content="KILL ALL" HorizontalAlignment="Left" Margin="0,8,0,0"
                     Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
                     Click="KillZuneButton_Click"/>
+
+            <TextBlock Margin="0,24,0,0" Style="{StaticResource ZuneBodyTextBlockStyle}">
+                <Run Text="General" Style="{StaticResource ZuneHeaderTextStyle}"/>
+            </TextBlock>
+            <TextBlock Text="Choose how often to request donations." Margin="0,8"
+                       Style="{StaticResource ZuneBodyTextBlockStyle}" />
+            <ComboBox SelectedValue="{Binding Settings.DonationRequestInterval}"
+                      ItemsSource="{ocW:EnumValues Enum=zmhs:DonationRequestInterval}"
+                      HorizontalAlignment="Left">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type zmhs:DonationRequestInterval}">
+                        <TextBlock Text="{Binding Converter={StaticResource DonReqIntv}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

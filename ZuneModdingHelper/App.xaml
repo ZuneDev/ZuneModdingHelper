@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ZuneModdingHelper"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:ocWC="clr-namespace:OwlCore.Wpf.Converters;assembly=OwlCore.Wpf"
              xmlns:ocWCBV="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible;assembly=OwlCore.Wpf"
              StartupUri="AppWindow.xaml">
     <Application.Resources>
@@ -19,6 +20,8 @@
             <Style TargetType="ScrollBar" BasedOn="{StaticResource ZuneScrollBarStyle}"/>
             <Style TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}"/>
             <Style TargetType="TextBox" BasedOn="{StaticResource ZuneTextBoxBaseStyle}"/>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource ZuneComboBoxStyle}"/>
+            <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ZuneComboBoxItemStyle}"/>
 
             <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
             <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
