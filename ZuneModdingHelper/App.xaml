@@ -21,7 +21,6 @@
             <Style TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}"/>
             <Style TargetType="TextBox" BasedOn="{StaticResource ZuneTextBoxBaseStyle}"/>
             <Style TargetType="ComboBox" BasedOn="{StaticResource ZuneComboBoxStyle}"/>
-            <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ZuneComboBoxItemStyle}"/>
 
             <FontFamily x:Key="ZMHIcons">Assets/ZMH_Icons.ttf#ZMHIcons</FontFamily>
             <FontFamily x:Key="SegoeMDL2">Segoe MDL2 Assets</FontFamily>
