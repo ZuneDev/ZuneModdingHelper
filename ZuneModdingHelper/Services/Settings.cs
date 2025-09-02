@@ -2,9 +2,7 @@
 using OwlCore.Storage;
 using System.IO;
 using System;
-using ZuneModCore;
 using ZuneModCore.Services;
-using System.Collections.Generic;
 
 namespace ZuneModdingHelper.Services;
 
@@ -12,12 +10,14 @@ public class Settings(IModifiableFolder folder) : SettingsBase(folder, SystemTex
 {
     static Settings()
     {
-        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ZuneModCore", "Settings");
+        string dir = Path.Combine(AppDataDir, "Settings");
         Directory.CreateDirectory(dir);
 
         OwlCore.Storage.SystemIO.SystemFolder settingsFolder = new(dir);
         Default = new(settingsFolder);
     }
+
+    public static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ZuneModCore");
 
     public static Settings Default { get; }
 

@@ -1,4 +1,5 @@
-﻿using OwlCore.AbstractUI.Models;
+﻿using Microsoft.Extensions.Logging;
+using OwlCore.AbstractUI.Models;
 using OwlCore.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
         Description, Author, new(1, 2));
 }
 
-public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata), IAsyncInit
+public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConfig, ILogger<WebservicesMod> log) : Mod(metadata), IAsyncInit
 {
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
@@ -130,6 +131,8 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
 
         if (errorMessage is not null)
         {
+            log.LogWarning("Binary patching failed, falling back to hosts file modification: {ErrorMessage}", errorMessage);
+
             // Fallback to editing hosts file
             errorMessage = await AddEntriesToHostsFile(newHost);
 

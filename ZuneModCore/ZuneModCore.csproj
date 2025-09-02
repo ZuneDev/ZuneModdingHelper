@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="OwlCore" Version="0.4.1" />
         <PackageReference Include="OwlCore.AbstractUI" Version="0.0.0" />

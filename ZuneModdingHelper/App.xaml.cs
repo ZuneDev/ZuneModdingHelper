@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Windows;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ZuneModCore;
 using ZuneModCore.Services;
 using ZuneModdingHelper.Services;
@@ -57,7 +59,14 @@ namespace ZuneModdingHelper
 
         private static void ConfigureServices()
         {
-            ServiceCollection services = new();
+            ServiceCollection services = [];
+
+            services.AddLogging(builder =>
+            {
+                var logDir = Path.Combine(Settings.AppDataDir, "Logs");
+                Directory.CreateDirectory(logDir);
+                builder.AddProvider(new FileLoggerProvider(logDir));
+            });
 
             Octokit.IGitHubClient github = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(Title.Replace(" ", ""), VersionStr));
             services.AddSingleton(github);

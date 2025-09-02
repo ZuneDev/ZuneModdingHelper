@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.Logging;
 using OwlCore.AbstractUI.Models;
 using OwlCore.ComponentModel;
+using System;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,10 +23,12 @@ namespace ZuneModdingHelper.Pages
         private const string MOD_MANAGER_TITLE = "MOD MANAGER";
 
         private readonly Settings _settings;
+        private readonly ILogger<ModsPage> _log;
 
-        public ModsPage(Settings settings)
+        public ModsPage(Settings settings, ILogger<ModsPage> log)
         {
             _settings = settings;
+            _log = log;
 
             InitializeComponent();
             ModList.ItemsSource = ModManager.ModFactories;
@@ -84,6 +88,8 @@ namespace ZuneModdingHelper.Pages
                 Description = $"Successfully applied '{modTitle}'",
                 OnAction = new AsyncRelayCommand<bool>(ShowDonationRequestDialog)
             }));
+
+            _log.LogInformation("Mod {ModId} applied", mod.Metadata.Id);
         }
 
         private async void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -130,6 +136,8 @@ namespace ZuneModdingHelper.Pages
                 Title = MOD_MANAGER_TITLE,
                 Description = $"Successfully reset '{modTitle}'",
             }));
+
+            _log.LogError("Mod {ModId} reset", mod.Metadata.Id);
         }
 
         private static bool TryGetModFromControl(object sender, out IModFactory<Mod> modFactory)
@@ -148,8 +156,10 @@ namespace ZuneModdingHelper.Pages
             return mod;
         }
 
-        private static void ShowErrorDialog(Mod mod, string action, string errorMessage)
+        private void ShowErrorDialog(Mod mod, string action, string errorMessage)
         {
+            _log.LogError("Mod {ModId} failed to {Action}: {ErrorMessage}", mod.Metadata.Id, action, errorMessage);
+
             DialogViewModel errorDialog = new()
             {
                 Title = MOD_MANAGER_TITLE,
