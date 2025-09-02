@@ -126,7 +126,7 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
     public override async Task<string?> Apply()
     {
         var newHost = ((AbstractTextBox)OptionsUI![0]).Value;
-        var errorMessage = "hi";// await PatchZuneServices(newHost);
+        var errorMessage = await PatchZuneServices(newHost);
 
         if (errorMessage is not null)
         {
@@ -226,7 +226,7 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
                 versionInfo.ProductBuildPart, versionInfo.FilePrivatePart);
 
             // Open the file and determine the architecture
-            using FileStream zsDll = zsDllInfo.OpenRead();
+            using FileStream zsDll = zsDllInfo.Open(FileMode.Open);
 
             Machine architecture;
             using (PEReader peReader = new(zsDll, PEStreamOptions.LeaveOpen | PEStreamOptions.PrefetchMetadata))
