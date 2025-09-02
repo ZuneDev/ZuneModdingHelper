@@ -12,20 +12,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using ZuneModCore.Services;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
 
 namespace ZuneModCore.Mods;
 
 public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
 {
-
     private const string Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
         "to use the community's recreation of Microsoft's Zune servers at zunes.me (instead of zune.net).";
 
     private const string Author = "Joshua \"Yoshi\" Askharoun";
 
     public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices",
-        Description, Author, new(1, 1));
+        Description, Author, new(1, 2));
 }
 
 public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata), IAsyncInit

@@ -12,10 +12,10 @@ public class VideoSyncModFactory : DIModFactoryBase<VideoSyncMod>
     private const string Description =
         "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer";
 
-    private const string Author = "sylvathemoth";
+    private const string Author = "ส็็็Codix#4833 & sylvathemoth";
 
     public override ModMetadata Metadata => new(nameof(VideoSyncMod), "Fix Video Sync",
-        Description, Author, new(2, 0));
+        Description, Author, new(2, 1));
 }
 
 public class VideoSyncMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata)
@@ -26,6 +26,11 @@ public class VideoSyncMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(
 
     public override async Task<string?> Apply()
     {
+        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 14393))
+        {
+            return "This version of Windows does not require a fix for syncing video.";
+        }
+
         // Verify that ZuneEncEng.dll exists
         FileInfo zeeDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneEncEng.dll"));
         if (!zeeDllInfo.Exists)
