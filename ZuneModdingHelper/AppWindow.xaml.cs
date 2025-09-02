@@ -45,6 +45,9 @@ namespace ZuneModdingHelper
         {
             await _settings.LoadAsync();
 
+            // Check for updates in the background
+            UpdateHelper.Instance.CheckForUpdatesAsync(false);
+
             // Show a warning if Zune isn't found. Usually happens if Zune isn't installed,
             // is installed in an unusual directory, or the user is running ZMH 32-bit
             // on a 64-bit system.
