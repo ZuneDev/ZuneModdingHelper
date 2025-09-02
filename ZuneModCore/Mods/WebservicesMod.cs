@@ -4,9 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
@@ -25,7 +28,7 @@ public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
         Description, Author, new(1, 1));
 }
 
-public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
+public partial class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
 {
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
@@ -46,8 +49,24 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         "SocialMarketplace", "SubscriptionFreeTracks",
     ];
 
+    private static readonly (string description, string subdomain)[] _knownSubdomains =
+    [
+        ("Main website", "www"),
+        ("Social website", "social"),
+        ("Catalog", "catalog"),
+        ("Image catalog", "image.catalog"),
+        ("Social", "socialapi"),
+        ("Social [Comments]", "comments"),
+        ("Social [Inbox]", "inbox"),
+        ("Commerce [Sign in]", "commerce"),
+        ("Mix", "mix"),
+        ("Resources [Firmware]", "resources"),
+        ("Statistics", "stats"),
+    ];
+
     private HttpClient _client;
     private CancellationTokenSource _cts = new();
+    private string _methodFile;
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
@@ -58,21 +77,8 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
                 Title = "host",
                 TooltipText = "The host where the replacement servers are located. Must be the same length as \"zune.net\"."
             },
-            new AbstractDataList("hostsTest", new List<AbstractUIMetadata>()
-                {
-                    GetWebserviceAvailabilityUI("Main website", "www"),
-                    GetWebserviceAvailabilityUI("Social website", "social"),
-                    GetWebserviceAvailabilityUI("Catalog", "catalog"),
-                    GetWebserviceAvailabilityUI("Image catalog", "image.catalog"),
-                    GetWebserviceAvailabilityUI("Social", "socialapi"),
-                    GetWebserviceAvailabilityUI("Social [Comments]", "comments"),
-                    GetWebserviceAvailabilityUI("Social [Inbox]", "inbox"),
-                    GetWebserviceAvailabilityUI("Commerce [Sign in]", "commerce"),
-                    GetWebserviceAvailabilityUI("Mix", "mix"),
-                    GetWebserviceAvailabilityUI("Resources [Firmware]", "resources"),
-                    GetWebserviceAvailabilityUI("Statistics", "stats"),
-                }
-            )
+            new AbstractDataList("hostsTest",
+                _knownSubdomains.Select(e => GetWebserviceAvailabilityUI(e.description, e.subdomain)))
             {
                 Subtitle = "TEST AVAILABILITY OF EACH KNOWN WEB SERVICE ON THE NEW HOST.".ToUpper(),
                 IsUserEditingEnabled = false,
@@ -100,6 +106,8 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         if (IsInitialized)
             return Task.CompletedTask;
 
+        _methodFile = Path.Combine(StorageDirectory, "AppliedMethod.txt");
+
         _client = new()
         {
             Timeout = TimeSpan.FromSeconds(3)
@@ -116,11 +124,19 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
     public override async Task<string?> Apply()
     {
         var newHost = ((AbstractTextBox)OptionsUI![0]).Value;
-        var errorMessage = await PatchZuneServices(newHost);
+        var errorMessage = "hi";// await PatchZuneServices(newHost);
 
         if (errorMessage is not null)
         {
-            // TODO: Fallback to editing hosts file
+            // Fallback to editing hosts file
+            errorMessage = await AddEntriesToHostsFile(newHost);
+
+            if (errorMessage is null)
+                await RecordAppliedMethod(ApplicationMethod.HostsEntries);
+        }
+        else
+        {
+            await RecordAppliedMethod(ApplicationMethod.BinaryPatch);
         }
 
         return errorMessage;
@@ -129,10 +145,29 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
     public override async Task<string?> Reset()
     {
         string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
+
         try
         {
-            // Copy backup to application folder
-            File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), zsDllPath, true);
+            var method = await ReadAppliedMethod();
+            switch (method)
+            {
+                case ApplicationMethod.BinaryPatch:
+                    // Restore backup to application folder
+                    File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), zsDllPath, true);
+                    break;
+
+                case ApplicationMethod.HostsEntries:
+                    // TODO: Remove entries from hosts file
+                    return $"Automatic removal of hosts file entries is not yet supported. Please manually remove any entries for zune.net and its subdomains from your hosts file.";
+                    break;
+            }
+
+            // Clear application method file
+            try
+            {
+                File.Delete(_methodFile);
+            }
+            catch (FileNotFoundException) { }
 
             // Disable all feature overrides affected by new servers
             bool setOverrideSuccess = true;
@@ -153,6 +188,7 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             return ex.Message;
         }
     }
+
     private async Task<string?> PatchZuneServices(string newHost)
     {
         // Verify that ZuneServices.dll exists
@@ -260,6 +296,61 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         return null;
     }
 
+    private static async Task<string?> AddEntriesToHostsFile(string newHost)
+    {
+        var hostEntry = await Dns.GetHostEntryAsync(newHost);
+        var ipAddress = hostEntry?.AddressList?.FirstOrDefault();
+        if (ipAddress is null)
+        {
+            return $"Failed to resolve host '{newHost}' to an IP address.";
+        }
+
+        var hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
+        var hostLines = (await File.ReadAllLinesAsync(hostsPath)).ToList();
+
+        var domains = _knownSubdomains
+            .Select(e => GetDomainName(e.subdomain, "zune.net"))
+            .ToHashSet();
+
+        // Update existing entries
+        Regex rx = HostsEntryRegex();
+        for (int l = 0; l < hostLines.Count; l++)
+        {
+            var line = hostLines[l].Trim();
+
+            // Ignore comments and empty lines
+            if (line.Length <= 0 || line[0] is '#')
+                continue;
+
+            var match = rx.Match(line);
+            if (!match.Success)
+                continue;
+
+            var domain = match.Groups["name"].Value;
+
+            // Ignore entries unrelated to Zune
+            if (!domain.EndsWith("zune.net"))
+                continue;
+
+            // Reconstruct entry with new IP address
+            hostLines[l] = $"{ipAddress} {domain}";
+
+            // Track that we handled this domain
+            domains.Remove(domain);
+        }
+
+        // Add any entries that didn't already exist
+        if (domains.Count > 0)
+        {
+            foreach (var domain in domains)
+                hostLines.Add($"{ipAddress} {domain}");
+        }
+
+        await File.WriteAllLinesAsync(hostsPath, hostLines);
+
+        return null;
+    }
+
     async void OnHostChanged(object? sender, string newHost)
     {
         await _cts.CancelAsync();
@@ -304,7 +395,7 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
 
     private async Task UpdateStatus(AbstractUIMetadata metadata, string newHost, CancellationToken token = default)
     {
-        string url = "http://" + (metadata.Id.Split('_')[1] + '.' + newHost).Replace("www.", string.Empty);
+        string url = "http://" + GetDomainName(metadata.Id.Split('_')[1], newHost);
         string? pingResult = await Ping(url, token);
 
         if (pingResult == null)
@@ -323,4 +414,28 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             metadata.Subtitle = WEBSERVICE_SUBTITLE_UNREACHABLE;
         }
     }
+
+    private static string GetDomainName(string subdomain, string host)
+    {
+        return $"{subdomain}.{host}".Replace("www.", string.Empty);
+    }
+
+    private async Task RecordAppliedMethod(ApplicationMethod method)
+    {
+        await File.WriteAllTextAsync(_methodFile, method.ToString());
+    }
+
+    private async Task<ApplicationMethod> ReadAppliedMethod()
+    {
+        if (!File.Exists(_methodFile))
+            return ApplicationMethod.None;
+
+        var methodText = await File.ReadAllTextAsync(_methodFile);
+        return Enum.Parse<ApplicationMethod>(methodText);
+    }
+
+    [GeneratedRegex(@"(?<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(?<name>[\w.-]+?)(\s+|$)")]
+    private static partial Regex HostsEntryRegex();
+
+    private enum ApplicationMethod { None, BinaryPatch, HostsEntries}
 }
