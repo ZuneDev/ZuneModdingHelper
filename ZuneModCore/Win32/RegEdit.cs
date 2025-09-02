@@ -6,6 +6,31 @@ public class RegEdit
 {
     public const string ZUNE_REG_PATH = @"SOFTWARE\Microsoft\Zune\";
 
+    public static bool CurrentUserSetStringValue(string key, string name, string value)
+    {
+        RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(key, true);
+        regKey ??= Registry.CurrentUser.CreateSubKey(key, true);
+
+        regKey.SetValue(name, value, RegistryValueKind.String);
+        regKey.Close();
+        regKey.Dispose();
+
+        // Read the key to make sure it was set properly
+        return CurrentUserGetStringValue(key, name) == value;
+    }
+
+    public static string? CurrentUserGetStringValue(string key, string name)
+    {
+        using RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(key, true);
+        if (regKey == null)
+            return null;
+
+        // Return null if a string value couldn't be read from the key
+        if (regKey.GetValue(name, false) is string value)
+            return value;
+        return null;
+    }
+
     public static bool CurrentUserSetBoolValue(string key, string name, bool value)
     {
         RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(key, true);
@@ -16,9 +41,7 @@ public class RegEdit
         regKey.Dispose();
 
         // Read the key to make sure it was set properly
-        if (CurrentUserGetBoolValue(key, name) == null)
-            return false;
-        return true;
+        return CurrentUserGetBoolValue(key, name) == value;
     }
 
     public static bool? CurrentUserGetBoolValue(string key, string name)

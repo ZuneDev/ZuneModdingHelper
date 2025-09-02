@@ -17,11 +17,13 @@ public class BackgroundImageModFactory : DIModFactoryBase<BackgroundImageMod>
     private const string Author = "Joshua \"Yoshi\" Askharoun";
 
     public override ModMetadata Metadata => new(nameof(BackgroundImageMod), "Background Image",
-        Description, Author, new(1, 0));
+        Description, Author, new(1, 1));
 }
 
 public class BackgroundImageMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata)
 {
+    private const string FRAMEBACKGROUND_NAME = "FRAMEBACKGROUND06.PNG";
+
     public string ZuneInstallDir => modConfig.ZuneInstallDir;
 
     public override AbstractUICollection? GetDefaultOptionsUI()
@@ -90,7 +92,7 @@ public class BackgroundImageMod(ModMetadata metadata, IModCoreConfig modConfig) 
                 // Locate the image resource
                 // TODO: Allow users to specify which background they want to replace
                 List<Resource> RCDATA = vi.Resources[resId];
-                int idx = RCDATA.FindIndex(r => r.Name.Name == "FRAMEBACKGROUND06.PNG");
+                int idx = RCDATA.FindIndex(r => r.Name.Name == FRAMEBACKGROUND_NAME);
                 if (idx < 0)
                     return $"Failed to locate background image resource in Zune software.";
                 GenericResource ogRes = (GenericResource)RCDATA[idx];
@@ -104,6 +106,10 @@ public class BackgroundImageMod(ModMetadata metadata, IModCoreConfig modConfig) 
                 newRes.SaveTo(zsrDllTempPath);
             }
             File.Copy(zsrDllTempPath, zsrDllInfo.FullName, true);
+
+            // Configure Zune to use the "Zero" background
+            var resourceUri = $"res://ZuneShellResources.dll!{FRAMEBACKGROUND_NAME}";
+            RegEdit.CurrentUserSetStringValue(RegEdit.ZUNE_REG_PATH + "Shell", "BackgroundImage", resourceUri);
 
             return null;
         }
