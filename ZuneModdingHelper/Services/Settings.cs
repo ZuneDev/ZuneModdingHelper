@@ -4,6 +4,7 @@ using System.IO;
 using System;
 using ZuneModCore;
 using ZuneModCore.Services;
+using System.Collections.Generic;
 
 namespace ZuneModdingHelper.Services;
 
@@ -22,7 +23,7 @@ public class Settings(IModifiableFolder folder) : SettingsBase(folder, SystemTex
 
     public string ZuneInstallDir
     {
-        get => GetSetting(() => Mod.DefaultZuneInstallDir);
+        get => GetSetting(GetDefaultZuneInstallDir);
         set => SetSetting(value);
     }
 
@@ -36,6 +37,22 @@ public class Settings(IModifiableFolder folder) : SettingsBase(folder, SystemTex
     {
         get => GetSetting(() => DonationRequestInterval.OneMonth);
         set => SetSetting(value);
+    }
+
+    private static string GetDefaultZuneInstallDir()
+    {
+        // Check common install locations for Zune
+        string[] commonPaths = [
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune"),
+            @"C:\Program Files\Zune",
+            @"C:\Program Files (x86)\Zune",
+        ];
+
+        foreach (var path in commonPaths)
+            if (Directory.Exists(path))
+                return path;
+
+        return commonPaths[0];
     }
 }
 

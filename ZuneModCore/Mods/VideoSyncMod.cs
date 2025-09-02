@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using ZuneModCore.Services;
 
 namespace ZuneModCore.Mods;
 
@@ -17,8 +18,10 @@ public class VideoSyncModFactory : DIModFactoryBase<VideoSyncMod>
         Description, Author, new(2, 0));
 }
 
-public class VideoSyncMod(ModMetadata metadata) : Mod(metadata)
+public class VideoSyncMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata)
 {
+    public string ZuneInstallDir => modConfig.ZuneInstallDir;
+
     private const int ZUNEENCENG_WMVCORA_OFFSET = 0x161E;
 
     public override async Task<string?> Apply()

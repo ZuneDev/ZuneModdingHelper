@@ -21,12 +21,10 @@ namespace ZuneModdingHelper.Pages
     {
         private const string MOD_MANAGER_TITLE = "MOD MANAGER";
 
-        private readonly IModCoreConfig _modConfig;
         private readonly Settings _settings;
 
-        public ModsPage(IModCoreConfig modConfig, Settings settings)
+        public ModsPage(Settings settings)
         {
-            _modConfig = modConfig;
             _settings = settings;
 
             InitializeComponent();
@@ -50,10 +48,7 @@ namespace ZuneModdingHelper.Pages
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(progDialog));
 
             // Stage 0: Initialize mod
-            var mod = modFactory.Create(Ioc.Default);
-            mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
-            if (mod is IAsyncInit initMod)
-                await initMod.InitAsync();
+            var mod = await CreateModInstance(modFactory);
             ++progDialog.Progress;
 
             // Stage 1: Display AbstractUI for options
@@ -115,10 +110,7 @@ namespace ZuneModdingHelper.Pages
             };
             WeakReferenceMessenger.Default.Send(new ShowDialogMessage(progDialog));
 
-            var mod = modFactory.Create(Ioc.Default);
-            mod.ZuneInstallDir = _modConfig.ZuneInstallDir;
-            if (mod is IAsyncInit initMod)
-                await initMod.InitAsync();
+            var mod = await CreateModInstance(modFactory);
             ++progDialog.Progress;
 
             // TODO: Implement AbstractUI display for reset options
@@ -159,6 +151,16 @@ namespace ZuneModdingHelper.Pages
         {
             modFactory = (sender as FrameworkElement)?.DataContext as IModFactory<Mod>;
             return modFactory is not null;
+        }
+
+        private static async Task<Mod> CreateModInstance(IModFactory<Mod> modFactory)
+        {
+            var mod = modFactory.Create(Ioc.Default);
+
+            if (mod is IAsyncInit initMod)
+                await initMod.InitAsync();
+
+            return mod;
         }
 
         private async Task ShowDonationRequestDialog(bool _)

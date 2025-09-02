@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Vestris.ResourceLib;
+using ZuneModCore.Services;
 using ZuneModCore.Win32;
 
 namespace ZuneModCore.Mods;
@@ -19,8 +20,10 @@ public class BackgroundImageModFactory : DIModFactoryBase<BackgroundImageMod>
         Description, Author, new(1, 0));
 }
 
-public class BackgroundImageMod(ModMetadata metadata) : Mod(metadata)
+public class BackgroundImageMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata)
 {
+    public string ZuneInstallDir => modConfig.ZuneInstallDir;
+
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
         AbstractUICollection optionsUi = new(nameof(BackgroundImageMod))

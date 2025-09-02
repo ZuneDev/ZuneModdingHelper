@@ -28,7 +28,7 @@ public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
         Description, Author, new(1, 1));
 }
 
-public partial class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
+public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata), IAsyncInit
 {
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET = 0x14D60;
     private const int ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH = 0x884;
@@ -67,6 +67,8 @@ public partial class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyn
     private HttpClient _client;
     private CancellationTokenSource _cts = new();
     private string _methodFile;
+
+    public string ZuneInstallDir => modConfig.ZuneInstallDir;
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {

@@ -8,11 +8,7 @@ namespace ZuneModCore;
 
 public abstract class Mod(ModMetadata metadata)
 {
-    public static string DefaultZuneInstallDir { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Zune");
-
     public ModMetadata Metadata { get; } = metadata;
-
-    public string ZuneInstallDir { get; set; } = DefaultZuneInstallDir;
 
     public virtual AbstractUICollection? GetDefaultOptionsUI() => null;
 
