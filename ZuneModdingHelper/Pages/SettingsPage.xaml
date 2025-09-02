@@ -7,6 +7,8 @@
              xmlns:zmhc="clr-namespace:ZuneModdingHelper.Controls"
              xmlns:zmhs="clr-namespace:ZuneModdingHelper.Services"
              xmlns:ocW="clr-namespace:OwlCore.Wpf;assembly=OwlCore.Wpf"
+             xmlns:b="clr-namespace:ZuneModdingHelper.Behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:Background="White"
@@ -21,36 +23,48 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
-            <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
-                <Run Text="Zune" Style="{StaticResource ZuneHeaderTextStyle}"/>
-            </TextBlock>
-            <TextBlock Text="Choose the directory where the Zune software is installed." Margin="0,8"
-                       Style="{StaticResource ZuneBodyTextBlockStyle}" />
-            <TextBox Text="{Binding Settings.ZuneInstallDir}"/>
-            <Button Content="LOCATE" HorizontalAlignment="Left" Margin="0,8,0,0"
-                    Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
-                    Click="LocateZuneButton_Click"/>
+            <StackPanel>
+                <TextBlock Style="{StaticResource ZuneBodyTextBlockStyle}">
+                    <Run Text="Zune" Style="{StaticResource ZuneHeaderTextStyle}"/>
+                </TextBlock>
+                <TextBlock Text="Choose the directory where the Zune software is installed." Margin="0,8"
+                           Style="{StaticResource ZuneBodyTextBlockStyle}" />
+                <TextBox Text="{Binding Settings.ZuneInstallDir}"/>
+                <Button Content="LOCATE" HorizontalAlignment="Left" Margin="0,8,0,0"
+                        Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
+                        Click="LocateZuneButton_Click"/>
 
-            <TextBlock Text="Force close all Zune processes that may prevent mods from being applied. May cause data loss." Margin="0,12,0,0"
-                       Style="{StaticResource ZuneBodyTextBlockStyle}" />
-            <Button Content="KILL ALL" HorizontalAlignment="Left" Margin="0,8,0,0"
-                    Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
-                    Click="KillZuneButton_Click"/>
+                <TextBlock Text="Force close all Zune processes that may prevent mods from being applied. May cause data loss." Margin="0,12,0,0"
+                           Style="{StaticResource ZuneBodyTextBlockStyle}" />
+                <Button Content="KILL ALL" HorizontalAlignment="Left" Margin="0,8,0,0"
+                        Visibility="{Binding FolderPickerVisibility, Mode=OneTime}"
+                        Click="KillZuneButton_Click"/>
+            </StackPanel>
 
-            <TextBlock Margin="0,24,0,0" Style="{StaticResource ZuneBodyTextBlockStyle}">
-                <Run Text="General" Style="{StaticResource ZuneHeaderTextStyle}"/>
-            </TextBlock>
-            <TextBlock Text="Choose how often the donation prompt is shown." Margin="0,8"
-                       Style="{StaticResource ZuneBodyTextBlockStyle}" />
-            <ComboBox SelectedValue="{Binding Settings.DonationRequestInterval}"
-                      ItemsSource="{ocW:EnumValues Enum=zmhs:DonationRequestInterval}"
-                      HorizontalAlignment="Left">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type zmhs:DonationRequestInterval}">
-                        <TextBlock Text="{Binding Converter={StaticResource DonReqIntv}}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+            <StackPanel>
+                <TextBlock Margin="0,24,0,0" Style="{StaticResource ZuneBodyTextBlockStyle}">
+                    <Run Text="General" Style="{StaticResource ZuneHeaderTextStyle}"/>
+                </TextBlock>
+                <TextBlock Text="Choose how often the donation prompt is shown." Margin="0,8"
+                           Style="{StaticResource ZuneBodyTextBlockStyle}" />
+                <ComboBox SelectedValue="{Binding Settings.DonationRequestInterval}"
+                          ItemsSource="{ocW:EnumValues Enum=zmhs:DonationRequestInterval}"
+                          HorizontalAlignment="Left">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type zmhs:DonationRequestInterval}">
+                            <TextBlock Text="{Binding Converter={StaticResource DonReqIntv}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            
+            <i:Interaction.Behaviors>
+                <b:FadeAnimateItemsPanelBehavior Tick="0:0:0.05">
+                    <b:FadeAnimateItemsPanelBehavior.Animation>
+                        <DoubleAnimation From="0" To="1" Duration="0:0:0.3"/>
+                    </b:FadeAnimateItemsPanelBehavior.Animation>
+                </b:FadeAnimateItemsPanelBehavior>
+            </i:Interaction.Behaviors>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
