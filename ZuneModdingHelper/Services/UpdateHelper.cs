@@ -27,7 +27,7 @@ public class UpdateHelper
 
     public async Task CheckForUpdatesAsync(bool isUserTriggered)
     {
-        if (_isRunning)
+        if (_isRunning || !Enabled)
             return;
 
         _isRunning = true;
