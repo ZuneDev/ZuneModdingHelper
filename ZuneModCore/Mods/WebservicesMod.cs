@@ -2,8 +2,11 @@
 using OwlCore.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Reflection.PortableExecutable;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
@@ -129,56 +132,45 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         try
         {
             // Get and validate replacement host
-            string oldHost = "zune.net";
-            string newHost = ((AbstractTextBox)OptionsUI![0]).Value;
+            var oldHost = "zune.net";
+            var newHost = ((AbstractTextBox)OptionsUI![0]).Value;
             if (newHost.Length != oldHost.Length)
             {
-                return $"The new host (\"{newHost}\") must have the same length as \"{oldHost}\".";
+                return $"The new host \"{newHost}\" must have the same length as \"{oldHost}\".";
             }
 
-            var ping = await new System.Net.NetworkInformation.Ping().SendPingAsync(newHost);
-            if (ping.Status != System.Net.NetworkInformation.IPStatus.Success)
+            var versionInfo = FileVersionInfo.GetVersionInfo(zsDllInfo.FullName);
+            if (versionInfo?.FileVersion is null)
             {
-                return $"Failed to reach \"{newHost}\". Ping status: {ping.Status}";
+                return $"Failed to get version info for '{zsDllInfo.FullName}'.";
             }
 
-            // Open the file
-            using FileStream zsDll = zsDllInfo.Open(FileMode.Open);
-            using BinaryWriter zsDllWriter = new(zsDll);
-            using BinaryReader zsDllReader = new(zsDll);
+            var fileVersion = new Version(versionInfo.ProductMajorPart, versionInfo.ProductMinorPart,
+                versionInfo.ProductBuildPart, versionInfo.FilePrivatePart);
 
-            // Verify that the DLL is from v4.8 (other versions not tested)
-            zsDllReader.BaseStream.Position = 0x12C824;
-            var versionBytes = zsDllReader.ReadBytes(6);
-            if (versionBytes[0] != '4' || versionBytes[2] != '.' || versionBytes[4] != '8')
+            // Open the file and determine the architecture
+            using FileStream zsDll = zsDllInfo.OpenRead();
+
+            Machine architecture;
+            using (PEReader peReader = new(zsDll, PEStreamOptions.LeaveOpen | PEStreamOptions.PrefetchMetadata))
+                architecture = peReader.PEHeaders.CoffHeader.Machine;
+
+            // Select appropriate patch based on version and architecture
+            if (fileVersion == new Version(4, 8, 2345, 0) && architecture is Machine.Amd64)
             {
-                return "This mod has not been tested on versions earlier than 4.8.";
+                var patchResult = Patch48Version64Bit(zsDll, oldHost, newHost);
+                if (patchResult is not null)
+                    return patchResult;
             }
-
-            // Read URL block as string
-            zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
-            string endpointBlock = System.Text.Encoding.Unicode.GetString(zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH));
-
-            // Try to determine previous host
-            try
+            else
             {
-                var firstUrl = endpointBlock[..endpointBlock.IndexOf('\0')];
-                oldHost = firstUrl.Substring(11, oldHost.Length);
+                return $"This mod does not support Zune {fileVersion} on {architecture}.";
             }
-            catch { }
 
-            // Patch ZuneServices.dll to use the new host instead of zune.net
-            endpointBlock = endpointBlock.Replace(oldHost, newHost);
-            byte[] endpointBytes = System.Text.Encoding.Unicode.GetBytes(endpointBlock);
-            if (endpointBytes.Length != ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH)
-            {
-                return "Failed to safely overwrite strings in DLL.";
-            }
-            zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
-            zsDllWriter.Write(endpointBytes);
+            await zsDll.DisposeAsync();
 
             // Enable all feature overrides affected by new servers
-            bool setOverrideSuccess = true;
+            var setOverrideSuccess = true;
             foreach (var feature in _affectedFeatures)
                 setOverrideSuccess &= SetFeatureOverride(feature, true);
 
@@ -190,10 +182,6 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         catch (IOException)
         {
             return $"Unable to replace '{zsDllInfo.FullName}'. Verify that the Zune software is not running and try again.";
-        }
-        catch (System.Net.NetworkInformation.PingException pingEx)
-        {
-            return $"Failed to reach new host. {pingEx.InnerException?.Message ?? pingEx.Message}";
         }
         catch (Exception ex)
         {
@@ -291,5 +279,37 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
             metadata.Subtitle = WEBSERVICE_SUBTITLE_UNREACHABLE;
         }
+    }
+
+    private static string? Patch48Version64Bit(Stream zsDll, string oldHost, string newHost)
+    {
+        using BinaryWriter zsDllWriter = new(zsDll);
+        using BinaryReader zsDllReader = new(zsDll);
+
+        // Read URL block as string
+        zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
+        var originalEndpointBytes = zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH);
+        var endpointText = Encoding.Unicode.GetString(originalEndpointBytes);
+
+        // Try to determine previous host
+        try
+        {
+            var firstUrl = endpointText[..endpointText.IndexOf('\0')];
+            oldHost = firstUrl.Substring(11, oldHost.Length);
+        }
+        catch { }
+
+        // Patch ZuneServices.dll to use the new host instead of zune.net
+        endpointText = endpointText.Replace(oldHost, newHost);
+        var patchedEndpointBytes = Encoding.Unicode.GetBytes(endpointText);
+        if (patchedEndpointBytes.Length != originalEndpointBytes.Length)
+        {
+            return "Failed to safely overwrite strings in DLL.";
+        }
+        
+        zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
+        zsDllWriter.Write(patchedEndpointBytes);
+
+        return null;
     }
 }
