@@ -115,6 +115,46 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
 
     public override async Task<string?> Apply()
     {
+        var newHost = ((AbstractTextBox)OptionsUI![0]).Value;
+        var errorMessage = await PatchZuneServices(newHost);
+
+        if (errorMessage is not null)
+        {
+            // TODO: Fallback to editing hosts file
+        }
+
+        return errorMessage;
+    }
+
+    public override async Task<string?> Reset()
+    {
+        string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
+        try
+        {
+            // Copy backup to application folder
+            File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), zsDllPath, true);
+
+            // Disable all feature overrides affected by new servers
+            bool setOverrideSuccess = true;
+            foreach (var feature in _affectedFeatures)
+                setOverrideSuccess &= SetFeatureOverride(feature, false);
+
+            if (setOverrideSuccess != true)
+                return "Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune software.";
+
+            return null;
+        }
+        catch (IOException)
+        {
+            return $"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+    private async Task<string?> PatchZuneServices(string newHost)
+    {
         // Verify that ZuneServices.dll exists
         FileInfo zsDllInfo = new(Path.Combine(ZuneInstallDir, "ZuneService.dll"));
         if (!zsDllInfo.Exists)
@@ -133,7 +173,6 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         {
             // Get and validate replacement host
             var oldHost = "zune.net";
-            var newHost = ((AbstractTextBox)OptionsUI![0]).Value;
             if (newHost.Length != oldHost.Length)
             {
                 return $"The new host \"{newHost}\" must have the same length as \"{oldHost}\".";
@@ -189,32 +228,36 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
         }
     }
 
-    public override async Task<string?> Reset()
+    private static string? Patch48Version64Bit(Stream zsDll, string oldHost, string newHost)
     {
-        string zsDllPath = Path.Combine(ZuneInstallDir, "ZuneService.dll");
+        using BinaryWriter zsDllWriter = new(zsDll);
+        using BinaryReader zsDllReader = new(zsDll);
+
+        // Read URL block as string
+        zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
+        var originalEndpointBytes = zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH);
+        var endpointText = Encoding.Unicode.GetString(originalEndpointBytes);
+
+        // Try to determine previous host
         try
         {
-            // Copy backup to application folder
-            File.Copy(Path.Combine(StorageDirectory, "ZuneService.original.dll"), zsDllPath, true);
-
-            // Disable all feature overrides affected by new servers
-            bool setOverrideSuccess = true;
-            foreach (var feature in _affectedFeatures)
-                setOverrideSuccess &= SetFeatureOverride(feature, false);
-
-            if (setOverrideSuccess != true)
-                return "Unable to reset feature overrides. The mod was successfully removed, but you may still be able to see it in the Zune software.";
-
-            return null;
+            var firstUrl = endpointText[..endpointText.IndexOf('\0')];
+            oldHost = firstUrl.Substring(11, oldHost.Length);
         }
-        catch (IOException)
+        catch { }
+
+        // Patch ZuneServices.dll to use the new host instead of zune.net
+        endpointText = endpointText.Replace(oldHost, newHost);
+        var patchedEndpointBytes = Encoding.Unicode.GetBytes(endpointText);
+        if (patchedEndpointBytes.Length != originalEndpointBytes.Length)
         {
-            return $"Unable to replace '{zsDllPath}'. Verify that the Zune software is not running and try again.";
+            return "Failed to safely overwrite strings in DLL.";
         }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
+        
+        zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
+        zsDllWriter.Write(patchedEndpointBytes);
+
+        return null;
     }
 
     async void OnHostChanged(object? sender, string newHost)
@@ -279,37 +322,5 @@ public class WebservicesMod(ModMetadata metadata) : Mod(metadata), IAsyncInit
             metadata.IconCode = WEBSERVICE_ICON_UNREACHABLE;
             metadata.Subtitle = WEBSERVICE_SUBTITLE_UNREACHABLE;
         }
-    }
-
-    private static string? Patch48Version64Bit(Stream zsDll, string oldHost, string newHost)
-    {
-        using BinaryWriter zsDllWriter = new(zsDll);
-        using BinaryReader zsDllReader = new(zsDll);
-
-        // Read URL block as string
-        zsDllReader.BaseStream.Position = ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET;
-        var originalEndpointBytes = zsDllReader.ReadBytes(ZUNESERVICES_ENDPOINTS_BLOCK_LENGTH);
-        var endpointText = Encoding.Unicode.GetString(originalEndpointBytes);
-
-        // Try to determine previous host
-        try
-        {
-            var firstUrl = endpointText[..endpointText.IndexOf('\0')];
-            oldHost = firstUrl.Substring(11, oldHost.Length);
-        }
-        catch { }
-
-        // Patch ZuneServices.dll to use the new host instead of zune.net
-        endpointText = endpointText.Replace(oldHost, newHost);
-        var patchedEndpointBytes = Encoding.Unicode.GetBytes(endpointText);
-        if (patchedEndpointBytes.Length != originalEndpointBytes.Length)
-        {
-            return "Failed to safely overwrite strings in DLL.";
-        }
-        
-        zsDllWriter.Seek(ZUNESERVICES_ENDPOINTS_BLOCK_OFFSET, SeekOrigin.Begin);
-        zsDllWriter.Write(patchedEndpointBytes);
-
-        return null;
     }
 }
