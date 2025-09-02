@@ -11,14 +11,14 @@ public class ModManager
     /// <summary>
     /// Factories for all available mods.
     /// </summary>
-    public static readonly IReadOnlyList<IModFactory<Mod>> ModFactories = new List<IModFactory<Mod>>
-    {
+    public static readonly IReadOnlyList<IModFactory<Mod>> ModFactories =
+    [
         new FeaturesOverrideModFactory(),
         new VideoSyncModFactory(),
         new WebservicesModFactory(),
         new BackgroundImageModFactory(),
         new MbidLocatorModFactory(),
-    }.AsReadOnly();
+    ];
 
     /// <summary>
     /// Creates instances of each mod using the available factories

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using ZuneModCore;
-using ZuneModCore.Services;
 using ZuneModdingHelper.Messages;
 using ZuneModdingHelper.Services;
 
@@ -73,14 +72,7 @@ namespace ZuneModdingHelper.Pages
             if (applyResult != null)
             {
                 WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
-
-                DialogViewModel errorDialog = new()
-                {
-                    Title = MOD_MANAGER_TITLE,
-                    Description = $"Failed to apply '{modTitle}'.\r\n{applyResult}",
-                };
-                WeakReferenceMessenger.Default.Send(new ShowDialogMessage(errorDialog));
-
+                ShowErrorDialog(mod, "apply", applyResult);
                 return;
             }
             ++progDialog.Progress;
@@ -126,14 +118,7 @@ namespace ZuneModdingHelper.Pages
             if (resetResult != null)
             {
                 WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
-
-                DialogViewModel errorDialog = new()
-                {
-                    Title = MOD_MANAGER_TITLE,
-                    Description = $"Failed to reset '{modTitle}'.\r\n{resetResult}",
-                };
-                WeakReferenceMessenger.Default.Send(new ShowDialogMessage(errorDialog));
-
+                ShowErrorDialog(mod, "reset", resetResult);
                 return;
             }
 
@@ -161,6 +146,26 @@ namespace ZuneModdingHelper.Pages
                 await initMod.InitAsync();
 
             return mod;
+        }
+
+        private static void ShowErrorDialog(Mod mod, string action, string errorMessage)
+        {
+            DialogViewModel errorDialog = new()
+            {
+                Title = MOD_MANAGER_TITLE,
+                Description = $"Failed to {action} '{mod.Metadata.Title}'.\r\n{errorMessage}",
+                ShowNegativeButton = true,
+                NegativeText = "REPORT ISSUE",
+                OnAction = new AsyncRelayCommand<bool>(ignoreIssue =>
+                {
+                    if (!ignoreIssue)
+                        App.OpenIssueReport(mod.Metadata, errorMessage);
+
+                    WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
+                    return Task.CompletedTask;
+                })
+            };
+            WeakReferenceMessenger.Default.Send(new ShowDialogMessage(errorDialog));
         }
 
         private async Task ShowDonationRequestDialog(bool _)
