@@ -20,13 +20,15 @@ namespace ZuneModCore.Mods;
 
 public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
 {
-    private const string Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
-        "to use the community's recreation of Microsoft's Zune servers at zunes.me (instead of zune.net).";
-
-    private const string Author = "Joshua \"Yoshi\" Askharoun";
-
-    public override ModMetadata Metadata => new(nameof(WebservicesMod), "Community Webservices",
-        Description, Author, new(1, 2));
+    public override ModMetadata Metadata { get; } = new()
+    {
+        Id = nameof(WebservicesMod),
+        Title = "Community Webservices",
+        Author = "Joshua \"Yoshi\" Askharoun",
+        Version = new(1, 2),
+        Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
+            "to use the community's recreation of the original Zune servers.",
+    };
 }
 
 public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConfig, ILogger<WebservicesMod> log) : Mod(metadata), IAsyncInit

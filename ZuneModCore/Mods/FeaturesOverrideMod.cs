@@ -10,14 +10,15 @@ namespace ZuneModCore.Mods;
 
 public class FeaturesOverrideModFactory : DIModFactoryBase<FeaturesOverrideMod>
 {
-
-    private const string Description = "Re-enables access to some features disabled by Microsoft, such as the Social and Marketplace tabs.\r\n" +
-        "Does not restore functionality of those features, but shows them in the software.";
-
-    private const string Author = "Rafael Rivera";
-
-    public override ModMetadata Metadata => new(nameof(FeaturesOverrideMod), "Features Override",
-        Description, Author, new(1, 0));
+    public override ModMetadata Metadata { get; } = new()
+    {
+        Id = nameof(FeaturesOverrideMod),
+        Title = "Features Override",
+        Author = "Rafael Rivera",
+        Version = new(1, 0),
+        Description = "Re-enables UI for some features disabled by Microsoft, such as the Social and Marketplace tabs.\r\n" +
+            "See the Community Webservices mod to restore functionality of those features.",
+    };
 }
 
 public class FeaturesOverrideMod(ModMetadata metadata) : Mod(metadata), IAsyncInit

@@ -9,13 +9,14 @@ namespace ZuneModCore.Mods;
 
 public class VideoSyncModFactory : DIModFactoryBase<VideoSyncMod>
 {
-    private const string Description =
-        "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer";
-
-    private const string Author = "ส็็็Codix#4833 & sylvathemoth";
-
-    public override ModMetadata Metadata => new(nameof(VideoSyncMod), "Fix Video Sync",
-        Description, Author, new(2, 1));
+    public override ModMetadata Metadata { get; } = new()
+    {
+        Id = nameof(VideoSyncMod),
+        Title = "Fix Video Sync",
+        Author = "ส็็็Codix#4833 & sylvathemoth",
+        Version = new(2, 1),
+        Description = "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer.",
+    };
 }
 
 public class VideoSyncMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata)

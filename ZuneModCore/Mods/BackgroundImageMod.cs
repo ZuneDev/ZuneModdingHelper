@@ -12,12 +12,14 @@ namespace ZuneModCore.Mods;
 
 public class BackgroundImageModFactory : DIModFactoryBase<BackgroundImageMod>
 {
-    private const string Description = "Replaces the \"Zero\" background with an image of your choice.";
-
-    private const string Author = "Joshua \"Yoshi\" Askharoun";
-
-    public override ModMetadata Metadata => new(nameof(BackgroundImageMod), "Background Image",
-        Description, Author, new(1, 1));
+    public override ModMetadata Metadata { get; } = new()
+    {
+        Id = nameof(BackgroundImageMod),
+        Title = "Background Image",
+        Author = "Joshua \"Yoshi\" Askharoun",
+        Version = new(1, 1),
+        Description = "Replaces the \"Zero\" background with an image of your choice.",
+    };
 }
 
 public class BackgroundImageMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(metadata)
