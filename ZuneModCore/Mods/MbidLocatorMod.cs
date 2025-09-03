@@ -1,3 +1,4 @@
+﻿using ATL;
 ﻿using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,14 @@ public class MbidLocatorModFactory : DIModFactoryBase<MbidLocatorMod>
 
 public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 {
-    public const string ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME = "ZuneAlbumArtistMediaID";
-    public const string ZUNE_ALBUM_MEDIA_ID_NAME = "ZuneAlbumMediaID";
-    public const string ZUNE_MEDIA_ID_NAME = "ZuneMediaID";
-    public const string ZUNE_COLLECTION_ID_NAME = "ZuneCollectionID";
+    public const string ZUNE_ALBUMARTIST_MEDIAID_KEY = "ZuneAlbumArtistMediaID";
+    public const string ZUNE_ALBUM_MEDIAID_KEY = "ZuneAlbumMediaID";
+    public const string ZUNE_MEDIAID_KEY = "ZuneMediaID";
+
+    private const string MUSICBRAINZ_ARTISTID_KEY = "MusicBrainz Artist Id";
+    private const string MUSICBRAINZ_ALBUMARTISTID_KEY = "MusicBrainz Album Artist Id";
+    private const string MUSICBRAINZ_ALBUMID_KEY = "MusicBrainz Album Id";
+    private const string MUSICBRAINZ_TRACKID_KEY = "MusicBrainz Track Id";
 
     private static readonly string[] KNOWN_EXTS = [".mp3", ".mp4", ".m4a", ".wav"];
 
@@ -61,7 +66,8 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
             try
             {
                 if (KNOWN_EXTS.Contains(file.Extension))
-                    UpdateMbidInFile(file);
+                    //UpdateMbidInFile(file);
+                    await UpdateMbidInFileAsync(file);
 
 #if DEBUG
                 System.Diagnostics.Debug.WriteLine(file);
@@ -74,15 +80,72 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
             }
         }
 
-        if (errorString.Length != 0)
-            return errorString;
-        else
-            return null;
+        return errorString.Length != 0
+            ? errorString : null;
     }
 
     public override Task<string?> Reset()
     {
         return Task.FromResult<string?>(null);
+    }
+
+    public static async Task UpdateMbidInFileAsync(FileInfo file)
+    {
+        Track track = new(file.FullName);
+
+        if (track.AudioFormat.IsValidMimeType("audio/mp4"))
+        {
+            // TODO: Verify that Zune Media IDs in MP4 tags are supposed to be strings and not bytes like in ID3v2 tags
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMARTISTID_KEY, out var artistId))
+                track.AdditionalFields[ZUNE_ALBUMARTIST_MEDIAID_KEY] = artistId;
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMID_KEY, out var albumId))
+                track.AdditionalFields[ZUNE_ALBUM_MEDIAID_KEY] = albumId;
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_TRACKID_KEY, out var trackId))
+                track.AdditionalFields[ZUNE_MEDIAID_KEY] = trackId;
+        }
+        else if (track.AudioFormat.IsValidMimeType("audio/mpeg"))
+        {
+            const string PRIV_FRAME_PREFIX = "PRIV.";
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMARTISTID_KEY, out var artistId))
+            {
+                var newTag = EncodeMbidTagAsByteString(artistId);
+                if (track.AdditionalFields.TryGetValue(PRIV_FRAME_PREFIX + ZUNE_ALBUMARTIST_MEDIAID_KEY, out var oldTag))
+                    CommunityToolkit.Diagnostics.Guard.IsEqualTo(newTag, oldTag);
+            }
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMID_KEY, out var albumId))
+            {
+                var newTag = EncodeMbidTagAsByteString(albumId);
+                if (track.AdditionalFields.TryGetValue(PRIV_FRAME_PREFIX + ZUNE_ALBUM_MEDIAID_KEY, out var oldTag))
+                    CommunityToolkit.Diagnostics.Guard.IsEqualTo(newTag, oldTag);
+            }
+
+            if (track.AdditionalFields.TryGetValue("UFID", out var ufid))
+            {
+                // The UFID field may contain various IDs, but we only want MusicBrainz
+                var ufidParts = ufid.Split('\0');
+                if (ufidParts[0].Equals("http://musicbrainz.org", StringComparison.Ordinal))
+                {
+                    var mbid = ufidParts[1];
+                    var newTag = EncodeMbidTagAsByteString(mbid);
+                    if (track.AdditionalFields.TryGetValue(PRIV_FRAME_PREFIX + ZUNE_MEDIAID_KEY, out var oldTag))
+                        CommunityToolkit.Diagnostics.Guard.IsEqualTo(newTag, oldTag);
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        // Force sub-version to be ID3v2.3, otherwise Zune won't see the tags
+        Settings.ID3v2_tagSubVersion = 3;
+
+        //await track.SaveAsync();
     }
 
     public static void UpdateMbidInFile(FileInfo file)
@@ -92,27 +155,27 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
         if (tfile.Tag is TagLib.Asf.Tag asfTag)
         {
             var albumArtistIdDesc = asfTag.ExtendedContentDescriptionObject
-                .FirstOrDefault(cd => cd.Name == ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME);
+                .FirstOrDefault(cd => cd.Name == ZUNE_ALBUMARTIST_MEDIAID_KEY);
             if (albumArtistIdDesc == null && asfTag.MusicBrainzReleaseArtistId != null)
             {
                 asfTag.ExtendedContentDescriptionObject.AddDescriptor(new TagLib.Asf.ContentDescriptor(
-                    ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME, asfTag.MusicBrainzReleaseArtistId));
+                    ZUNE_ALBUMARTIST_MEDIAID_KEY, asfTag.MusicBrainzReleaseArtistId));
             }
 
             var albumIdDesc = asfTag.ExtendedContentDescriptionObject
-                .FirstOrDefault(cd => cd.Name == ZUNE_ALBUM_MEDIA_ID_NAME);
+                .FirstOrDefault(cd => cd.Name == ZUNE_ALBUM_MEDIAID_KEY);
             if (albumIdDesc == null && asfTag.MusicBrainzReleaseId != null)
             {
                 asfTag.ExtendedContentDescriptionObject.AddDescriptor(new TagLib.Asf.ContentDescriptor(
-                    ZUNE_ALBUM_MEDIA_ID_NAME, asfTag.MusicBrainzReleaseId));
+                    ZUNE_ALBUM_MEDIAID_KEY, asfTag.MusicBrainzReleaseId));
             }
 
             var trackIdDesc = asfTag.ExtendedContentDescriptionObject
-                .FirstOrDefault(cd => cd.Name == ZUNE_MEDIA_ID_NAME);
+                .FirstOrDefault(cd => cd.Name == ZUNE_MEDIAID_KEY);
             if (trackIdDesc == null && asfTag.MusicBrainzTrackId != null)
             {
                 asfTag.ExtendedContentDescriptionObject.AddDescriptor(new TagLib.Asf.ContentDescriptor(
-                    ZUNE_MEDIA_ID_NAME, asfTag.MusicBrainzTrackId));
+                    ZUNE_MEDIAID_KEY, asfTag.MusicBrainzTrackId));
             }
         }
         else if (tfile.Tag is TagLib.NonContainer.Tag ncTag)
@@ -128,10 +191,10 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
                 if (tag.MusicBrainzReleaseArtistId != null)
                 {
-                    foreach (var oldAlbumArtistFrame in frames.Where(f => f.Owner == ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME).ToList())
+                    foreach (var oldAlbumArtistFrame in frames.Where(f => f.Owner == ZUNE_ALBUMARTIST_MEDIAID_KEY).ToList())
                         id3v2.RemoveFrame(oldAlbumArtistFrame);
 
-                    TagLib.Id3v2.PrivateFrame albumArtistFrame = new(ZUNE_ALBUM_ARTIST_MEDIA_ID_NAME)
+                    TagLib.Id3v2.PrivateFrame albumArtistFrame = new(ZUNE_ALBUMARTIST_MEDIAID_KEY)
                     {
                         PrivateData = new(EncodeMbidTag(tag.MusicBrainzReleaseArtistId))
                     };
@@ -140,10 +203,10 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
                 if (tag.MusicBrainzReleaseId != null)
                 {
-                    foreach (var oldAlbumFrame in frames.Where(f => f.Owner == ZUNE_ALBUM_MEDIA_ID_NAME).ToList())
+                    foreach (var oldAlbumFrame in frames.Where(f => f.Owner == ZUNE_ALBUM_MEDIAID_KEY).ToList())
                         id3v2.RemoveFrame(oldAlbumFrame);
 
-                    TagLib.Id3v2.PrivateFrame albumFrame = new(ZUNE_ALBUM_MEDIA_ID_NAME)
+                    TagLib.Id3v2.PrivateFrame albumFrame = new(ZUNE_ALBUM_MEDIAID_KEY)
                     {
                         PrivateData = new(EncodeMbidTag(tag.MusicBrainzReleaseId))
                     };
@@ -152,10 +215,10 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
                 if (tag.MusicBrainzTrackId != null)
                 {
-                    foreach (var oldTrackFrame in frames.Where(f => f.Owner == ZUNE_MEDIA_ID_NAME).ToList())
+                    foreach (var oldTrackFrame in frames.Where(f => f.Owner == ZUNE_MEDIAID_KEY).ToList())
                         id3v2.RemoveFrame(oldTrackFrame);
 
-                    TagLib.Id3v2.PrivateFrame trackFrame = new(ZUNE_MEDIA_ID_NAME)
+                    TagLib.Id3v2.PrivateFrame trackFrame = new(ZUNE_MEDIAID_KEY)
                     {
                         PrivateData = new(EncodeMbidTag(tag.MusicBrainzTrackId))
                     };
@@ -174,5 +237,11 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
         // but we might as well cover all the bases.
         mbidTag = mbidTag.Split(['/', '\\', ',', ';']).First();
         return new Guid(mbidTag).ToByteArray();
+    }
+
+    private static string EncodeMbidTagAsByteString(string mbidTag)
+    {
+        var guidBytes = EncodeMbidTag(mbidTag);
+        return System.Text.Encoding.Latin1.GetString(guidBytes);
     }
 }

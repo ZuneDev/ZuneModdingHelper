@@ -18,6 +18,7 @@
         <PackageReference Include="Vanara.PInvoke.Kernel32" Version="3.4.17" />
         <PackageReference Include="Vanara.PInvoke.Security" Version="3.4.17" />
         <PackageReference Include="Vestris.ResourceLib" Version="2.1.0" />
+        <PackageReference Include="z440.atl.core" Version="7.3.0" />
     </ItemGroup>
 
     <ItemGroup>
