@@ -18,7 +18,7 @@ namespace ZuneModdingHelper
     {
         public const string Title = "Zune Modding Helper";
 
-        public static readonly ReleaseVersion Version = new(2025, 8, 20, 0, Phase.Alpha);
+        public static readonly ReleaseVersion Version = new(2025, 9, 2, 0, Phase.Alpha);
         public static readonly string VersionStr = Version.ToString();
         public static readonly Uri RepoUri = new($"https://github.com/ZuneDev/ZuneModdingHelper");
         public static readonly Uri VersionUri = new($"{RepoUri}/releases/tag/{VersionStr}");

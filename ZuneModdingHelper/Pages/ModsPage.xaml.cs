@@ -58,7 +58,7 @@ namespace ZuneModdingHelper.Pages
             progDialog.Description = $"Awaiting options for '{modTitle}'...";
             if (mod.OptionsUI != null)
             {
-                var optionsDialog = new AbstractUIGroupDialog(mod.OptionsUI);
+                var optionsDialog = new ApplyModDialog(new(mod));
                 optionsDialog.Title = optionsDialog.Title + " | " + modTitle;
                 bool? optionsResult = optionsDialog.ShowDialog();
                 if (!(optionsResult.HasValue && optionsResult.Value))
@@ -66,7 +66,7 @@ namespace ZuneModdingHelper.Pages
                     WeakReferenceMessenger.Default.Send<CloseDialogMessage>();
                     return;
                 }
-                mod.OptionsUI = (AbstractUICollection)optionsDialog.ViewModel.Model;
+                mod.OptionsUI = (AbstractUICollection)optionsDialog.ViewModel.OptionsUI.Model;
             }
             ++progDialog.Progress;
 

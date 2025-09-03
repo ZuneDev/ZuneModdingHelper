@@ -4,13 +4,14 @@ using System.Runtime.InteropServices;
 using System;
 using System.Windows;
 using System.Windows.Interop;
+using ZuneModCore;
 
 namespace ZuneModdingHelper
 {
     /// <summary>
-    /// Interaction logic for AbstractUIGroupDialog.xaml
+    /// Interaction logic for ApplyModDialog.xaml
     /// </summary>
-    public partial class AbstractUIGroupDialog : Window
+    public partial class ApplyModDialog : Window
     {
         [LibraryImport("DwmApi")]
         private static partial int DwmSetWindowAttribute(IntPtr hwnd, int attr, int[] attrValue, int attrSize);
@@ -27,19 +28,13 @@ namespace ZuneModdingHelper
 
                 if (DwmSetWindowAttribute(handle, 19, [1], 4) != 0)
                     _ = DwmSetWindowAttribute(handle, 20, [1], 4);
-
             }
         }
 
-        public AbstractUIGroupDialog(AbstractUICollectionViewModel viewModel)
+        public ApplyModDialog(ApplyModDialogViewModel viewModel)
         {
-            ViewModel = viewModel;
-            DataContext = ViewModel;
+            DataContext = viewModel;
             InitializeComponent();
-        }
-        public AbstractUIGroupDialog(AbstractUICollection group) : this(new AbstractUICollectionViewModel(group))
-        {
-
         }
 
         private void OptionsUINextButton_Click(object sender, RoutedEventArgs e) => Finish(true);
@@ -52,12 +47,26 @@ namespace ZuneModdingHelper
             Close();
         }
 
-        public AbstractUICollectionViewModel ViewModel
+        public ApplyModDialogViewModel ViewModel => (ApplyModDialogViewModel)DataContext;
+    }
+
+    public record ApplyModDialogViewModel(AbstractUICollectionViewModel OptionsUI, ModMetadata Metadata)
+    {
+        public ApplyModDialogViewModel(Mod mod)
+            : this(new AbstractUICollectionViewModel(mod.OptionsUI), mod.Metadata)
         {
-            get => (AbstractUICollectionViewModel)GetValue(ViewModelProperty);
-            set => SetValue(ViewModelProperty, value);
         }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-            nameof(ViewModel), typeof(AbstractUICollectionViewModel), typeof(AbstractUIGroupDialog));
+
+        public ApplyModDialogViewModel() : this(null, null) { }
+
+        public string FullDescription => GetFullDescription();
+
+        private string GetFullDescription()
+        {
+            if (Metadata.ExtendedDescription is null)
+                return Metadata.Description;
+
+            return Metadata.Description + "\r\n\r\n" + Metadata.ExtendedDescription;
+        }
     }
 }

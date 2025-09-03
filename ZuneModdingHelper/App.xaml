@@ -5,6 +5,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:ocWC="clr-namespace:OwlCore.Wpf.Converters;assembly=OwlCore.Wpf"
              xmlns:ocWCBV="clr-namespace:OwlCore.Wpf.Converters.Bools.Visible;assembly=OwlCore.Wpf"
+             xmlns:controls="clr-namespace:ZuneModdingHelper.Controls"
              StartupUri="AppWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -27,6 +28,8 @@
 
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <ocWCBV:NotNullToVisibilityConverter x:Key="NotNullToVis" />
+            <controls:LowercaseConverter x:Key="ToLower" />
+            <controls:UppercaseConverter x:Key="ToUpper" />
 
             <sys:Boolean x:Key="FalseValue">False</sys:Boolean>
             <sys:Boolean x:Key="TrueValue">True</sys:Boolean>

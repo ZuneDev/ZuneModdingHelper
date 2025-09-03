@@ -1,4 +1,4 @@
-﻿<Window x:Class="ZuneModdingHelper.AbstractUIGroupDialog"
+﻿<Window x:Class="ZuneModdingHelper.ApplyModDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,9 +6,13 @@
         xmlns:local="clr-namespace:ZuneModdingHelper"
         xmlns:absui="clr-namespace:OwlCore.Wpf.AbstractUI.Controls;assembly=OwlCore.Wpf"
         mc:Ignorable="d"
-        Title="Options" Height="400" Width="700"
+        Title="{x:Static local:App.Title}" Height="400" Width="700"
         WindowStartupLocation="CenterScreen"
         Foreground="White">
+    <d:Window.DataContext>
+        <local:ApplyModDialogViewModel/>
+    </d:Window.DataContext>
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,7 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="AbstractUICollectionTitleStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Light"/>
             </Style>
 
@@ -41,11 +45,30 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
+        <!-- Body -->
         <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter" ViewModel="{Binding}"
-                                            TemplateSelector="{StaticResource GroupTemplateSelector}"/>
+            <StackPanel>
+                <!-- Details -->
+                <TextBlock TextWrapping="Wrap">
+                    <Run Text="{Binding Metadata.Title, Converter={StaticResource ToLower}}" FontSize="24" FontWeight="Light" />
+                    <LineBreak/>
+                    <Run Text="BY" Foreground="{StaticResource ZunePinkBrush}"  FontWeight="SemiBold" />
+                    <Run Text="{Binding Metadata.Author, Converter={StaticResource ToUpper}}"
+                         Foreground="{StaticResource ZunePinkBrush}" FontWeight="SemiBold" />
+                    <LineBreak/><LineBreak/>
+                    <Run Text="{Binding FullDescription, Mode=OneTime}" />
+                </TextBlock>
+
+                <Separator Margin="0, 16, 0, 12" />
+
+                <!-- Options -->
+                <absui:AbstractUIGroupPresenter x:Name="OptionsUIPresenter"
+                                                DataContext="{Binding OptionsUI}" ViewModel="{Binding}"
+                                                TemplateSelector="{StaticResource GroupTemplateSelector}"/>
+            </StackPanel>
         </ScrollViewer>
 
+        <!-- Footer -->
         <Border Grid.Row="1" Margin="0,8,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -64,7 +87,7 @@
                     </Style>
                 </Grid.Resources>
 
-                <Button x:Name="OptionsUINextButton" Content="NEXT" Click="OptionsUINextButton_Click"
+                <Button x:Name="OptionsUINextButton" Content="APPLY" Click="OptionsUINextButton_Click"
                         Grid.Column="1"/>
 
                 <Button x:Name="OptionsUICancelButton" Content="CANCEL" Click="OptionsUICancelButton_Click"
