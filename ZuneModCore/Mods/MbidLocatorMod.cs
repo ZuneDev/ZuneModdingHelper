@@ -1,7 +1,5 @@
 ﻿using ATL;
-using MediaFoundation;
-using MediaFoundation.Misc;
-using OwlCore.AbstractUI.Models;
+﻿using OwlCore.AbstractUI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -93,63 +91,61 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
 
     public static async Task UpdateMbidInFileAsync(FileInfo file)
     {
-        MF.Startup().ThrowExceptionOnError();
+        Track track = new(file.FullName);
 
-        var sourceResolver = MF.CreateSourceResolver();
-
-        sourceResolver.CreateObjectFromURL(file.FullName,
-            MFResolution.MediaSource | MFResolution.Read | MFResolution.ContentDoesNotHaveToMatchExtensionOrMimeType,
-            null, out IMFMediaSource mediaSource)
-            .ThrowExceptionOnError();
-
-        mediaSource.CreatePresentationDescriptor(out var presentationDescriptor)
-            .ThrowExceptionOnError();
-
-        var hr = MF.GetService<IMFMetadataProvider>(mediaSource, MFServices.MF_METADATA_PROVIDER_SERVICE, out var metadataProvider);
-        if (hr.Succeeded())
+        if (track.AudioFormat.IsValidMimeType("audio/mp4"))
         {
-            metadataProvider.GetMFMetadata(presentationDescriptor, 0, 0, out var metadata)
-                .ThrowExceptionOnError();
+            // TODO: Verify that Zune Media IDs in MP4 tags are supposed to be strings and not bytes like in ID3v2 tags
 
-            metadata.GetAllPropertyNames(out var propNames)
-                .ThrowExceptionOnError();
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMARTISTID_KEY, out var artistId))
+                track.AdditionalFields[ZUNE_ALBUMARTIST_MEDIAID_KEY] = artistId;
 
-            foreach (var propName in propNames)
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMID_KEY, out var albumId))
+                track.AdditionalFields[ZUNE_ALBUM_MEDIAID_KEY] = albumId;
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_TRACKID_KEY, out var trackId))
+                track.AdditionalFields[ZUNE_MEDIAID_KEY] = trackId;
+        }
+        else if (track.AudioFormat.IsValidMimeType("audio/mpeg"))
+        {
+            const string PRIV_FRAME_PREFIX = "PRIV.";
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMARTISTID_KEY, out var artistId))
             {
-                PropVariant value = new();
-                metadata.GetProperty(propName, value).ThrowExceptionOnError();
-                System.Diagnostics.Debug.WriteLine($"{propName} = ({value.GetVariantType()}){value}");
+                var newTag = EncodeMbidTagAsByteString(artistId);
+                if (track.AdditionalFields.TryGetValue(PRIV_FRAME_PREFIX + ZUNE_ALBUMARTIST_MEDIAID_KEY, out var oldTag))
+                    CommunityToolkit.Diagnostics.Guard.IsEqualTo(newTag, oldTag);
+            }
+
+            if (track.AdditionalFields.TryGetValue(MUSICBRAINZ_ALBUMID_KEY, out var albumId))
+            {
+                var newTag = EncodeMbidTagAsByteString(albumId);
+                if (track.AdditionalFields.TryGetValue(PRIV_FRAME_PREFIX + ZUNE_ALBUM_MEDIAID_KEY, out var oldTag))
+                    CommunityToolkit.Diagnostics.Guard.IsEqualTo(newTag, oldTag);
+            }
+
+            if (track.AdditionalFields.TryGetValue("UFID", out var ufid))
+            {
+                // The UFID field may contain various IDs, but we only want MusicBrainz
+                var ufidParts = ufid.Split('\0');
+                if (ufidParts[0].Equals("http://musicbrainz.org", StringComparison.Ordinal))
+                {
+                    var mbid = ufidParts[1];
+                    var newTag = EncodeMbidTagAsByteString(mbid);
+                    if (track.AdditionalFields.TryGetValue(PRIV_FRAME_PREFIX + ZUNE_MEDIAID_KEY, out var oldTag))
+                        CommunityToolkit.Diagnostics.Guard.IsEqualTo(newTag, oldTag);
+                }
             }
         }
         else
         {
-            MF.GetService<IPropertyStore>(mediaSource, MFServices.MF_PROPERTY_HANDLER_SERVICE, out var propertyStore)
-                .ThrowExceptionOnError();
-
-            propertyStore.GetCount(out var propCount)
-                .ThrowExceptionOnError();
-
-            List<(Guid setId, int propId, PropVariant value)> props = new(propCount);
-
-            for (int i = 0; i < propCount; i++)
-            {
-                PropertyKey key = new();
-                PropVariant value = new();
-
-                propertyStore.GetAt(i, key);
-                propertyStore.GetValue(key, value);
-
-                props.Add((key.fmtid, key.pID, value));
-            }
-
-            var organizedProps = props
-                .OrderBy(prop => prop.setId)
-                .ThenBy(prop => prop.propId);
-            foreach (var prop in organizedProps)
-                System.Diagnostics.Debug.WriteLine($"{prop.setId} {prop.propId} = ({prop.value.GetVariantType()}){prop.value}");
+            return;
         }
 
-        return;
+        // Force sub-version to be ID3v2.3, otherwise Zune won't see the tags
+        Settings.ID3v2_tagSubVersion = 3;
+
+        //await track.SaveAsync();
     }
 
     public static void UpdateMbidInFile(FileInfo file)

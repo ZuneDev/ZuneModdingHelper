@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZuneModCore", "ZuneModCore\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OwlCore.Wpf", "OwlCore.Wpf\OwlCore.Wpf.csproj", "{BD87C032-C255-409E-8402-2DE16BFCE801}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATL", "..\..\Zeugma440\atldotnet\ATL\ATL.csproj", "{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,18 +55,6 @@ Global
 		{BD87C032-C255-409E-8402-2DE16BFCE801}.Release|x64.Build.0 = Release|Any CPU
 		{BD87C032-C255-409E-8402-2DE16BFCE801}.Release|x86.ActiveCfg = Release|Any CPU
 		{BD87C032-C255-409E-8402-2DE16BFCE801}.Release|x86.Build.0 = Release|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Debug|x64.Build.0 = Debug|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Debug|x86.Build.0 = Debug|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Release|x64.ActiveCfg = Release|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Release|x64.Build.0 = Release|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Release|x86.ActiveCfg = Release|Any CPU
-		{0E6BB072-6231-EBFA-4BC5-CBED39442FAD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
