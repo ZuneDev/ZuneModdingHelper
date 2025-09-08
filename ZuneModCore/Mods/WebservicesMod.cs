@@ -10,10 +10,10 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection.PortableExecutable;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ZuneModCore.Services;
+using ZuneModCore.Win32;
 using static ZuneModCore.Mods.FeaturesOverrideMod;
 
 namespace ZuneModCore.Mods;
@@ -145,6 +145,18 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
         {
             await RecordAppliedMethod(ApplicationMethod.BinaryPatch);
         }
+
+        // Also set up the metaservices hosts
+        var ipAddress = IPAddress.Parse("135.181.88.32");
+        IEnumerable<string> hostnames = [
+            "toc.music.metaservices.microsoft.com",
+            "info.music.metaservices.microsoft.com",
+            "images.metaservices.microsoft.com",
+            "redir.metaservices.microsoft.com",
+            "windowsmedia.com",
+        ];
+        var newEntries = hostnames.Select(h => new HostsEntry(ipAddress, h));
+        await HostsEditor.AddOrUpdateHostnamesWithIPAsync(newEntries);
 
         return errorMessage;
     }
@@ -303,57 +315,36 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
         return null;
     }
 
-    private static async Task<string?> AddEntriesToHostsFile(string newHost)
+    private async Task<string?> AddEntriesToHostsFile(string newHost)
     {
-        var hostEntry = await Dns.GetHostEntryAsync(newHost);
-        var ipAddress = hostEntry?.AddressList?.FirstOrDefault();
-        if (ipAddress is null)
+        List<HostsEntry> newEntries = new(_knownSubdomains.Length);
+
+        foreach (var subdomain in _knownSubdomains.Select(e => e.subdomain))
         {
-            return $"Failed to resolve host '{newHost}' to an IP address.";
+            var newHostname = GetDomainName(subdomain, newHost);
+
+            IPAddress? ipAddress;
+            try
+            {
+                var dnsEntry = await Dns.GetHostEntryAsync(newHostname);
+                ipAddress = dnsEntry?.AddressList?.FirstOrDefault();
+                if (ipAddress is null)
+                {
+                    log.LogError("Failed to resolve host '{hostname}' to an IP address.", newHostname);
+                    continue;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Log(LogLevel.Error, ex, "Failed to resolve host '{hostname}' to an IP address.", newHostname);
+                continue;
+            }
+
+            var oldHostname = GetDomainName(subdomain, "zune.net");
+            newEntries.Add(new(ipAddress, oldHostname));
         }
 
-        var hostsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), @"drivers\etc\hosts");
-        var hostLines = (await File.ReadAllLinesAsync(hostsPath)).ToList();
-
-        var domains = _knownSubdomains
-            .Select(e => GetDomainName(e.subdomain, "zune.net"))
-            .ToHashSet();
-
-        // Update existing entries
-        Regex rx = HostsEntryRegex();
-        for (int l = 0; l < hostLines.Count; l++)
-        {
-            var line = hostLines[l].Trim();
-
-            // Ignore comments and empty lines
-            if (line.Length <= 0 || line[0] is '#')
-                continue;
-
-            var match = rx.Match(line);
-            if (!match.Success)
-                continue;
-
-            var domain = match.Groups["name"].Value;
-
-            // Ignore entries unrelated to Zune
-            if (!domain.EndsWith("zune.net"))
-                continue;
-
-            // Reconstruct entry with new IP address
-            hostLines[l] = $"{ipAddress} {domain}";
-
-            // Track that we handled this domain
-            domains.Remove(domain);
-        }
-
-        // Add any entries that didn't already exist
-        if (domains.Count > 0)
-        {
-            foreach (var domain in domains)
-                hostLines.Add($"{ipAddress} {domain}");
-        }
-
-        await File.WriteAllLinesAsync(hostsPath, hostLines);
+        await HostsEditor.AddOrUpdateHostnamesWithIPAsync(newEntries);
 
         return null;
     }
@@ -440,9 +431,6 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
         var methodText = await File.ReadAllTextAsync(_methodFile);
         return Enum.Parse<ApplicationMethod>(methodText);
     }
-
-    [GeneratedRegex(@"(?<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(?<name>[\w.-]+?)(\s+|$)")]
-    private static partial Regex HostsEntryRegex();
 
     private enum ApplicationMethod { None, BinaryPatch, HostsEntries }
 }
