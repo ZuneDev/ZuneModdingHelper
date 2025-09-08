@@ -16,9 +16,8 @@ public class MbidLocatorModFactory : DIModFactoryBase<MbidLocatorMod>
         Author = "Joshua \"Yoshi\" Askharoun",
         Version = new(2, 0),
         Description = "Fixes music tags to improve Zune compatibility and enable Marketplace features.",
-        ExtendedDescription = "• If your library is tagged with MusicBrainz Picard, " +
-            "this places MBIDs where Zune can use them for Marketplace features.\r\n" +
-            "• Converts ID3v2.4 to ID3v2.3.",
+        ExtendedDescription = "If your library is tagged with MusicBrainz Picard, " +
+            "this places MBIDs where Zune can use them for Marketplace features.",
     };
 }
 

@@ -25,7 +25,7 @@ public class WebservicesModFactory : DIModFactoryBase<WebservicesMod>
         Id = nameof(WebservicesMod),
         Title = "Community Webservices",
         Author = "Joshua \"Yoshi\" Askharoun",
-        Version = new(1, 2),
+        Version = new(1, 3),
         Description = "Partially restores online features such as the Marketplace by patching the Zune desktop software " +
             "to use the community's recreation of the original Zune servers.",
     };
