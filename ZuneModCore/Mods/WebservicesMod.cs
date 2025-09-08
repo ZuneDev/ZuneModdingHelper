@@ -444,5 +444,5 @@ public partial class WebservicesMod(ModMetadata metadata, IModCoreConfig modConf
     [GeneratedRegex(@"(?<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+(?<name>[\w.-]+?)(\s+|$)")]
     private static partial Regex HostsEntryRegex();
 
-    private enum ApplicationMethod { None, BinaryPatch, HostsEntries}
+    private enum ApplicationMethod { None, BinaryPatch, HostsEntries }
 }

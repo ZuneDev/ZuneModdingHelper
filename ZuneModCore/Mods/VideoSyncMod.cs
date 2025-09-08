@@ -14,7 +14,7 @@ public class VideoSyncModFactory : DIModFactoryBase<VideoSyncMod>
         Id = nameof(VideoSyncMod),
         Title = "Fix Video Sync",
         Author = "ส็็็Codix#4833 & sylvathemoth",
-        Version = new(2, 1),
+        Version = new(2, 2),
         Description = "Resolves \"Error C00D11CD\" when attempting to sync video to a Zune device using Windows 10 1607 (Anniversary Update) or newer.",
     };
 }
@@ -27,7 +27,7 @@ public class VideoSyncMod(ModMetadata metadata, IModCoreConfig modConfig) : Mod(
 
     public override async Task<string?> Apply()
     {
-        if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 14393))
+        if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 14393))
         {
             return "This version of Windows does not require a fix for syncing video.";
         }
