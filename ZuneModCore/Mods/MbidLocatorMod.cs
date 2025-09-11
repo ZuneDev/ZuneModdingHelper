@@ -12,11 +12,12 @@ public class MbidLocatorModFactory : DIModFactoryBase<MbidLocatorMod>
     public override ModMetadata Metadata { get; } = new()
     {
         Id = nameof(MbidLocatorMod),
-        Title = "Music Tag Fixer",
+        Title = "MBID Locator Mod",
         Author = "Joshua \"Yoshi\" Askharoun",
-        Version = new(2, 0),
-        Description = "Fixes music tags to improve Zune compatibility and enable Marketplace features.",
-        ExtendedDescription = "If your library is tagged with MusicBrainz Picard, " +
+        Version = new(1, 1),
+        Description = "Edits music tags to associate tracks in your library with the Marketplace.",
+        ExtendedDescription = "Currently supports MP3 and WAV files.\r\n" +
+            "When your library is tagged with MusicBrainz Picard or mp3tag's MusicBrainz source, " +
             "this places MBIDs where Zune can use them for Marketplace features.",
     };
 }
@@ -28,7 +29,7 @@ public class MbidLocatorMod(ModMetadata metadata) : Mod(metadata)
     public const string ZUNE_MEDIA_ID_NAME = "ZuneMediaID";
     public const string ZUNE_COLLECTION_ID_NAME = "ZuneCollectionID";
 
-    private static readonly string[] KNOWN_EXTS = [".mp3", ".mp4", ".m4a", ".wav"];
+    private static readonly string[] KNOWN_EXTS = [".mp3", ".wav"];
 
     public override AbstractUICollection? GetDefaultOptionsUI()
     {
